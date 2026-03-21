@@ -57,8 +57,14 @@ char *leer_linea(FILE *archivo, bool *error_memoria, bool *termino_el_archivo)
 		free(buffer);
 		return NULL;
 	}
+        
+        if (encontramos_salto_de_linea) {
+                buffer[ocupado - 1] = '\0';
+                ocupado--; 
+        }
 
-	char *buffer_ajustado = realloc(buffer, ocupado + 1);
+	char *buffer_ajustado = realloc(buffer, ocupado+1);
+
 	if (!buffer_ajustado)
 		return buffer;
 
@@ -119,9 +125,11 @@ struct pokemon *parsear_linea(char *linea, bool *error_memoria)
 
 	struct vector *v = split(linea, SEPARADOR);
 
-	if (!v)
+	if (!v) {
+                free(pokemon_aux);
 		*error_memoria = true;
-	return NULL;
+	        return NULL;
+        }
 
 	if (v->cantidad != CANT_DATOS ||
 	    !formato_es_correcto(v, &tipo, metricas)) {
@@ -150,18 +158,21 @@ struct pokemon *parsear_linea(char *linea, bool *error_memoria)
 	return pokemon_aux;
 }
 
-bool agregar_pokemon(tp1_t *tp, struct pokemon *pokemon_aux)
+bool agregar_pokemon(tp1_t *tp, struct pokemon *pokemon_aux, bool *error_memoria)
 {
 	struct pokemon **pokemones_aux = realloc(
 		tp->pokemones, (tp->cantidad + 1) * sizeof(struct pokemon *));
-	if (!pokemones_aux)
+
+	if (!pokemones_aux){
+                *error_memoria = true;
 		return false;
+        }
 
 	tp->pokemones = pokemones_aux;
 	tp->pokemones[tp->cantidad] = pokemon_aux;
 	(tp->cantidad)++;
 
-	return true;
+        return true;
 }
 
 tp1_t *tp1_crear()
@@ -178,8 +189,11 @@ tp1_t *tp1_crear()
 
 void tp1_destruir(tp1_t *tp)
 {
-	for (size_t i = 0; i < tp->cantidad; i++)
-		free(tp->pokemones[i]);
+	for (size_t i = 0; i < tp->cantidad; i++) {
+		free(tp->pokemones[i]->nombre);
+                free(tp->pokemones[i]);
+        }
+
 	free(tp->pokemones);
 	free(tp);
 }
@@ -213,11 +227,14 @@ tp1_t *tp1_leer_archivo(const char *nombre)
 
 		free(linea);
 
-		if (pokemon_aux != NULL)
-			error_memoria = agregar_pokemon(tp, pokemon_aux);
-
-		free(pokemon_aux->nombre);
-		free(pokemon_aux);
+		if (pokemon_aux != NULL){
+                        if (!agregar_pokemon(tp, pokemon_aux, &error_memoria))
+                        {
+                                free(pokemon_aux->nombre);
+                                free(pokemon_aux);
+                        }
+                }
+                pokemon_aux = NULL;
 	}
 
 	fclose(archivo);
