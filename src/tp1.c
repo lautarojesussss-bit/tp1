@@ -149,12 +149,13 @@ struct pokemon *crear_copia_pokemon(struct pokemon *pokemon, bool *error_memoria
                 return NULL;
 
         struct pokemon *pokemon_aux = malloc(sizeof(struct pokemon));
+
         if (!pokemon_aux) {
                 *error_memoria = true;
                 return NULL;
         }
 
-        char *nombre_aux = malloc(strlen((pokemon->nombre) +1)* sizeof(char));
+        char *nombre_aux = malloc((strlen(pokemon->nombre)+1)*sizeof(char));
         if (!nombre_aux) {
                 *error_memoria = true;
                 return NULL;

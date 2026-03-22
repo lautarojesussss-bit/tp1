@@ -35,6 +35,19 @@ int main()
 
         if (seguno_pokemon != NULL)
                 printf("El pokemon número %i del tp es: %s\n\n", N_POKEMON, seguno_pokemon->nombre);
+        
+        tp1_t *tp_fueg = tp1_filtrar_tipo(tp, TIPO_FUEG);
+        
+        if (tp_fueg != NULL) {
+                printf("Los pokemones filtrados por tipo fuego son: \n\n");
+                for (int i = 0; i < tp_fueg->cantidad; i++) {
+	                printf("%s,%i,%i,%i,%i\n\n", tp_fueg->pokemones[i]->nombre,
+		               tp_fueg->pokemones[i]->tipo, tp_fueg->pokemones[i]->ataque,
+		                tp_fueg->pokemones[i]->defensa, tp_fueg->pokemones[i]->velocidad);
+	                }
+                tp1_destruir(tp_fueg);
+        }
+        
 
 	tp1_destruir(tp);
 
