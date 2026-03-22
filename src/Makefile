@@ -2,12 +2,14 @@ CC = gcc
 CFLAGS = -g -std=c99 -Wall -Wconversion -Wtype-limits -Werror -I.
 VFLAGS = --leak-check=full --track-origins=yes --show-reachable=yes
 EJEC = pruebas
+SRCS = tp1.c prueba.c split.c pokemon.c ordenamiento.c
+HDRS = tp1.h split.h pokemon.h ordenamiento.h
 
 # 1.1. Compilar: 'make' o 'make all' solo construye el ejecutable
 all: $(EJEC)
 
-$(EJEC): tp1.c prueba.c split.c tp1.h split.h
-	$(CC) $(CFLAGS) tp1.c prueba.c split.c -o $(EJEC)
+$(EJEC): $(SRCS) $(HDRS)
+	$(CC) $(CFLAGS) $(SRCS) -o $(EJEC)
 
 # 1.2. Ejecutar pruebas: solo corre el binario
 run: $(EJEC)
