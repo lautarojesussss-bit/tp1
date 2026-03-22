@@ -8,6 +8,7 @@
 #define CANT_DATOS 5
 #define SEPARADOR ','
 #define CANT_TIPOS 8
+#define FORMATO_ESCRITURA "%s,%s,%i,%i,%i\n"
 
 const char *NOMBRES_TIPOS[] = { "ELEC", "FUEG", "PLAN", "AGUA",
 				"NORM", "FANT", "PSI",	"LUCH" };
@@ -151,4 +152,17 @@ struct pokemon *parsear_linea(char *linea, bool *error_memoria)
 
 	vector_destruir(v);
 	return pokemon_aux;
+}
+
+void escribir_pokemones(struct pokemon **pokemones, FILE *archivo, size_t cant)
+{
+        if (!pokemones || !archivo)
+                return;
+
+        for (size_t i = 0; i < cant; i++) {
+                fprintf(archivo, FORMATO_ESCRITURA, pokemones[i]->nombre,
+                NOMBRES_TIPOS[pokemones[i]->tipo],
+                        pokemones[i]->ataque, pokemones[i]->defensa,
+                        pokemones[i]->velocidad);
+        }
 }

@@ -5,8 +5,6 @@
 #include <string.h>
 #include "pokemon.h"
 #include "ordenamiento.h"
-#define FORMATO_ESCRITURA "%s,%s,%i,%i,%i\n"
-
 
 typedef struct tp1 {
 	struct pokemon **pokemones;
@@ -131,6 +129,7 @@ size_t tp1_cantidad(tp1_t *tp1)
  * de manera tal que tp1_leer_archivo pueda volver a leerlo correctamente.
  *
  * Devuelve NULL en caso de error o el tp1 pasado por parámetro en caso de exito.
+*/
 
 tp1_t *tp1_guardar_archivo(tp1_t *tp1, const char *nombre)
 {
@@ -140,8 +139,10 @@ tp1_t *tp1_guardar_archivo(tp1_t *tp1, const char *nombre)
         FILE* archivo = fopen(nombre, "w");
         if (!archivo)
                 return NULL;
-        
-        
-        
-        
-}*/
+
+        escribir_pokemones(tp1->pokemones, archivo, tp1->cantidad);
+
+        fclose(archivo);
+
+        return tp1;
+}

@@ -13,4 +13,6 @@ bool formato_es_correcto(struct vector *v, int *tipo, int *metricas);
 
 struct pokemon *parsear_linea(char *linea, bool *error_memoria);
 
+void escribir_pokemones(struct pokemon **pokemones, FILE *archivo, size_t cant);
+
 #endif // POKEMON_H_
