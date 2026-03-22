@@ -5,6 +5,7 @@
 #include <string.h>
 #include "pokemon.h"
 #include "ordenamiento.h"
+#define FORMATO_ESCRITURA "%s,%s,%i,%i,%i\n"
 
 
 typedef struct tp1 {
@@ -107,6 +108,13 @@ tp1_t *tp1_leer_archivo(const char *nombre)
 		return NULL;
 	}
 
+        quitar_repetidos(&(tp->pokemones), &(tp->cantidad), &error_memoria);
+
+        if (error_memoria) {
+                tp1_destruir(tp);
+                return NULL;
+        }
+
 	return tp;
 }
 
@@ -117,3 +125,23 @@ size_t tp1_cantidad(tp1_t *tp1)
 
         return tp1->cantidad;
 }
+
+/**
+ * Guarda en el archivo indicado los pokemones contenidos en la estructura tp1 
+ * de manera tal que tp1_leer_archivo pueda volver a leerlo correctamente.
+ *
+ * Devuelve NULL en caso de error o el tp1 pasado por parámetro en caso de exito.
+
+tp1_t *tp1_guardar_archivo(tp1_t *tp1, const char *nombre)
+{
+        if (!tp1 || !nombre)
+                return NULL;
+        
+        FILE* archivo = fopen(nombre, "w");
+        if (!archivo)
+                return NULL;
+        
+        
+        
+        
+}*/

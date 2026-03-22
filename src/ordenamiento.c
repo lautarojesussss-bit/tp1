@@ -2,6 +2,7 @@
 #include "tp1.h"
 #include <string.h>
 #include <strings.h>
+#include <stdlib.h>
 
 void merge(struct pokemon **pokemones, int pos_inicio, int pos_mitad, int pos_fin, bool *error_memoria)
 {
@@ -76,5 +77,37 @@ void ordenar_alfabeticamente(struct pokemon **pokemones, bool *error_memoria, si
         if (cantidad > 1)
                 merge_sort(pokemones, 0,(int)(cantidad -1), error_memoria);
 }
-        
-        
+
+void quitar_repetidos(struct pokemon ***pokemones, size_t *cantidad, bool *error_memoria)
+{
+        if (!pokemones || !cantidad)
+                return;
+
+        size_t i = 1;
+        size_t j= 0;
+
+        size_t cant_original = *cantidad;
+
+        while ( i < cant_original && j < cant_original - 1 )
+        {
+                if (strcasecmp(pokemones[0][i]->nombre, pokemones[0][j]->nombre) == 0) {
+                        free(pokemones[0][i]->nombre);
+                        free(pokemones[0][i]);
+                } else {
+                        pokemones[0][j+1] = pokemones[0][i];
+                        j++;
+                }
+                i++;
+        }
+
+        *cantidad = (j+1);
+
+        struct pokemon **pokemones_ajustado = realloc(pokemones[0], (j +1)*sizeof(struct pokemon *));
+
+        if (!pokemones_ajustado) {
+                *error_memoria = true;
+                return;
+        }
+
+        pokemones[0] = pokemones_ajustado;      
+}
