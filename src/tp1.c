@@ -6,8 +6,6 @@
 #include "pokemon.h"
 #include "ordenamiento.h"
 
-#include <strings.h>
-
 typedef struct tp1 {
 	struct pokemon **pokemones;
 	size_t cantidad;

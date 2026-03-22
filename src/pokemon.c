@@ -17,7 +17,7 @@ const char *NOMBRES_TIPOS[] = { "ELEC", "FUEG", "PLAN", "AGUA",
 
 char *leer_linea(FILE *archivo, bool *error_memoria, bool *termino_el_archivo)
 {
-	if (!archivo)
+	if (!archivo || !error_memoria || !termino_el_archivo)
 		return NULL;
 
 	size_t tamanio_buffer = TAMANIO_INICIAL;
