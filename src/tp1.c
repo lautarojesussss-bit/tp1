@@ -12,25 +12,6 @@ typedef struct tp1 {
 } tp1_t;
 
 
-
-bool agregar_pokemon(tp1_t *tp, struct pokemon *pokemon_aux,
-		     bool *error_memoria)
-{
-	struct pokemon **pokemones_aux = realloc(
-		tp->pokemones, (tp->cantidad + 1) * sizeof(struct pokemon *));
-
-	if (!pokemones_aux) {
-		*error_memoria = true;
-		return false;
-	}
-
-	tp->pokemones = pokemones_aux;
-	tp->pokemones[tp->cantidad] = pokemon_aux;
-	(tp->cantidad)++;
-
-	return true;
-}
-
 tp1_t *tp1_crear()
 {
 	tp1_t *tp1_aux = malloc(sizeof(tp1_t));
@@ -84,7 +65,8 @@ tp1_t *tp1_leer_archivo(const char *nombre)
 		free(linea);
 
 		if (pokemon_aux != NULL) {
-			if (!agregar_pokemon(tp, pokemon_aux, &error_memoria)) {
+			if (!agregar_pokemon(&(tp->pokemones), pokemon_aux, 
+                                &error_memoria, &(tp->cantidad))) {
 				free(pokemon_aux->nombre);
 				free(pokemon_aux);
 			}
@@ -157,4 +139,74 @@ struct pokemon *tp1_buscar_orden(tp1_t *tp, int n)
                 return NULL;
 
         return tp->pokemones[n-1];
+}
+
+
+
+struct pokemon *crear_copia_pokemon(struct pokemon *pokemon, bool *error_memoria)
+{
+        if (!pokemon)
+                return NULL;
+
+        struct pokemon *pokemon_aux = malloc(sizeof(struct pokemon));
+        if (!pokemon_aux) {
+                *error_memoria = true;
+                return NULL;
+        }
+
+        char *nombre_aux = malloc(strlen((pokemon->nombre) +1)* sizeof(char));
+        if (!nombre_aux) {
+                *error_memoria = true;
+                return NULL;
+        }
+
+        strcpy(nombre_aux, pokemon->nombre);
+
+        *pokemon_aux = *pokemon;
+        pokemon_aux->nombre = nombre_aux;
+
+        return pokemon_aux;
+}
+
+/**
+* Dado un tp1 y un tipo, devuelve otro tp1 conteniendo solamente los pokemons de dicho tipo.
+*
+* En caso de error devuelve NULL.
+*/
+tp1_t *tp1_filtrar_tipo(tp1_t *un_tp, enum tipo_pokemon tipo)
+{
+        if (!un_tp)
+                return NULL;
+
+        tp1_t *tp_aux = tp1_crear();
+
+	if (!tp_aux)
+		return NULL;
+        
+        bool error_memoria = false;
+        struct pokemon *pokemon_aux = NULL;
+        size_t cant =  un_tp->cantidad;
+
+        for (size_t i = 0; !error_memoria && i < cant ; i++) {
+                if (un_tp->pokemones[i]->tipo == tipo) {
+                        pokemon_aux = crear_copia_pokemon(un_tp->pokemones[i], &error_memoria);
+
+                        if (pokemon_aux != NULL){
+                                if(!agregar_pokemon(&(tp_aux->pokemones), pokemon_aux, &error_memoria, 
+                                                &(tp_aux->cantidad))){
+                                        free(pokemon_aux->nombre);
+                                        free(pokemon_aux);
+                                }
+                        }
+
+                        pokemon_aux = NULL;
+                }
+        }
+
+        if (error_memoria) {
+                tp1_destruir(tp_aux);
+                return NULL;
+        }
+        
+        return tp_aux;
 }

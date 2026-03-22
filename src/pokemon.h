@@ -15,4 +15,7 @@ struct pokemon *parsear_linea(char *linea, bool *error_memoria);
 
 void escribir_pokemones(struct pokemon **pokemones, FILE *archivo, size_t cant);
 
+bool agregar_pokemon(struct pokemon ***pokemones, struct pokemon *pokemon_aux,
+		     bool *error_memoria, size_t *cantidad);
+
 #endif // POKEMON_H_

@@ -154,6 +154,24 @@ struct pokemon *parsear_linea(char *linea, bool *error_memoria)
 	return pokemon_aux;
 }
 
+bool agregar_pokemon(struct pokemon ***pokemones, struct pokemon *pokemon_aux,
+		     bool *error_memoria, size_t *cantidad)
+{
+	struct pokemon **pokemones_aux = realloc(
+		pokemones[0], (*cantidad + 1) * sizeof(struct pokemon *));
+
+	if (!pokemones_aux) {
+		*error_memoria = true;
+		return false;
+	}
+
+	pokemones[0] = pokemones_aux;
+	pokemones[0][*cantidad] = pokemon_aux;
+	(*cantidad)++;
+
+	return true;
+}
+
 void escribir_pokemones(struct pokemon **pokemones, FILE *archivo, size_t cant)
 {
         if (!pokemones || !archivo)
