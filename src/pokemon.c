@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include "split.h"
 #include <string.h>
+#include <strings.h>
+
 #define TAMANIO_INICIAL 101
 #define CANT_DATOS 5
 #define SEPARADOR ','
@@ -174,13 +176,57 @@ bool agregar_pokemon(struct pokemon ***pokemones, struct pokemon *pokemon_aux,
 
 void escribir_pokemones(struct pokemon **pokemones, FILE *archivo, size_t cant)
 {
-        if (!pokemones || !archivo)
-                return;
+	if (!pokemones || !archivo)
+		return;
 
-        for (size_t i = 0; i < cant; i++) {
-                fprintf(archivo, FORMATO_ESCRITURA, pokemones[i]->nombre,
-                NOMBRES_TIPOS[pokemones[i]->tipo],
-                        pokemones[i]->ataque, pokemones[i]->defensa,
-                        pokemones[i]->velocidad);
-        }
+	for (size_t i = 0; i < cant; i++) {
+		fprintf(archivo, FORMATO_ESCRITURA, pokemones[i]->nombre,
+			NOMBRES_TIPOS[pokemones[i]->tipo], pokemones[i]->ataque,
+			pokemones[i]->defensa, pokemones[i]->velocidad);
+	}
+}
+
+struct pokemon *crear_copia_pokemon(struct pokemon *pokemon,
+				    bool *error_memoria)
+{
+	if (!pokemon)
+		return NULL;
+
+	struct pokemon *pokemon_aux = malloc(sizeof(struct pokemon));
+
+	if (!pokemon_aux) {
+		*error_memoria = true;
+		return NULL;
+	}
+
+	char *nombre_aux = malloc((strlen(pokemon->nombre) + 1) * sizeof(char));
+	if (!nombre_aux) {
+		*error_memoria = true;
+		return NULL;
+	}
+
+	strcpy(nombre_aux, pokemon->nombre);
+
+	*pokemon_aux = *pokemon;
+	pokemon_aux->nombre = nombre_aux;
+
+	return pokemon_aux;
+}
+
+struct pokemon *busqueda(struct pokemon **pokemones, int pos_inicio, int pos_fin, const char *nombre)
+{
+        int centro = pos_inicio + ((pos_fin - pos_inicio)/2);
+
+        int comparacion = strcasecmp(nombre, pokemones[centro]->nombre);
+
+        if (comparacion == 0)
+                return pokemones[centro];
+
+        if (pos_fin <= pos_inicio)
+                return NULL;
+
+        if (comparacion < 0)
+                return busqueda(pokemones, pos_inicio, centro -1, nombre);
+        else
+                return busqueda(pokemones, centro +1, pos_fin, nombre);
 }

@@ -18,4 +18,8 @@ void escribir_pokemones(struct pokemon **pokemones, FILE *archivo, size_t cant);
 bool agregar_pokemon(struct pokemon ***pokemones, struct pokemon *pokemon_aux,
 		     bool *error_memoria, size_t *cantidad);
 
+struct pokemon *crear_copia_pokemon(struct pokemon *pokemon, bool *error_memoria);
+
+struct pokemon *busqueda(struct pokemon **pokemones, int pos_inicio, int pos_fin, const char *nombre);
+
 #endif // POKEMON_H_
