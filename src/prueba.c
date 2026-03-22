@@ -1,8 +1,9 @@
 #include "tp1.h"
 #include <stdio.h>
 #define MAX_NOMBRE 200
-#define NOMBRE_ARCHIVO "pokemones.csv"
+#define NOMBRE_ARCHIVO "pokemones_filtrados.csv"
 #define NOMBRE_ARCHIVO_NUEVO "pokemones_filtrados.csv"
+#define N_POKEMON 2
 
 typedef struct tp1 {
 	struct pokemon **pokemones;
@@ -29,6 +30,11 @@ int main()
 
         if (tp1_guardar_archivo(tp, NOMBRE_ARCHIVO_NUEVO ) != NULL)
                 printf("Se cargaron correctamente los pokemones, ya filtrados y ordenados, en %s\n\n", NOMBRE_ARCHIVO_NUEVO);
+
+        struct pokemon *seguno_pokemon = tp1_buscar_orden(tp, N_POKEMON);
+
+        if (seguno_pokemon != NULL)
+                printf("El pokemon número %i del tp es: %s\n\n", N_POKEMON, seguno_pokemon->nombre);
 
 	tp1_destruir(tp);
 

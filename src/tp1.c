@@ -146,3 +146,15 @@ tp1_t *tp1_guardar_archivo(tp1_t *tp1, const char *nombre)
 
         return tp1;
 }
+
+/**
+* Devuelve el n-esimo pokemon por orden alfabetico (de menor a mayor).
+* En caso de no encontrarlo devuelve NULL.
+*/
+struct pokemon *tp1_buscar_orden(tp1_t *tp, int n)
+{
+        if (n > tp->cantidad)
+                return NULL;
+
+        return tp->pokemones[n-1];
+}
