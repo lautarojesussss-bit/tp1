@@ -42,6 +42,7 @@ void tp1_destruir(tp1_t *tp1)
 tp1_t *tp1_leer_archivo(const char *nombre)
 {
 	FILE *archivo = fopen(nombre, "r");
+        
 	if (!archivo)
 		return NULL;
 

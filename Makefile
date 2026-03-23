@@ -1,9 +1,9 @@
 CC = gcc
-CFLAGS = -g -std=c99 -Wall -Wconversion -Wtype-limits -Werror -I.
+CFLAGS = -g -std=c99 -Wall -Wconversion -Wtype-limits -Werror -Isrc -Ipruebas.
 VFLAGS = --leak-check=full --track-origins=yes --show-reachable=yes
-EJEC = pruebas
-SRCS = tp1.c prueba.c split.c pokemon.c ordenamiento.c
-HDRS = tp1.h split.h pokemon.h ordenamiento.h
+EJEC = pruebas2
+SRCS = src/tp1.c src/split.c src/pokemon.c src/ordenamiento.c pruebas/prueba2.c pruebas/revisar.c 
+HDRS = src/tp1.h src/split.h src/pokemon.h src/ordenamiento.h pruebas/revisar.h pruebas/pa2m.h
 
 # 1.1. Compilar: 'make' o 'make all' solo construye el ejecutable
 all: $(EJEC)
