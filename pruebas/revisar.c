@@ -11,71 +11,59 @@ typedef struct tp1 {
 	size_t cantidad;
 } tp1_t;
 
-
-
 bool es_el_mismo_pokemon(struct pokemon *pokemon_1, struct pokemon *pokemon_2)
 {
-        if (!pokemon_1 || !pokemon_2)
-                return false;
+	if (!pokemon_1 || !pokemon_2)
+		return false;
 
-        return (strcmp(pokemon_1->nombre, pokemon_2->nombre) == 0 
-                && pokemon_1->tipo == pokemon_2->tipo 
-                 && pokemon_1->ataque == pokemon_2->ataque 
-                  && pokemon_1->defensa == pokemon_2->defensa
-                   && pokemon_1->velocidad == pokemon_2->velocidad);
+	return (strcmp(pokemon_1->nombre, pokemon_2->nombre) == 0 &&
+		pokemon_1->tipo == pokemon_2->tipo &&
+		pokemon_1->ataque == pokemon_2->ataque &&
+		pokemon_1->defensa == pokemon_2->defensa &&
+		pokemon_1->velocidad == pokemon_2->velocidad);
 }
 
 bool son_iguales_los_tp(tp1_t *tp1, tp1_t *tp2)
 {
-        if (!tp1 || !tp2)
-                return false;
+	if (!tp1 || !tp2)
+		return false;
 
-        size_t cant = tp1->cantidad;
+	size_t cant = tp1->cantidad;
 
-        if (cant != tp2->cantidad)
-                return false;
+	if (cant != tp2->cantidad)
+		return false;
 
-        bool son_iguales = true;
+	bool son_iguales = true;
 
-        for (size_t i = 0; i < cant; i++) {
-                if (!es_el_mismo_pokemon(tp1->pokemones[i], tp2->pokemones[i]))
-                        son_iguales = false;
-        }
-        
-        return son_iguales;
+	for (size_t i = 0; i < cant; i++) {
+		if (!es_el_mismo_pokemon(tp1->pokemones[i], tp2->pokemones[i]))
+			son_iguales = false;
+	}
+
+	return son_iguales;
 }
 
 void imprimir_pokemon(struct pokemon *pokemon)
 {
-        printf("%s,%i,%i,%i,%i\n\n", pokemon->nombre,
-        pokemon->tipo, pokemon->ataque,
-        pokemon->defensa, pokemon->velocidad);
+	printf("%s,%s,%i,%i,%i\n", pokemon->nombre, NOMBRES_TIPOS[pokemon->tipo],
+	       pokemon->ataque, pokemon->defensa, pokemon->velocidad);
 }
 
 void imprimir_tp(tp1_t *tp)
 {
-	for (int i = 0; i < tp->cantidad; i++) {
-		printf("%s,%i,%i,%i,%i\n\n", tp->pokemones[i]->nombre,
-		       tp->pokemones[i]->tipo, tp->pokemones[i]->ataque,
-		       tp->pokemones[i]->defensa, tp->pokemones[i]->velocidad);
-	}
+	for (int i = 0; i < tp->cantidad; i++)
+		imprimir_pokemon(tp->pokemones[i]);
 }
 
-
-void cargar_pokemon(struct pokemon *p, char *nombre, enum tipo_pokemon tipo 
-                        ,int ataque, int defensa, int velocidad)
+void cargar_pokemon(struct pokemon *p, char *nombre, enum tipo_pokemon tipo,
+		    int ataque, int defensa, int velocidad)
 {
-        if (!nombre || !p)
-                return;
+	if (!nombre || !p)
+		return;
 
-        p->ataque = ataque;
-        p->defensa = defensa;
-        p->velocidad = velocidad;
-        p->tipo = tipo;
-        p->nombre = nombre;
+	p->ataque = ataque;
+	p->defensa = defensa;
+	p->velocidad = velocidad;
+	p->tipo = tipo;
+	p->nombre = nombre;
 }
-
-
-
-
-

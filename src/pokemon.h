@@ -5,6 +5,8 @@
 #include "split.h"
 #include <stdbool.h>
 
+extern const char *NOMBRES_TIPOS[];
+
 char *leer_linea(FILE *archivo, bool *error_memoria, bool *termino_el_archivo);
 
 bool es_numero_valido(const char *cadena);

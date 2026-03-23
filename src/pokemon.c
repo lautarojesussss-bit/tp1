@@ -213,20 +213,21 @@ struct pokemon *crear_copia_pokemon(struct pokemon *pokemon,
 	return pokemon_aux;
 }
 
-struct pokemon *busqueda(struct pokemon **pokemones, int pos_inicio, int pos_fin, const char *nombre)
+struct pokemon *busqueda(struct pokemon **pokemones, int pos_inicio,
+			 int pos_fin, const char *nombre)
 {
-        int centro = pos_inicio + ((pos_fin - pos_inicio)/2);
+	int centro = pos_inicio + ((pos_fin - pos_inicio) / 2);
 
-        int comparacion = strcasecmp(nombre, pokemones[centro]->nombre);
+	int comparacion = strcasecmp(nombre, pokemones[centro]->nombre);
 
-        if (comparacion == 0)
-                return pokemones[centro];
+	if (comparacion == 0)
+		return pokemones[centro];
 
-        if (pos_fin <= pos_inicio)
-                return NULL;
+	if (pos_fin <= pos_inicio)
+		return NULL;
 
-        if (comparacion < 0)
-                return busqueda(pokemones, pos_inicio, centro -1, nombre);
-        else
-                return busqueda(pokemones, centro +1, pos_fin, nombre);
+	if (comparacion < 0)
+		return busqueda(pokemones, pos_inicio, centro - 1, nombre);
+	else
+		return busqueda(pokemones, centro + 1, pos_fin, nombre);
 }

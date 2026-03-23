@@ -1,11 +1,7 @@
 #ifndef REVISAR_H_
 #define REVISAR_H_
 #include "tp1.h"
-
-typedef struct tp1 {
-	struct pokemon **pokemones;
-	size_t cantidad;
-} tp1_t;
+#include "struct_tp1.h"
 
 bool es_el_mismo_pokemon(struct pokemon *pokemon_1, struct pokemon *pokemon_2);
 

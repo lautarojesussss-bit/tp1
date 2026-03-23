@@ -5,11 +5,7 @@
 #include <string.h>
 #include "pokemon.h"
 #include "ordenamiento.h"
-
-typedef struct tp1 {
-	struct pokemon **pokemones;
-	size_t cantidad;
-} tp1_t;
+#include "struct_tp1.h"
 
 tp1_t *tp1_crear()
 {
@@ -42,14 +38,16 @@ void tp1_destruir(tp1_t *tp1)
 tp1_t *tp1_leer_archivo(const char *nombre)
 {
 	FILE *archivo = fopen(nombre, "r");
-        
+
 	if (!archivo)
 		return NULL;
 
 	tp1_t *tp = tp1_crear();
 
-	if (!tp)
+	if (!tp) {
+                fclose(archivo);
 		return NULL;
+        }
 
 	bool error_memoria = false;
 	bool termino_el_archivo = false;
@@ -76,19 +74,11 @@ tp1_t *tp1_leer_archivo(const char *nombre)
 
 	fclose(archivo);
 
-	if (error_memoria) {
-		tp1_destruir(tp);
-		return NULL;
-	}
-
-	ordenar_alfabeticamente(tp->pokemones, &error_memoria, tp->cantidad);
-
-	if (error_memoria) {
-		tp1_destruir(tp);
-		return NULL;
-	}
-
-	quitar_repetidos(&(tp->pokemones), &(tp->cantidad), &error_memoria);
+        if (!error_memoria)
+                ordenar_alfabeticamente(tp->pokemones, &error_memoria, tp->cantidad);
+        
+        if(!error_memoria)
+                quitar_repetidos(&(tp->pokemones), &(tp->cantidad), &error_memoria);
 
 	if (error_memoria) {
 		tp1_destruir(tp);
@@ -189,9 +179,8 @@ tp1_t *tp1_filtrar_tipo(tp1_t *un_tp, enum tipo_pokemon tipo)
 
 struct pokemon *tp1_buscar_nombre(tp1_t *tp, const char *nombre)
 {
-        if (!tp || !nombre)
-                return NULL;
+	if (!tp || !nombre)
+		return NULL;
 
-        return busqueda(tp->pokemones, 0, (int)(tp->cantidad -1), nombre);
+	return busqueda(tp->pokemones, 0, (int)(tp->cantidad - 1), nombre);
 }
-
