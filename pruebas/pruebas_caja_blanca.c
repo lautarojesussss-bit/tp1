@@ -4,6 +4,7 @@
 #include <strings.h>
 #include "revisar.h"
 #include "pa2m.h"
+#include "pokemon.h"
 
 #define MAX_NOMBRE 200
 
@@ -335,13 +336,17 @@ void filtrar_pokemones_correctamente()
         if (tp_filtrado != NULL)
                 cumple = son_iguales_los_tp(&tp_correcto, tp_filtrado);
 
-	pa2m_afirmar(
-		cumple,
-		"Filtrar correctamente pokemones de cierto tipo en un archivo.");
+        size_t cant_leida = 0;
         
         if (tp_filtrado != NULL){
+                cant_leida = tp1_con_cada_pokemon(tp_filtrado, escribir_pokemon, stdout);
                 tp1_destruir(tp_filtrado);
+                
         }
+
+        pa2m_afirmar(
+		cumple,
+		"Filtrar correctamente pokemones %d de cierto tipo en un archivo.", cant_leida);
 
 	if (tp_aux != NULL)
                 tp1_destruir(tp_aux);          

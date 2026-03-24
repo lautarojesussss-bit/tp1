@@ -42,7 +42,7 @@ bool son_iguales_los_tp(tp1_t *tp1, tp1_t *tp2)
 
 	return son_iguales;
 }
-
+/* 
 void imprimir_pokemon(struct pokemon *pokemon)
 {
 	printf("%s,%s,%i,%i,%i\n", pokemon->nombre, NOMBRES_TIPOS[pokemon->tipo],
@@ -54,7 +54,7 @@ void imprimir_tp(tp1_t *tp)
 	for (int i = 0; i < tp->cantidad; i++)
 		imprimir_pokemon(tp->pokemones[i]);
 }
-
+*/
 void cargar_pokemon(struct pokemon *p, char *nombre, enum tipo_pokemon tipo,
 		    int ataque, int defensa, int velocidad)
 {

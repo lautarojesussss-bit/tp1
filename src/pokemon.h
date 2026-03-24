@@ -15,6 +15,8 @@ bool formato_es_correcto(struct vector *v, int *tipo, int *metricas);
 
 struct pokemon *parsear_linea(char *linea, bool *error_memoria);
 
+bool escribir_pokemon(struct pokemon *pokemon, void *archivo);
+
 void escribir_pokemones(struct pokemon **pokemones, FILE *archivo, size_t cant);
 
 bool agregar_pokemon(struct pokemon ***pokemones, struct pokemon *pokemon_aux,

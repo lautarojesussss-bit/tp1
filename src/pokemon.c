@@ -174,16 +174,27 @@ bool agregar_pokemon(struct pokemon ***pokemones, struct pokemon *pokemon_aux,
 	return true;
 }
 
+bool escribir_pokemon(struct pokemon *pokemon, void *archivo)
+{
+        if(!pokemon || !archivo ||!(pokemon->nombre))
+                return false;
+
+        fprintf(archivo, FORMATO_ESCRITURA, pokemon->nombre,
+        NOMBRES_TIPOS[pokemon->tipo], pokemon->ataque,
+        pokemon->defensa, pokemon->velocidad);
+
+        return true;
+}       
+
+
+
 void escribir_pokemones(struct pokemon **pokemones, FILE *archivo, size_t cant)
 {
 	if (!pokemones || !archivo)
 		return;
 
-	for (size_t i = 0; i < cant; i++) {
-		fprintf(archivo, FORMATO_ESCRITURA, pokemones[i]->nombre,
-			NOMBRES_TIPOS[pokemones[i]->tipo], pokemones[i]->ataque,
-			pokemones[i]->defensa, pokemones[i]->velocidad);
-	}
+	for (size_t i = 0; i < cant; i++) 
+                escribir_pokemon(pokemones[i], archivo);
 }
 
 struct pokemon *crear_copia_pokemon(struct pokemon *pokemon,

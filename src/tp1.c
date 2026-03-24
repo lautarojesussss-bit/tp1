@@ -184,3 +184,23 @@ struct pokemon *tp1_buscar_nombre(tp1_t *tp, const char *nombre)
 
 	return busqueda(tp->pokemones, 0, (int)(tp->cantidad - 1), nombre);
 }
+
+
+/**
+ * Aplica la función f a cada pokemon por orden alfabetico (de menor a mayor).
+ * La función deja de aplicarse si f devuelve false o se terminaron los pokemones.
+ * 
+ * Devuelve la cantidad de pokemones sobre los cuales se aplicó la función f.
+ */
+size_t tp1_con_cada_pokemon(tp1_t *un_tp, bool (*f)(struct pokemon *, void *),
+			    void *extra)
+{
+        bool seguimos = true;
+        size_t i = 0;
+        
+        for (; seguimos && i < un_tp->cantidad ; i++)
+                seguimos = f(un_tp->pokemones[i], extra);
+        
+        return i;
+}
+
