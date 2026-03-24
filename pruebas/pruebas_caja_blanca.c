@@ -2,9 +2,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <strings.h>
-#include "revisar.h"
+#include <string.h>
 #include "pa2m.h"
-#include "pokemon.h"
 
 #define MAX_NOMBRE 200
 
@@ -21,6 +20,88 @@
 #define N_POKEMON 2
 #define POKEMON_BUSCADO "Pikachu"
 
+
+bool es_el_mismo_pokemon(struct pokemon *pokemon_1, struct pokemon *pokemon_2)
+{
+	if (!pokemon_1 || !pokemon_2)
+		return false;
+
+	return (strcmp(pokemon_1->nombre, pokemon_2->nombre) == 0 &&
+		pokemon_1->tipo == pokemon_2->tipo &&
+		pokemon_1->ataque == pokemon_2->ataque &&
+		pokemon_1->defensa == pokemon_2->defensa &&
+		pokemon_1->velocidad == pokemon_2->velocidad);
+}
+
+bool es_el_tp_esperado(struct pokemon **pokemones, tp1_t *tpB)
+{
+	if (!pokemones || !tpB)
+		return false;
+
+	size_t cant = tp1_cantidad(tpB);
+
+	bool son_iguales = true;
+
+	for (int i = 1; i < cant +1; i++) {
+		if (!es_el_mismo_pokemon(pokemones[i-1], tp1_buscar_orden(tpB, i)))
+			son_iguales = false;
+	}
+
+	return son_iguales;
+}
+
+
+
+bool son_el_mismo_tp(tp1_t *tpA, tp1_t *tpB)
+{
+	if (!tpA || !tpB)
+		return false;
+
+	size_t cant = tp1_cantidad(tpA);
+
+	if (cant != tp1_cantidad(tpB))
+		return false;
+
+	bool son_iguales = true;
+
+	for (int i = 1; i < cant +1; i++) {
+		if (!es_el_mismo_pokemon(tp1_buscar_orden(tpA, i), tp1_buscar_orden(tpB, i)))
+			son_iguales = false;
+	}
+
+	return son_iguales;
+}
+
+
+/* 
+void imprimir_pokemon(struct pokemon *pokemon)
+{
+	printf("%s,%s,%i,%i,%i\n", pokemon->nombre, NOMBRES_TIPOS[pokemon->tipo],
+	       pokemon->ataque, pokemon->defensa, pokemon->velocidad);
+}
+
+void imprimir_tp(tp1_t *tp)
+{
+	for (int i = 0; i < tp->cantidad; i++)
+		imprimir_pokemon(tp->pokemones[i]);
+}
+*/
+void cargar_pokemon(struct pokemon *p, char *nombre, enum tipo_pokemon tipo,
+		    int ataque, int defensa, int velocidad)
+{
+	if (!nombre || !p)
+		return;
+
+	p->ataque = ataque;
+	p->defensa = defensa;
+	p->velocidad = velocidad;
+	p->tipo = tipo;
+	p->nombre = nombre;
+}
+
+
+
+
 /* 
 
 void prueba_destruir_tp_con_uno()
@@ -35,19 +116,25 @@ void prueba_destruir_tp_con_uno()
 
 }
 */
+
+
+
+
 void prueba_destruir_tp_vacio()
 {
 	bool se_rompe = true;
-	tp1_t *tp = malloc(sizeof(tp1_t));
+
+        const char *archivo = "pruebas/archivos_csv/vacio.csv";
+
+	tp1_t *tp = tp1_leer_archivo(archivo);
 
 	if (!tp) {
 		printf("Se abortó esta prueba por fallo al reservar memoria. \n\n");
 		return;
 	}
-
-	tp->cantidad = 0;
-	tp->pokemones = NULL;
+        
 	tp1_destruir(tp);
+
 	se_rompe = false;
 
 	pa2m_afirmar(
@@ -63,7 +150,7 @@ void prueba_tp1_leer_archivo_vacio()
 	bool funciona = tp != NULL;
 
 	pa2m_afirmar(
-		funciona && tp->cantidad == 0,
+		funciona && tp1_cantidad(tp) == 0,
 		"Leer un archivo vacío y que no se rompa el programa, que diga que la cantidad de pokemones del tp es cero.");
 	if (funciona)
 		tp1_destruir(tp);
@@ -90,7 +177,7 @@ void prueba_tp1_leer_cantidad_correcta()
 
 	size_t cant_leida = 0;
 	if (tp != NULL)
-		cant_leida = tp->cantidad;
+		cant_leida = tp1_cantidad(tp);
 
 	pa2m_afirmar(cant_leida == CANT_LEIDA_ESPERADA,
 		     "Leer la cantidad esperada de pokemones.");
@@ -107,22 +194,17 @@ void prueba_tp1_uno_bien()
 
 	struct pokemon *dirrecion_correcta = &pokemon_correcto;
 
-	tp1_t tp_correcto;
+	tp1_t *tp_aux = tp1_leer_archivo(ARCHIVO_UN_POKEMON);
 
-	tp_correcto.cantidad = 1;
-	tp_correcto.pokemones = &dirrecion_correcta;
+        bool cumple = false;
 
-	tp1_t *tp_aux = NULL;
-
-	tp_aux = tp1_leer_archivo(ARCHIVO_UN_POKEMON);
-
-	bool cumple = son_iguales_los_tp(&tp_correcto, tp_aux);
+        if (tp_aux != NULL) {
+                cumple = tp1_cantidad(tp_aux) && es_el_tp_esperado(&dirrecion_correcta, tp_aux);
+                tp1_destruir(tp_aux);
+        }
 
 	pa2m_afirmar(cumple, "Leer correctamente el pokemon %s del archivo %s",
-		     tp_correcto.pokemones[0]->nombre, ARCHIVO_UN_POKEMON);
-
-	if (tp_aux != NULL)
-		tp1_destruir(tp_aux);
+		     pokemon_correcto.nombre, ARCHIVO_UN_POKEMON);
 }
 
 
@@ -150,27 +232,22 @@ void prueba_pokemones_desordenados()
 	pokemones_aux[3] = &pokemon_correcto_4;
 	pokemones_aux[4] = &pokemon_correcto_5;
 
-	tp1_t tp_correcto;
-
-	tp_correcto.cantidad = 5;
-	tp_correcto.pokemones = pokemones_aux;
-
 	tp1_t *tp_aux = NULL;
+        bool cumple = false;
 
         const char * nombre_archivo = "pruebas/archivos_csv/pokemones_desordenados.csv";
 
 	tp_aux =
 		tp1_leer_archivo(nombre_archivo);
 
-	bool cumple = son_iguales_los_tp(&tp_correcto, tp_aux);
+        if (tp_aux != NULL) {
+                cumple = es_el_tp_esperado(pokemones_aux, tp_aux);
+                tp1_destruir(tp_aux);
+        }
 
 	pa2m_afirmar(
 		cumple,
 		"Leer correctamente pokemones de un archivo que los tiene desordenados");
-
-	if (tp_aux != NULL)
-                tp1_destruir(tp_aux);
-        
 }
 
 void prueba_ignorar_lineas_vacias()
@@ -197,27 +274,24 @@ void prueba_ignorar_lineas_vacias()
 	pokemones_aux[3] = &pokemon_correcto_4;
 	pokemones_aux[4] = &pokemon_correcto_5;
 
-	tp1_t tp_correcto;
-
-	tp_correcto.cantidad = 5;
-	tp_correcto.pokemones = pokemones_aux;
 
 	tp1_t *tp_aux = NULL;
+        bool cumple = false;
 
         const char * nombre_archivo = "pruebas/archivos_csv/pokemones_lineas_vacias.csv";
 
 	tp_aux =
 		tp1_leer_archivo(nombre_archivo);
 
-	bool cumple = son_iguales_los_tp(&tp_correcto, tp_aux);
+        if (tp_aux != NULL){
+                cumple = tp1_cantidad(tp_aux) == 5 && es_el_tp_esperado(pokemones_aux, tp_aux);
+                tp1_destruir(tp_aux);
+        }
+        
 
 	pa2m_afirmar(
 		cumple,
-		"Leer correctamente pokemones de un archivo que tiene lineas vacias");
-
-	if (tp_aux != NULL)
-                tp1_destruir(tp_aux);
-        
+		"Leer correctamente pokemones de un archivo que tiene lineas vacias");                
 }
 
 
@@ -246,11 +320,6 @@ void prueba_ignorar_pokemones_truchos()
 	pokemones_aux[3] = &pokemon_correcto_4;
 	pokemones_aux[4] = &pokemon_correcto_5;
 
-	tp1_t tp_correcto;
-
-	tp_correcto.cantidad = 5;
-	tp_correcto.pokemones = pokemones_aux;
-
 	tp1_t *tp_aux = NULL;
 
         const char * nombre_archivo = "pruebas/archivos_csv/pokemones_tramposo.csv";
@@ -258,7 +327,7 @@ void prueba_ignorar_pokemones_truchos()
 	tp_aux =
 		tp1_leer_archivo(nombre_archivo);
 
-	bool cumple = son_iguales_los_tp(&tp_correcto, tp_aux);
+	bool cumple = tp1_cantidad(tp_aux) == 5 && es_el_tp_esperado(pokemones_aux, tp_aux);
 
 	pa2m_afirmar(
 		cumple,
@@ -285,7 +354,7 @@ void pruebas_filtrar_tipo_cant()
 	bool cumple = false;
 
         if (tp_filtrado != NULL)
-                cumple = tp_filtrado->cantidad == 3;
+                cumple = tp1_cantidad(tp_filtrado)== 3;
 
 	pa2m_afirmar(
 		cumple,
@@ -306,50 +375,38 @@ void filtrar_pokemones_correctamente()
 
 	cargar_pokemon(&pokemon_correcto_1, "Magmar", TIPO_FUEG, 95, 57, 93);
 	cargar_pokemon(&pokemon_correcto_2, "Ponyta", TIPO_FUEG, 85, 55,
-		       90);
+		       -90);
 	cargar_pokemon(&pokemon_correcto_3, "Vulpix", TIPO_FUEG, 41, 40,
 		       65);
 
-	struct pokemon *pokemones_aux[3];
-
-	pokemones_aux[0] = &pokemon_correcto_1;
-	pokemones_aux[1] = &pokemon_correcto_2;
-	pokemones_aux[2] = &pokemon_correcto_3;
-
-	tp1_t tp_correcto;
-
-	tp_correcto.cantidad = 3;
-	tp_correcto.pokemones = pokemones_aux;
-
-        tp1_t *tp_aux = NULL;
+	struct pokemon *pokemones_aux[3] = {&pokemon_correcto_1, 
+                        &pokemon_correcto_2, &pokemon_correcto_3};
 
         const char * nombre_archivo = "pruebas/archivos_csv/pokemones_varios.csv";
+        
+        tp1_t *tp_aux = tp1_leer_archivo(nombre_archivo);
 
-	tp_aux = tp1_leer_archivo(nombre_archivo);
+        if (!tp_aux ){
+                printf("Se abortó la prueba por problemas de memoria.");
+                return;   
+        }
 
-        tp1_t *tp_filtrado = NULL;
+        tp1_t *tp_filtrado = tp1_filtrar_tipo(tp_aux, TIPO_FUEG);
 
-        tp_filtrado = tp1_filtrar_tipo(tp_aux, TIPO_FUEG);
+        tp1_destruir(tp_aux);
 
 	bool cumple = false;
 
-        if (tp_filtrado != NULL)
-                cumple = son_iguales_los_tp(&tp_correcto, tp_filtrado);
-
-        size_t cant_leida = 0;
-        
-        if (tp_filtrado != NULL){
-                cant_leida = tp1_con_cada_pokemon(tp_filtrado, escribir_pokemon, stdout);
+        if (tp_filtrado != NULL) {
+                cumple = (tp1_cantidad(tp_filtrado) == 3) 
+                         && es_el_tp_esperado(pokemones_aux, tp_filtrado);
+                //cant_leida = tp1_con_cada_pokemon(tp_filtrado, escribir_pokemon, stdout);
                 tp1_destruir(tp_filtrado);
-                
         }
 
         pa2m_afirmar(
 		cumple,
-		"Filtrar correctamente pokemones %d de cierto tipo en un archivo.", cant_leida);
-
-	if (tp_aux != NULL)
-                tp1_destruir(tp_aux);          
+		"Filtrar correctamente pokemones %d de cierto tipo en un archivo.");
 }
 
 
@@ -379,6 +436,13 @@ void prueba_encontrar_pokemon_nombre()
 	if (tp_aux != NULL)
                 tp1_destruir(tp_aux);    
 }
+
+
+void prueba_guardar_archivo()
+{
+        
+}
+
 
 void pruebas_unitarias_tp1_destruir()
 {
