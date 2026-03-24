@@ -197,11 +197,6 @@ char *leer_linea(FILE *archivo, bool *error_memoria, bool *termino_el_archivo)
 		return NULL;
 	}
 
-/*	if (encontramos_salto_de_linea) {
-		buffer[ocupado - 1] = '\0';
-		ocupado--;
-	}
-*/
 	char *buffer_ajustado = realloc(buffer, ocupado + 1);
 
 	if (!buffer_ajustado)
@@ -371,7 +366,10 @@ tp1_t *tp1_crear()
 
 void tp1_destruir(tp1_t *tp1)
 {
-	for (size_t i = 0; i < tp1->cantidad; i++) {
+        if (!tp1)
+                return;
+
+        for (size_t i = 0; i < tp1->cantidad; i++) {
 		free(tp1->pokemones[i]->nombre);
 		free(tp1->pokemones[i]);
 	}
