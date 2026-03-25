@@ -352,8 +352,8 @@ void pruebas_filtrar_tipo_cant()
         if (tp_aux != NULL) {
                 tp_filtrado = tp1_filtrar_tipo(tp_aux, TIPO_FUEG);
                 cumple = tp1_cantidad(tp_filtrado)== 3;
-                tp1_destruir(tp_aux);
                 tp1_destruir(tp_filtrado);
+                tp1_destruir(tp_aux);
         }
 
 	pa2m_afirmar(

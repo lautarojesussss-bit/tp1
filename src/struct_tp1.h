@@ -5,6 +5,7 @@
 typedef struct tp1 {
 	struct pokemon **pokemones;
 	size_t cantidad;
+        bool es_duenio;
 } tp1_t;
 
 #endif //STRUCT_TP1_H

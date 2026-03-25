@@ -23,17 +23,11 @@
 *segundo va antes
 */
 
-int comparar_nombres_pokemon(struct pokemon *pokemon_1,
-			     struct pokemon *pokemon_2)
-{
-	return strcasecmp(pokemon_1->nombre, pokemon_2->nombre);
-}
 
-void merge_generico(struct pokemon **pokemones, int pos_inicio, int pos_mitad,
-		    int pos_fin, bool *error_memoria,
-		    int (*f)(struct pokemon *, struct pokemon *))
+void merge_alfabetico(struct pokemon **pokemones, int pos_inicio, int pos_mitad,
+		    int pos_fin, bool *error_memoria)
 {
-	if (!pokemones || !error_memoria || !f)
+	if (!pokemones || !error_memoria)
 		return;
 
 	int i = pos_inicio;
@@ -51,7 +45,7 @@ void merge_generico(struct pokemon **pokemones, int pos_inicio, int pos_mitad,
 	}
 
 	while (i <= pos_mitad && j <= pos_fin) {
-		if (f(pokemones[i], pokemones[j]) <= 0) {
+		if (strcasecmp(pokemones[i]->nombre, pokemones[j]->nombre) <= 0) {
 			pokemones_aux[k] = pokemones[i];
 			i++;
 		} else {
@@ -80,23 +74,22 @@ void merge_generico(struct pokemon **pokemones, int pos_inicio, int pos_mitad,
 	free(pokemones_aux);
 }
 
-void merge_sort_generico(struct pokemon **pokemones, int pos_inicio,
-			 int pos_fin, bool *error_memoria,
-			 int (*f)(struct pokemon *, struct pokemon *))
+void merge_sort_alfabetico(struct pokemon **pokemones, int pos_inicio,
+			 int pos_fin, bool *error_memoria)
 {
-	if (!pokemones || !error_memoria || !f)
+	if (!pokemones || !error_memoria)
 		return;
 
 	if (pos_fin > pos_inicio) {
 		int pos_mitad = pos_inicio + (pos_fin - pos_inicio) / 2;
-		merge_sort_generico(pokemones, pos_inicio, pos_mitad,
-				    error_memoria, f);
-		merge_sort_generico(pokemones, pos_mitad + 1, pos_fin,
-				    error_memoria, f);
+		merge_sort_alfabetico(pokemones, pos_inicio, pos_mitad,
+				    error_memoria);
+		merge_sort_alfabetico(pokemones, pos_mitad + 1, pos_fin,
+				    error_memoria);
 
 		if (!(*error_memoria))
-			merge_generico(pokemones, pos_inicio, pos_mitad,
-				       pos_fin, error_memoria, f);
+			merge_alfabetico(pokemones, pos_inicio, pos_mitad,
+				       pos_fin, error_memoria);
 	}
 }
 
@@ -106,8 +99,8 @@ void ordenar_alfabeticamente(struct pokemon **pokemones, bool *error_memoria,
 	if (!pokemones || !error_memoria || cantidad < 2)
 		return;
 
-	merge_sort_generico(pokemones, 0, (int)(cantidad - 1),
-				    error_memoria, comparar_nombres_pokemon);
+	merge_sort_alfabetico(pokemones, 0, (int)(cantidad - 1),
+				    error_memoria);
 }
 
 void quitar_repetidos(struct pokemon ***pokemones, size_t *cantidad,
@@ -145,6 +138,10 @@ void quitar_repetidos(struct pokemon ***pokemones, size_t *cantidad,
 
 	pokemones[0] = pokemones_ajustado;
 }
+
+
+
+
 
 
 
@@ -276,20 +273,28 @@ struct pokemon *parsear_linea(char *linea, bool *error_memoria)
 	return pokemon_aux;
 }
 
-bool agregar_pokemon(struct pokemon ***pokemones, struct pokemon *pokemon_aux,
-		     bool *error_memoria, size_t *cantidad)
+
+
+
+
+
+
+
+
+bool agregar_pokemon(tp1_t *tp, struct pokemon *pokemon_aux,
+		     bool *error_memoria)
 {
 	struct pokemon **pokemones_aux = realloc(
-		pokemones[0], (*cantidad + 1) * sizeof(struct pokemon *));
+		tp->pokemones, ((tp->cantidad) + 1) * sizeof(struct pokemon *));
 
 	if (!pokemones_aux) {
 		*error_memoria = true;
 		return false;
 	}
 
-	pokemones[0] = pokemones_aux;
-	pokemones[0][*cantidad] = pokemon_aux;
-	(*cantidad)++;
+	tp->pokemones = pokemones_aux;
+	tp->pokemones[tp->cantidad] = pokemon_aux;
+	(tp->cantidad)++;
 
 	return true;
 }
@@ -304,32 +309,6 @@ void escribir_pokemones(tp1_t *tp1, FILE *archivo)
         
 }
 
-struct pokemon *crear_copia_pokemon(struct pokemon *pokemon,
-				    bool *error_memoria)
-{
-	if (!pokemon)
-		return NULL;
-
-	struct pokemon *pokemon_aux = malloc(sizeof(struct pokemon));
-
-	if (!pokemon_aux) {
-		*error_memoria = true;
-		return NULL;
-	}
-
-	char *nombre_aux = malloc((strlen(pokemon->nombre) + 1) * sizeof(char));
-	if (!nombre_aux) {
-		*error_memoria = true;
-		return NULL;
-	}
-
-	strcpy(nombre_aux, pokemon->nombre);
-
-	*pokemon_aux = *pokemon;
-	pokemon_aux->nombre = nombre_aux;
-
-	return pokemon_aux;
-}
 
 struct pokemon *busqueda(struct pokemon **pokemones, int pos_inicio,
 			 int pos_fin, const char *nombre)
@@ -352,7 +331,7 @@ struct pokemon *busqueda(struct pokemon **pokemones, int pos_inicio,
 
 
 
-tp1_t *tp1_crear()
+tp1_t *tp1_crear(bool es_duenio)
 {
 	tp1_t *tp1_aux = malloc(sizeof(tp1_t));
 	if (!tp1_aux)
@@ -360,6 +339,7 @@ tp1_t *tp1_crear()
 
 	tp1_aux->cantidad = 0;
 	tp1_aux->pokemones = NULL;
+        tp1_aux->es_duenio = es_duenio;
 
 	return tp1_aux;
 }
@@ -369,9 +349,14 @@ void tp1_destruir(tp1_t *tp1)
         if (!tp1)
                 return;
 
-        for (size_t i = 0; i < tp1->cantidad; i++) {
+        size_t i = 0; 
+        size_t cant = tp1->cantidad;
+        bool se_borran_p = tp1->es_duenio;
+
+        while ( se_borran_p && i < cant ) {
 		free(tp1->pokemones[i]->nombre);
 		free(tp1->pokemones[i]);
+                i++;
 	}
 
 	free(tp1->pokemones);
@@ -390,7 +375,7 @@ tp1_t *tp1_leer_archivo(const char *nombre)
 	if (!archivo)
 		return NULL;
 
-	tp1_t *tp = tp1_crear();
+	tp1_t *tp = tp1_crear(true);
 
 	if (!tp) {
                 fclose(archivo);
@@ -411,8 +396,8 @@ tp1_t *tp1_leer_archivo(const char *nombre)
 		free(linea);
 
 		if (pokemon_aux != NULL) {
-			if (!agregar_pokemon(&(tp->pokemones), pokemon_aux,
-					     &error_memoria, &(tp->cantidad))) {
+			if (!agregar_pokemon(tp, pokemon_aux,
+					     &error_memoria)) {
 				free(pokemon_aux->nombre);
 				free(pokemon_aux);
 			}
@@ -479,41 +464,31 @@ struct pokemon *tp1_buscar_orden(tp1_t *tp, int n)
 	return tp->pokemones[n - 1];
 }
 
+
+
 /**
 * Dado un tp1 y un tipo, devuelve otro tp1 conteniendo solamente los pokemons de dicho tipo.
 *
 * En caso de error devuelve NULL.
 */
+
 tp1_t *tp1_filtrar_tipo(tp1_t *un_tp, enum tipo_pokemon tipo)
 {
 	if (!un_tp)
 		return NULL;
 
-	tp1_t *tp_aux = tp1_crear();
+	tp1_t *tp_aux = tp1_crear(false);
 
 	if (!tp_aux)
 		return NULL;
 
 	bool error_memoria = false;
-	struct pokemon *pokemon_aux = NULL;
+        
 	size_t cant = un_tp->cantidad;
 
 	for (size_t i = 0; !error_memoria && i < cant; i++) {
 		if (un_tp->pokemones[i]->tipo == tipo) {
-			pokemon_aux = crear_copia_pokemon(un_tp->pokemones[i],
-							  &error_memoria);
-
-			if (pokemon_aux != NULL) {
-				if (!agregar_pokemon(&(tp_aux->pokemones),
-						     pokemon_aux,
-						     &error_memoria,
-						     &(tp_aux->cantidad))) {
-					free(pokemon_aux->nombre);
-					free(pokemon_aux);
-				}
-			}
-
-			pokemon_aux = NULL;
+                        agregar_pokemon(tp_aux, un_tp->pokemones[i],&error_memoria);
 		}
 	}
 
@@ -524,6 +499,10 @@ tp1_t *tp1_filtrar_tipo(tp1_t *un_tp, enum tipo_pokemon tipo)
 
 	return tp_aux;
 }
+
+
+
+
 
 struct pokemon *tp1_buscar_nombre(tp1_t *tp, const char *nombre)
 {
