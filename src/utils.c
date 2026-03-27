@@ -1,6 +1,5 @@
 #include "utils.h"
 #define FORMATO_ESCRITURA "%s,%s,%i,%i,%i\n"
-#include <stdio.h>
 
 const char *NOMBRES_TIPOS[] = { "ELEC", "FUEG", "PLAN", "AGUA",
 				"NORM", "FANT", "PSI",	"LUCH" };
@@ -34,4 +33,14 @@ bool es_numero_valido(const char *cadena, int *valor)
         *valor = (int)valor_convertido;
 
 	return true;
+}
+
+
+void escribir_pokemones(tp1_t *tp1, FILE *archivo)
+{
+	if (!tp1 || !archivo)
+		return;
+
+	tp1_con_cada_pokemon(tp1, escribir_pokemon, archivo);
+        
 }

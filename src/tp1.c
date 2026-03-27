@@ -147,12 +147,23 @@ void quitar_repetidos(struct pokemon ***pokemones, size_t *cantidad,
 
 
 
+char* ajustar_buffer(char* buffer, bool *error_memoria, size_t ocupado)
+{
+        char *buffer_ajustado = realloc(buffer, ocupado + 1);
+
+	if (!buffer_ajustado){
+		return buffer;
+                *error_memoria = true;
+                return NULL;
+        }
+	return buffer_ajustado;
+}
+
 
 
 char *leer_linea(FILE *archivo, bool *error_memoria, bool *termino_el_archivo)
 {
-	if (!archivo || !error_memoria || !termino_el_archivo 
-                || *error_memoria || *termino_el_archivo)
+	if (!archivo || !error_memoria || !termino_el_archivo)
 		return NULL;
 
 	size_t tamanio_buffer = TAMANIO_INICIAL;
@@ -194,12 +205,7 @@ char *leer_linea(FILE *archivo, bool *error_memoria, bool *termino_el_archivo)
 		return NULL;
 	}
 
-	char *buffer_ajustado = realloc(buffer, ocupado + 1);
-
-	if (!buffer_ajustado)
-		return buffer;
-
-	return buffer_ajustado;
+        return ajustar_buffer(buffer, error_memoria, ocupado);
 }
 
 
@@ -299,15 +305,6 @@ bool agregar_pokemon(tp1_t *tp, struct pokemon *pokemon_aux,
 	return true;
 }
 
-
-void escribir_pokemones(tp1_t *tp1, FILE *archivo)
-{
-	if (!tp1 || !archivo)
-		return;
-
-	tp1_con_cada_pokemon(tp1, escribir_pokemon, archivo);
-        
-}
 
 
 struct pokemon *busqueda(struct pokemon **pokemones, int pos_inicio,
