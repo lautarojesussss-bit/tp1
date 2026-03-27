@@ -29,7 +29,6 @@ void imprimir_tp_por_tipo(tp1_t *tp)
         }
 }
 
-
 int main(int argc, char const *argv[])
 {
         if (argc != CANT_ARGUMENTOS){
