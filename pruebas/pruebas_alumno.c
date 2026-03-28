@@ -426,6 +426,32 @@ void prueba_encontrar_pokemon_nombre()
                 tp1_destruir(tp_aux);    
 }
 
+void prueba_buscar_nombre_mal_escrito()
+{
+        struct pokemon pokemon_correcto_1;
+	cargar_pokemon(&pokemon_correcto_1, "Vulpix", TIPO_FUEG, 41, 40,
+		       65);
+
+        tp1_t *tp_aux = NULL;
+        struct pokemon *buscado = NULL;
+        bool cumple = false;
+        const char * nombre_archivo = "pruebas/archivos_csv/pokemones_varios.csv";
+
+	tp_aux = tp1_leer_archivo(nombre_archivo);
+
+        if (tp_aux != NULL)
+                buscado = tp1_buscar_nombre(tp_aux, "VULpix");
+
+        if (buscado != NULL)
+                cumple = es_el_mismo_pokemon(&pokemon_correcto_1, buscado);
+
+	pa2m_afirmar(
+		cumple,
+		"Encontrar correctamente un pokemón por nombre aunque esté mal escrito.");
+
+	if (tp_aux != NULL)
+                tp1_destruir(tp_aux);         
+}
 
 void prueba_guardar_archivo()
 {
@@ -522,6 +548,7 @@ void pruebas_unitarias_filtrar()
 void pruebas_unitarias_buscar_nombre()
 {
         prueba_encontrar_pokemon_nombre();
+        prueba_buscar_nombre_mal_escrito();
 }
 
 void pruebas_escribir_archivo()
