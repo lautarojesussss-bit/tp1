@@ -109,62 +109,12 @@ void ordenar_alfabeticamente(struct pokemon **pokemones, bool *error_memoria,
 				    error_memoria);
 }
 
-void limpiar_clasificar(struct pokemon ***pokemones, size_t *cantidad,
-		      bool *error_memoria)
-{
-	if (!pokemones || !cantidad || !error_memoria || *cantidad < 2)
-		return;
-
-	size_t i = 1;
-	size_t j = 0;
-
-	size_t cant_original = *cantidad;
-
-	while (i < cant_original && j < cant_original - 1) {
-		if (strcasecmp(pokemones[0][i]->nombre,
-			       pokemones[0][j]->nombre) == 0) {
-			free(pokemones[0][i]->nombre);
-			free(pokemones[0][i]);
-		} else {
-			pokemones[0][j + 1] = pokemones[0][i];
-                        //acá debería agregar lo de que se actualiza el contador
-                        //y se agrega el pokemon en donde corresponde 
-			j++;
-		}
-		i++;
-	}
-
-	*cantidad = (j + 1);
-
-	struct pokemon **pokemones_ajustado =
-		realloc(pokemones[0], (j + 1) * sizeof(struct pokemon *));
-
-	if (!pokemones_ajustado) {
-		*error_memoria = true;
-		return;
-	}
-
-	pokemones[0] = pokemones_ajustado;
-}
 
 
 
-void *ajustar_buffer_2(void* buffer, bool *error_memoria, size_t ocupado)
+void *ajustar_buffer(void* buffer, bool *error_memoria, size_t ocupado)
 {
         void *buffer_ajustado = realloc(buffer, ocupado);
-
-	if (!buffer_ajustado){
-                *error_memoria = true;
-                return NULL;
-        }
-	return buffer_ajustado;
-}
-
-
-
-char* ajustar_buffer(char* buffer, bool *error_memoria, size_t ocupado)
-{
-        char *buffer_ajustado = realloc(buffer, ocupado);
 
 	if (!buffer_ajustado){
                 *error_memoria = true;
@@ -221,7 +171,7 @@ char *leer_linea(FILE *archivo, bool *error_memoria, bool *termino_el_archivo)
 		return NULL;
 	}
 
-        char* buffer_ajustado = ajustar_buffer_2(buffer, error_memoria, (ocupado +1)* sizeof(char));
+        char* buffer_ajustado = ajustar_buffer(buffer, error_memoria, (ocupado +1)* sizeof(char));
 
         return buffer_ajustado;
 }
@@ -411,9 +361,11 @@ void limpiar_y_contar(tp1_t *tp,
 	if (!tp || !error_memoria || tp->cantidad_total == 0)
 		return;
 
-	size_t i = 1;
-	size_t j = 0;
+
         tp->cant_tipos[tp->pokemones_nombre[0]->tipo]++;
+
+        size_t i = 1;
+	size_t j = 0;
 
 	size_t cant_original = tp->cantidad_total;
 
@@ -435,16 +387,9 @@ void limpiar_y_contar(tp1_t *tp,
 
 	tp->cantidad_total = (j + 1);
 
-	struct pokemon **pokemones_ajustado =
-		realloc(tp->pokemones_nombre, (j + 1) * sizeof(struct pokemon *));
-
-	if (!pokemones_ajustado) {
-		*error_memoria = true;
-		return;
-	}
+        struct pokemon **pokemones_ajustado = ajustar_buffer(tp->pokemones_nombre, error_memoria,(j + 1) * sizeof(struct pokemon *));
 
 	tp->pokemones_nombre = pokemones_ajustado;
-        
 }
 
 
