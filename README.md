@@ -73,8 +73,6 @@ Cuando el vector llega a su máximo el programa procede a escalarlo con un facto
 ## 3. Estructura
 Explicar cómo se implementó la/s estructura/s pedida/s en el [enunciado](./ENUNCIADO.md). En esta sección el objetivo es explicar en líneas generales, no técnicas, qué contiene la estructura, para qué y por qué.
 
-## 3. Estructura (EJEMPLO)
-Para implementar la estructura decidí hacerlo con un campo..., además tiene un puntero que... y eso permite que....
 
 ### 3.1. Diagrama de memoria
 Realizar un diagrama de memoria de la estructura de memoria durante la ejecución del programa, esto debe incluir el stack y el heap con las estructuras contenidas en ellos.

@@ -31,7 +31,7 @@ valgrind: $(EJEC)
 	valgrind $(VFLAGS) ./$(EJEC)
 
 valgrind-main: $(EJEC_MAIN)
-	valgrind $(VFLAGS) ./$(EJEC_MAIN) 5pokemones.csv mostrar tipo
+	valgrind $(VFLAGS) ./$(EJEC_MAIN) 5pokemones.csv buscar PIKACHU
 
 format:
 	clang-format -style=file -i main.c src/*.c pruebas/*.c

@@ -7,27 +7,21 @@
 
 #include "utils.h"
 
-typedef struct tp1 {
-	struct pokemon **pokemones_nombre;
-        struct pokemon **pokemones_tipo[8];
-	size_t cantidad_total;
-        bool es_duenio;
-        size_t cant_tipos[8];
-} tp1_t;
-
 #define TAMANIO_INICIAL 101
 #define CANT_DATOS 5
 #define SEPARADOR ','
 #define CANT_TIPOS 8
 #define FORMATO_ESCRITURA "%s,%s,%i,%i,%i\n"
+#define CANT_METRICAS 3
 
+typedef struct tp1 {
+	struct pokemon **pokemones_nombre;
+        struct pokemon **pokemones_tipo[CANT_TIPOS];
+	size_t cantidad_total;
+        bool es_duenio;
+        size_t cant_tipos[CANT_TIPOS];
+} tp1_t;
 
-/*
-*PRE: pokemon_1 y pokemon_2 deben estar inicializados con strings en sus campos nombre
-*POST: Devuelve 0 si tienen el mismo nombre los pokemones
-*< 0 si el pokemon_1 va antes por orden alfabetico y >0 si 
-*segundo va antes
-*/
 
 
 void merge_alfabetico(struct pokemon **pokemones, int pos_inicio, int pos_mitad,
@@ -210,7 +204,7 @@ struct pokemon *parsear_linea(char *linea, bool *error_memoria)
 	pokemon_aux->nombre = NULL;
 
 	int tipo = -1;
-	int metricas[3] = { -1, -1, -1 };
+	int metricas[CANT_METRICAS] = { -1, -1, -1 };
 
 	struct vector *v = split(linea, SEPARADOR);
 
@@ -250,14 +244,14 @@ struct pokemon *parsear_linea(char *linea, bool *error_memoria)
 
 
 
-bool agregar_pokemon_2(struct pokemon ***pokemones, struct pokemon *pokemon_aux,
+bool agregar_pokemon(struct pokemon ***pokemones, struct pokemon *pokemon_aux,
 		     bool *error_memoria, size_t *cantidad, size_t *tam_buffer)
 {
         size_t nuevo_tam = 0; 
 
         if (*tam_buffer == *cantidad) {
 
-                nuevo_tam = (*cantidad == 0) ? *tam_buffer : *tam_buffer*2;
+                nuevo_tam = (*tam_buffer == 0) ? 2 : *tam_buffer*2;
                 struct pokemon **pokemones_aux = realloc(
                         pokemones[0], nuevo_tam * sizeof(struct pokemon *));
 
@@ -279,24 +273,6 @@ bool agregar_pokemon_2(struct pokemon ***pokemones, struct pokemon *pokemon_aux,
 
 
 
-bool agregar_pokemon(struct pokemon ***pokemones, struct pokemon *pokemon_aux,
-		     bool *error_memoria, size_t *cantidad)
-{
-	struct pokemon **pokemones_aux = realloc(
-		pokemones[0], ((*cantidad) + 1) * sizeof(struct pokemon *));
-
-	if (!pokemones_aux) {
-		*error_memoria = true;
-		return false;
-	}
-
-	pokemones[0] = pokemones_aux;
-
-	pokemones[0][*cantidad] = pokemon_aux;
-	(*cantidad)++;
-
-	return true;
-}
 
 
 
@@ -395,6 +371,10 @@ void limpiar_y_contar(tp1_t *tp,
 
 void clasificar_por_tipo(tp1_t *tp, bool *error_memoria)
 {
+        if (!tp)
+                return;
+        
+
         for (size_t i = 0; !(*error_memoria) && i < CANT_TIPOS; i++) {
                 tp->pokemones_tipo[i] = malloc(tp->cant_tipos[i] * sizeof(struct pokemon *));
                 tp->cant_tipos[i] = 0;
@@ -439,6 +419,7 @@ tp1_t *tp1_leer_archivo(const char *nombre)
 	bool error_memoria = false;
 	bool termino_el_archivo = false;
 	struct pokemon *pokemon_aux = NULL;
+        size_t tam_buffer = 0;
 
 	while (!error_memoria && !termino_el_archivo) {
 		char *linea = leer_linea(archivo, &error_memoria,
@@ -451,7 +432,7 @@ tp1_t *tp1_leer_archivo(const char *nombre)
 
 		if (pokemon_aux != NULL) {
 			if (!agregar_pokemon(&(tp->pokemones_nombre), pokemon_aux,
-					     &(error_memoria), &(tp->cantidad_total))) {
+					     &(error_memoria), &(tp->cantidad_total), &tam_buffer)) {
 				free(pokemon_aux->nombre);
 				free(pokemon_aux);
 			}
@@ -518,7 +499,7 @@ tp1_t *tp1_guardar_archivo(tp1_t *tp1, const char *nombre)
 */
 struct pokemon *tp1_buscar_orden(tp1_t *tp, int n)
 {
-	if (n > tp->cantidad_total)
+	if (!tp || n > tp->cantidad_total)
 		return NULL;
 
 	return tp->pokemones_nombre[n - 1];
