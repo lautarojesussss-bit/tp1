@@ -397,6 +397,33 @@ void clasificar_por_tipo(tp1_t *tp, bool *error_memoria)
 }
 
 
+void cargar_en_bruto(tp1_t *tp, FILE* archivo, bool* error_memoria)
+{
+	bool termino_el_archivo = false;
+	struct pokemon *pokemon_aux = NULL;
+        size_t tam_buffer = 0;
+
+	while ((!*error_memoria) && !termino_el_archivo) {
+		char *linea = leer_linea(archivo, error_memoria,
+					 &termino_el_archivo);
+
+		if (linea != NULL)
+			pokemon_aux = parsear_linea(linea, error_memoria);
+
+		free(linea);
+
+		if (pokemon_aux != NULL) {
+			if (!agregar_pokemon(&(tp->pokemones_nombre), pokemon_aux,
+					     (error_memoria), &(tp->cantidad_total), &tam_buffer)) {
+				free(pokemon_aux->nombre);
+				free(pokemon_aux);
+			}
+		}
+		pokemon_aux = NULL;
+	}
+}
+
+
 /**
  * Lee el archivo indicado y devuelve la estructura tp1 con los pokemones.
  * En caso de error devuelve NULL.
@@ -417,28 +444,8 @@ tp1_t *tp1_leer_archivo(const char *nombre)
         }
 
 	bool error_memoria = false;
-	bool termino_el_archivo = false;
-	struct pokemon *pokemon_aux = NULL;
-        size_t tam_buffer = 0;
 
-	while (!error_memoria && !termino_el_archivo) {
-		char *linea = leer_linea(archivo, &error_memoria,
-					 &termino_el_archivo);
-
-		if (linea != NULL)
-			pokemon_aux = parsear_linea(linea, &error_memoria);
-
-		free(linea);
-
-		if (pokemon_aux != NULL) {
-			if (!agregar_pokemon(&(tp->pokemones_nombre), pokemon_aux,
-					     &(error_memoria), &(tp->cantidad_total), &tam_buffer)) {
-				free(pokemon_aux->nombre);
-				free(pokemon_aux);
-			}
-		}
-		pokemon_aux = NULL;
-	}
+        cargar_en_bruto(tp, archivo, &error_memoria);
 
 	fclose(archivo);
 
@@ -446,7 +453,6 @@ tp1_t *tp1_leer_archivo(const char *nombre)
                 ordenar_alfabeticamente(tp->pokemones_nombre, &error_memoria, tp->cantidad_total);
         
         if(!error_memoria)
-
                 limpiar_y_contar(tp, &error_memoria);
 
         if (!error_memoria) {
