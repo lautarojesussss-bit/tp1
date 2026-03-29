@@ -575,8 +575,9 @@ size_t tp1_con_cada_pokemon(tp1_t *un_tp, bool (*f)(struct pokemon *, void *),
 {
         bool seguimos = true;
         size_t i = 0;
+        size_t cant = un_tp->cantidad_total;
         
-        for (; seguimos && i < un_tp->cantidad_total ; i++)
+        for (; seguimos && i < cant ; i++)
                 seguimos = f(un_tp->pokemones_nombre[i], extra);
         
         return i;
