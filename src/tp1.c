@@ -315,9 +315,9 @@ void tp1_destruir(tp1_t *tp1)
 
         size_t i = 0; 
         size_t cant = tp1->cantidad_total;
-        bool se_borran_p = tp1->es_duenio;
+        bool es_duenio = tp1->es_duenio;
 
-        while ( se_borran_p && i < cant ) {
+        while ( es_duenio && i < cant ) {
 		free(tp1->pokemones_nombre[i]->nombre);
 		free(tp1->pokemones_nombre[i]);
                 i++;
