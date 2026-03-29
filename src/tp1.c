@@ -455,10 +455,8 @@ tp1_t *tp1_leer_archivo(const char *nombre)
         if(!error_memoria)
                 limpiar_y_contar(tp, &error_memoria);
 
-        if (!error_memoria) {
+        if (!error_memoria)
                 clasificar_por_tipo(tp, &error_memoria);
-        }
-        
 
 	if (error_memoria) {
 		tp1_destruir(tp);
