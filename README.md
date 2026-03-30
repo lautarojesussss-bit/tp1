@@ -4,19 +4,14 @@
 
 # TP
 
-> [!IMPORTANT]
-> Esto es una plantilla del informe donde cada sección está delimitada por su título. Se recomienda mantener las secciones y tomar los ejemplos de las mismas para hacer el informe. El contenido de las secciones y comentarios como este deben ser eliminados del informe presentado.
 
 ## Información del estudiante
 
-* (Nombre y Apellido)
-* (Padrón)
-* (Mail)
+* Lautaro Jesús Duarte Vera
+* 114088
+* lautarojesussss@gmai.com
 
 ---
-
-> [!WARNING]
-> Tener en cuenta que el informe se solicita en el ámbito universitario; el texto debe ser coherente, gramatical y ortográficamente correcto y con vocabulario adecuado para dicho contexto.
 
 ## Índice
 * [1. Instrucciones](#1-Instrucciones)
@@ -37,17 +32,17 @@
 
 ### 1.1. Compilar el proyecto
 ```bash
-comando
+make
 ```
 
 ### 1.2. Ejecutar las pruebas
 ```bash
-comando
+make run
 ```
 
 ### 1.3. Ejecutar el programa con Valgrind
 ```bash
-comando
+make valgrind-main
 ```
 
 ## 2. Funcionamiento
@@ -56,10 +51,13 @@ Explicar **qué** hace el TP implementado, aclarando todas las decisiones de fun
 > [!IMPORTANT]
 > Es muy importante entender la *diferencia entre qué y cómo*. En esta sección **NO** se busca una explicación de cómo implementaste el programa, qué funciones usaste, en qué línea, etc.; se busca una explicación de **qué** es lo que hace el programa en líneas generales.
 
-Se debe incluir todos los diagramas que sean necesarios para explicar el funcionamiento del programa. Las estructuras deberán ser explicadas con diagramas de memoria. Los diagramas pedidos en el enunciado pueden ser colocados en esta sección, pero recordá indicarlo en la sección de respuestas.
+El tp1_t y sus primitivas funciona para guardar y consultar información de diferentes pokemones, para eso decidí usar un vector de punteros a struct pokemon que los tenga ordenados por orden alfabético y un arreglo de arreglos de punteros que tengan cada uno solo a los de un tipo (ELEC, FUEG, NORM etc etc) y tengo los respectivos topes de todos los vectores y una variable booleana para saber si al destruir un tp1_t debo liberar también a los pokemones o solamente los punteros que este tp1_t tenía a ellos.
+El grueso del trabajo ocurre en la función tp1_leer_archivo, ahí me encargo de leer los archivos, validar las lineas, crear y cargar los struct pokemon, ordenarlos por orden alfabético, quitar los repetidos, contar los pokemones por tipo y finalmente ordenar a los pokemones por su tipo.
+Para la carga en bruto de los punteros a los pokemones use complejidad amortizada, así evitaba que tp1_leer_archivo fuese O(n cuadarado) por los reallocs, y para el orden alfabético uso merge sort y strcasecmp (que no diferencia entre mayúscula y minúscula), hago dos pasadas distintas luego, una para ir quitando los repetidos y contabilizar los únicos en función de su tipo, y otra para ir acomodando copias de los punteros en los arreglos que están dedicados a un solo tipo de pokemones, podría haberlo hecho con una sola pasada esas dos cosas pero ví que quedaba demasiado confuso el código, y como al final agregar otra pasada no aumenta la complejidad asíntotica de la función decidí separarlo en dos iteraciones diferentes.
+En la función tp1_buscar_nombre utilice busqueda binaria para hacer que la complejidad asintotica de la función no fuese lineal sino logaritmica, aprovechando que tengo el vector pokemones_nombre que los tiene ordenados alfabéticamente.
+ 
 
-> [!WARNING]
-> Es importante usar diagramas para explicar los conceptos de forma clara, pero el exceso será negativo. Los diagramas deben tener un fin explicativo y, por lo general, sirven para reemplazar uno o múltiples párrafos de explicación.
+
 
 ## 2. Funcionamiento (EJEMPLO)
 El programa recibe 7 números del usuario y una vez obtenidos todos los muestra en pantalla. Para esto define un vector estático de 7 elementos y llena el mismo con los datos que inserta el usuario; cuando termina de insertar todos los números procede a imprimirlos en pantalla.
@@ -77,9 +75,8 @@ Explicar cómo se implementó la/s estructura/s pedida/s en el [enunciado](./ENU
 ### 3.1. Diagrama de memoria
 Realizar un diagrama de memoria de la estructura de memoria durante la ejecución del programa, esto debe incluir el stack y el heap con las estructuras contenidas en ellos.
 
-### 3.1 Diagrama de memoria (EJEMPLO)
 <div align="center">
-  <img src="img/diagrama_memoria__1.svg" width="70%">
+  <img src="img/diagramas/struct_tp1_t_3.svg" width="70%">
   <p>Diagrama de memoria de la estructura.</p>
 </div>
 
