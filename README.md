@@ -46,6 +46,39 @@ make valgrind-main
 
 El tp1_t y sus primitivas funciona para guardar y consultar información de diferentes pokemones, después de cargar un tp1 con pokemones de un archivo se puede consultar sobre un pokemon dando su nombre o su posición por orden alfabético, y también consultar por varios pokemones dando el tipo que se quiere obtener; se le puede aplicar cambios a los pokemones del tp1_t usando el iterador interno tp1_con_cada_pokemon, y se puede consultar la cantidad total de pokemones en un tp1.
 
+<div align="center">
+  <img src="img/diagramas/tp1_leer_archivo.svg" width="70%">
+  <p>Diagrama de memoria de la estructura.</p>
+</div>
+<div align="center">
+  <img src="img/diagramas/tp1_cantidad.svg" width="70%">
+  <p>Diagrama de memoria de la estructura.</p>
+</div>
+<div align="center">
+  <img src="img/diagramas/tp1_guardar_archivo.svg" width="70%">
+  <p>Diagrama de memoria de la estructura.</p>
+</div>
+<div align="center">
+  <img src="img/diagramas/tp1_filtrar_tipo.svg" width="70%">
+  <p>Diagrama de memoria de la estructura.</p>
+</div>
+<div align="center">
+  <img src="img/diagramas/tp1_buscar_nombre.svg" width="70%">
+  <p>Diagrama de memoria de la estructura.</p>
+</div>
+<div align="center">
+  <img src="img/diagramas/tp1_buscar_orden.svg" width="70%">
+  <p>Diagrama de memoria de la estructura.</p>
+</div>
+<div align="center">
+  <img src="img/diagramas/tp1_con_cada_pokemon.svg width="70%">
+  <p>Diagrama de memoria de la estructura.</p>
+</div>
+<div align="center">
+  <img src="img/diagramas/tp1_destruir.svg" width="70%">
+  <p>Diagrama de memoria de la estructura.</p>
+</div>
+
 
 
 ## 3. Estructura
