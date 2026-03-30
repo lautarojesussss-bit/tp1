@@ -48,35 +48,35 @@ El tp1_t y sus primitivas funciona para guardar y consultar información de dife
 
 <div align="center">
   <img src="img/diagramas/tp1_leer_archivo.svg" width="70%">
-  <p>Diagrama de memoria de la estructura.</p>
+  <p>Diagrama de flujo de tp1_leer_archivo.</p>
 </div>
 <div align="center">
   <img src="img/diagramas/tp1_cantidad.svg" width="70%">
-  <p>Diagrama de memoria de la estructura.</p>
+  <p>Diagrama de flujo tp1_cantidad.</p>
 </div>
 <div align="center">
   <img src="img/diagramas/tp1_guardar_archivo.svg" width="70%">
-  <p>Diagrama de memoria de la estructura.</p>
+  <p>Diagrama de flujo de tp1_guardar_archivo.</p>
 </div>
 <div align="center">
   <img src="img/diagramas/tp1_filtrar_tipo.svg" width="70%">
-  <p>Diagrama de memoria de la estructura.</p>
+  <p>Diagrama de flujo de tp1_filtrar_tipo.</p>
 </div>
 <div align="center">
   <img src="img/diagramas/tp1_buscar_nombre.svg" width="70%">
-  <p>Diagrama de memoria de la estructura.</p>
+  <p>Diagrama de flujo de tp1_buscar_nombre.</p>
 </div>
 <div align="center">
   <img src="img/diagramas/tp1_buscar_orden.svg" width="70%">
-  <p>Diagrama de memoria de la estructura.</p>
+  <p>Diagrama de flujo de tp1_buscar_orden.</p>
 </div>
 <div align="center">
   <img src="img/diagramas/tp1_con_cada_pokemon.svg width="70%">
-  <p>Diagrama de memoria de la estructura.</p>
+  <p>Diagrama de flujo de tp1_con_cada_pokemon.</p>
 </div>
 <div align="center">
   <img src="img/diagramas/tp1_destruir.svg" width="70%">
-  <p>Diagrama de memoria de la estructura.</p>
+  <p>Diagrama de flujo de tp1_destruir.</p>
 </div>
 
 
