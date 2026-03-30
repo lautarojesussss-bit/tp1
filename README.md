@@ -80,32 +80,24 @@ El tp1_t y sus primitivas funciona para guardar y consultar información de dife
 </div>
 
 
-
 ## 3. Estructura
-Para eso decidí usar un vector de punteros a struct pokemon que los tenga ordenados por orden alfabético y un arreglo de arreglos de punteros que tengan cada uno solo a los de un tipo (ELEC, FUEG, NORM etc etc) y tengo los respectivos topes de todos los vectores y una variable booleana para saber si al destruir un tp1_t debo liberar también a los pokemones o solamente los punteros que este tp1_t tenía a ellos.
+Para el tp1_t decidí usar un vector de punteros a struct pokemon que los tenga ordenados por orden alfabético y un arreglo de arreglos de punteros que tengan cada uno solo a los punteros a pokemones de un tipo (ELEC, FUEG, NORM etc etc), y tengo los respectivos topes de todos los vectores además de una variable booleana para saber si al destruir un tp1_t debo liberar también a los pokemones o solamente los punteros que este tp1_t tenía hacia ellos.
 
 
 ### 3.1. Diagrama de memoria
 
 <div align="center">
   <img src="img/diagramas/struct_tp1_t_3.svg" width="70%">
-  <p>Diagrama de memoria de la estructura.</p>
+  <p>Diagrama de memoria de tp1_t.</p>
 </div>
 
 
 ### 3.2. Análisis de complejidades
-Explicar las complejidades de las diversas funciones que se implementaron en el programa. Esto debe incluir al menos a las funciones de la interfaz (el .h) del programa. Además, se debe ofrecer una justificación de la complejidad, es decir, por qué es esa la complejidad Big-O y no otra.
-
-### 3.2. Análisis de complejidades (EJEMPLO 1)
-En el programa tenemos funciones auxiliares y funciones principales (las que van en el .h). Respecto a estas funciones podemos analizar que:
-* `fun1` tiene una complejidad de $O(1)$ ya que tiene como parámetro... y, al leer una línea....
-* `fun2` tiene una complejidad de $O(n)$ ya que tiene como parámetro..., la cual....
-* `fun3` tiene una complejidad de $O(n^2)$ ya que tiene como parámetro... y se encarga de....
 
 ### 3.2. Análisis de complejidades (EJEMPLO 2)
 |      Función      |Complejidad|                 Justificación                  |
 |:-----------------:|:---------:|:----------------------------------------------:|
-|      `fun1`       |  $O(1)$   |Tiene como parámetro... y, al leer una línea....|
+| `tp1_cantidad`       |  $O(1)$   |Independientemente de la cantidad de punteros que tengan los arreglos del tp1_t sacar la cantidad total es simplemente consultar el campo size_t cantidad_total y nada más, es decir, es de complejidad asintotica constante.|
 |      `fun2`       |  $O(n)$   |Tiene como parámetro..., la cual....            |
 |      `fun3`       |  $O(n^2)$ |Tiene como parámetro... y se encarga de....     |
 
