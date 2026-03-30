@@ -71,7 +71,7 @@ El tp1_t y sus primitivas funciona para guardar y consultar información de dife
   <p>Diagrama de flujo de tp1_buscar_orden.</p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_con_cada_pokemon.svg width="70%">
+  <img src="img/diagramas/tp1_con_cada_pokemon.svg width="100%">
   <p>Diagrama de flujo de tp1_con_cada_pokemon.</p>
 </div>
 <div align="center">
