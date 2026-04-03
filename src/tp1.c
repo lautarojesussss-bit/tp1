@@ -19,7 +19,6 @@ struct tp1 {
 	size_t cant_tipos[CANT_TIPOS];
 };
 
-
 void merge_alfabetico(struct pokemon **pokemones, int pos_inicio, int pos_mitad,
 		      int pos_fin, bool *error_memoria)
 {
@@ -101,8 +100,7 @@ void ordenar_alfabeticamente(struct pokemon **pokemones, bool *error_memoria,
 
 void *ajustar_buffer(void *buffer, bool *error_memoria, size_t ocupado)
 {
-
-        void *buffer_ajustado = realloc(buffer, ocupado);
+	void *buffer_ajustado = realloc(buffer, ocupado);
 
 	if (!buffer_ajustado) {
 		*error_memoria = true;
@@ -259,17 +257,15 @@ bool agregar_pokemon(struct pokemon ***pokemones, struct pokemon *pokemon_aux,
 struct pokemon *busqueda(struct pokemon **pokemones, int pos_inicio,
 			 int pos_fin, const char *nombre)
 {
-        if (pos_fin < pos_inicio)
+	if (pos_fin < pos_inicio)
 		return NULL;
 
-
-        int centro = pos_inicio + ((pos_fin - pos_inicio) / 2);
+	int centro = pos_inicio + ((pos_fin - pos_inicio) / 2);
 
 	int comparacion = strcasecmp(nombre, pokemones[centro]->nombre);
 
 	if (comparacion == 0)
 		return pokemones[centro];
-
 
 	if (comparacion < 0)
 		return busqueda(pokemones, pos_inicio, centro - 1, nombre);
@@ -374,10 +370,10 @@ void clasificar_por_tipo(tp1_t *tp, bool *error_memoria)
 
 void cargar_en_bruto(tp1_t *tp, FILE *archivo, bool *error_memoria)
 {
-        if(!tp || !archivo || !error_memoria)
-                return;
+	if (!tp || !archivo || !error_memoria)
+		return;
 
-        bool termino_el_archivo = false;
+	bool termino_el_archivo = false;
 	struct pokemon *pokemon_aux = NULL;
 	size_t tam_buffer = 0;
 
@@ -522,8 +518,8 @@ struct pokemon *crear_copia_pokemon(struct pokemon *p, bool *error_memoria)
 bool cargar_copias(tp1_t *tp_dst, struct pokemon **src, size_t cant,
 		   enum tipo_pokemon tipo)
 {
-        if (!tp_dst || !src)
-                return false;
+	if (!tp_dst || !src)
+		return false;
 
 	bool error_memoria = false;
 	struct pokemon *pokemon_copia = NULL;
@@ -558,8 +554,7 @@ tp1_t *tp1_filtrar_tipo(tp1_t *un_tp, enum tipo_pokemon tipo)
 
 	size_t cant = un_tp->cant_tipos[tipo];
 
-	struct pokemon **pokemenes_aux =
-		calloc(cant , sizeof(struct pokemon *));
+	struct pokemon **pokemenes_aux = calloc(cant, sizeof(struct pokemon *));
 
 	if (!pokemenes_aux) {
 		tp1_destruir(tp_aux);
@@ -567,7 +562,7 @@ tp1_t *tp1_filtrar_tipo(tp1_t *un_tp, enum tipo_pokemon tipo)
 	}
 
 	struct pokemon **pokemones_tipo_aux =
-		calloc(cant , sizeof(struct pokemon *));
+		calloc(cant, sizeof(struct pokemon *));
 
 	if (!pokemones_tipo_aux) {
 		free(pokemenes_aux);

@@ -114,7 +114,7 @@ $$f(N) = 3N - 2$$
 3. Por lo tanto, podemos afirmar que:
 $$3N - 2 \in O(N)$$
 
-Concluyendo que la función `cargar_en_bruto` tiene una complejidad temporal **$O(N)$ amortizada**.
+Concluyendo que la función `cargar_en_bruto` tiene una complejidad temporal **$O(N)$ amortizada**. |
 
  Limpiar_y_contar es lineal, clasificar_por_tipo es lineal, ordenar_alfabeticamente tiene complejidad asintotica n(log(n)) porque uso merge_sort, carga_en_bruto tiene complejidad asontotica lineal, porque uso compejidad amortizada, como impera el término de mayor orden asintotico en la función polinomial, tp1_leer_archivo es de complejidad asontica n.log(n) .|
 

@@ -4,19 +4,17 @@
 const char *NOMBRES_TIPOS[] = { "ELEC", "FUEG", "PLAN", "AGUA",
 				"NORM", "FANT", "PSI",	"LUCH" };
 
-
 bool escribir_pokemon(struct pokemon *pokemon, void *archivo)
 {
-        if(!pokemon || !archivo ||!(pokemon->nombre))
-                return false;
+	if (!pokemon || !archivo || !(pokemon->nombre))
+		return false;
 
-        fprintf(archivo, FORMATO_ESCRITURA, pokemon->nombre,
-        NOMBRES_TIPOS[pokemon->tipo], pokemon->ataque,
-        pokemon->defensa, pokemon->velocidad);
+	fprintf(archivo, FORMATO_ESCRITURA, pokemon->nombre,
+		NOMBRES_TIPOS[pokemon->tipo], pokemon->ataque, pokemon->defensa,
+		pokemon->velocidad);
 
-        return true;
-}   
-
+	return true;
+}
 
 bool es_numero_valido(const char *cadena, int *valor)
 {
@@ -24,18 +22,17 @@ bool es_numero_valido(const char *cadena, int *valor)
 		return false;
 
 	char *endptr;
-        long valor_convertido = 0;
+	long valor_convertido = 0;
 
 	valor_convertido = strtol(cadena, &endptr, 10);
 
 	if (cadena == endptr || *endptr != '\0')
 		return false;
 
-        *valor = (int)valor_convertido;
+	*valor = (int)valor_convertido;
 
 	return true;
 }
-
 
 void escribir_pokemones(tp1_t *tp1, FILE *archivo)
 {
@@ -43,65 +40,64 @@ void escribir_pokemones(tp1_t *tp1, FILE *archivo)
 		return;
 
 	tp1_con_cada_pokemon(tp1, escribir_pokemon, archivo);
-        
 }
-
 
 void vector_destruir(struct vector *vector)
 {
-        if (!vector)
-                return;
+	if (!vector)
+		return;
 
-        size_t cant_palabras = vector->cantidad;
+	size_t cant_palabras = vector->cantidad;
 
-        for (size_t i = 0; i < cant_palabras; i++)
-                free(vector->palabras[i]);
+	for (size_t i = 0; i < cant_palabras; i++)
+		free(vector->palabras[i]);
 
-        free(vector->palabras);
-        free(vector);
+	free(vector->palabras);
+	free(vector);
 }
 
-bool cargar_subpalabra(struct vector *vector_destino, char *fuente, size_t pos_inicio, size_t pos_final)
+bool cargar_subpalabra(struct vector *vector_destino, char *fuente,
+		       size_t pos_inicio, size_t pos_final)
 {
-        if (!vector_destino || !(vector_destino->palabras) || !fuente || pos_final < pos_inicio)
-                return false;
-        
-        size_t largo_subpalabra = pos_final - pos_inicio;
+	if (!vector_destino || !(vector_destino->palabras) || !fuente ||
+	    pos_final < pos_inicio)
+		return false;
 
-        char *subpalabra_aux = malloc((largo_subpalabra +1)* sizeof(char));
-        
-        if(!subpalabra_aux)
-                return false;
+	size_t largo_subpalabra = pos_final - pos_inicio;
 
-        memcpy(subpalabra_aux, fuente + pos_inicio, largo_subpalabra);
+	char *subpalabra_aux = malloc((largo_subpalabra + 1) * sizeof(char));
 
-        subpalabra_aux[largo_subpalabra] = '\0';
+	if (!subpalabra_aux)
+		return false;
 
-        vector_destino->palabras[vector_destino->cantidad] = subpalabra_aux;
-        vector_destino->cantidad++;
+	memcpy(subpalabra_aux, fuente + pos_inicio, largo_subpalabra);
 
-        return true;
+	subpalabra_aux[largo_subpalabra] = '\0';
+
+	vector_destino->palabras[vector_destino->cantidad] = subpalabra_aux;
+	vector_destino->cantidad++;
+
+	return true;
 }
 
 struct vector *crear_vector_para_n_palabras(size_t n_palabras_iniciales)
 {
-        struct vector *nuevo_vector = calloc(1, sizeof(struct vector));
+	struct vector *nuevo_vector = calloc(1, sizeof(struct vector));
 
-        if (!nuevo_vector)
-                return NULL;
+	if (!nuevo_vector)
+		return NULL;
 
-        char **palabras_aux = calloc(n_palabras_iniciales, sizeof(char *));
+	char **palabras_aux = calloc(n_palabras_iniciales, sizeof(char *));
 
-        if (!palabras_aux){
-                free(nuevo_vector);
-                return NULL;
-        }
+	if (!palabras_aux) {
+		free(nuevo_vector);
+		return NULL;
+	}
 
-        nuevo_vector->palabras = palabras_aux;
+	nuevo_vector->palabras = palabras_aux;
 
-        return nuevo_vector;
+	return nuevo_vector;
 }
-
 
 /*
  *PRE: texto debe ser un string
@@ -112,42 +108,47 @@ struct vector *crear_vector_para_n_palabras(size_t n_palabras_iniciales)
  */
 struct vector *split(char *texto, char caracter_separador)
 {
-        if (!texto)
-                return NULL;
+	if (!texto)
+		return NULL;
 
-        bool salir = false;
-        size_t largo_texto = strlen(texto);
-        size_t pos_inicio_palabra = 0;
-        size_t pos_final_palabra = 0;
-        
-        struct vector *vector_resultado = crear_vector_para_n_palabras(largo_texto +1);
+	bool salir = false;
+	size_t largo_texto = strlen(texto);
+	size_t pos_inicio_palabra = 0;
+	size_t pos_final_palabra = 0;
 
-        if (!vector_resultado) 
-                return NULL;
+	struct vector *vector_resultado =
+		crear_vector_para_n_palabras(largo_texto + 1);
 
-        for (size_t i = 0; !salir && i <= largo_texto ; i++) {
-                if (texto[i] == caracter_separador || i == largo_texto) {
-                        pos_final_palabra = i;
+	if (!vector_resultado)
+		return NULL;
 
-                        if (!cargar_subpalabra(vector_resultado, texto, pos_inicio_palabra, pos_final_palabra))
-                                salir = true;
+	for (size_t i = 0; !salir && i <= largo_texto; i++) {
+		if (texto[i] == caracter_separador || i == largo_texto) {
+			pos_final_palabra = i;
 
-                        pos_inicio_palabra = pos_final_palabra + 1;
-                }
-        }
+			if (!cargar_subpalabra(vector_resultado, texto,
+					       pos_inicio_palabra,
+					       pos_final_palabra))
+				salir = true;
 
-        if (salir) {
-                vector_destruir(vector_resultado);
-                return NULL;
-        }
+			pos_inicio_palabra = pos_final_palabra + 1;
+		}
+	}
 
-        char **buffer_ajustado = realloc(vector_resultado->palabras, vector_resultado->cantidad * sizeof(char*));
+	if (salir) {
+		vector_destruir(vector_resultado);
+		return NULL;
+	}
 
-        if (!buffer_ajustado) {
-                vector_destruir(vector_resultado);
-                return NULL;
-        }
+	char **buffer_ajustado =
+		realloc(vector_resultado->palabras,
+			vector_resultado->cantidad * sizeof(char *));
 
-        vector_resultado->palabras = buffer_ajustado;
-        return vector_resultado;
+	if (!buffer_ajustado) {
+		vector_destruir(vector_resultado);
+		return NULL;
+	}
+
+	vector_resultado->palabras = buffer_ajustado;
+	return vector_resultado;
 }
