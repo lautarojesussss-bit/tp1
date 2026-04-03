@@ -134,13 +134,15 @@ $$f(N) = N + (2N - 2) +2N = 5N - 2$$
 
 Por las propiedades del análisis asintótico, sabemos que los coeficientes y los términos de menor grado no afectan la tasa de crecimiento cuando $N$ tiende a infinito. Por lo tanto, podemos afirmar que la función tiene una complejidad asintotica lineal.
 
-Ahora el analisis de la función `ordenar_alfabeticamente`:
+Ahora el analisis de la función `limpiar_y_contar`:
+En esta función lo único que hago que involucra a la cantidad de pokemones es recorrer el arreglo que los contiene, 1 sola vez, dentro de ese for no llamo a otra función auxiliar propia ni hago nada de no sea constante en relación a la cantidad de los pokemones del arreglo, por lo tanto la complejidad asíntotica de la función es lineal.
 
 
- Limpiar_y_contar es lineal, clasificar_por_tipo es lineal,
+Analisis de la función `clasificar_por_tipo`:
+En esta función lo único que hago que depende de la cantidad de pokemones, es decir, de n, es recorrer una sola vez el arreglo de pokemones para poner sus punteros en los vectores exclusivos por tipo al que pertenecen, la cantidad que reservó para cada vector exclusivo por tipo es exacta porque ya los conté en la función `limpiar_y_contar`, por ende no hay necesidad de reallocs, la complejidad asintotica de esta función es lineal.
  
- 
-  ordenar_alfabeticamente tiene complejidad asintotica n(log(n)) porque uso merge_sort, carga_en_bruto tiene complejidad asontotica lineal, porque uso compejidad amortizada, como impera el término de mayor orden asintotico en la función polinomial, tp1_leer_archivo es de complejidad asontica n.log(n) .|
+Analisis de la función `ordenar_alfabeticamente`:
+
 
 ## 4. Decisiones de diseño y/o complejidades de implementación
 Decidí que el grueso del trabajo ocurra en la función tp1_leer_archivo, que tiene complejidad asintotica O(nlog(n)) ahí me encargo de leer los archivos, validar las lineas, crear y cargar los struct pokemon, ordenarlos por orden alfabético, quitar los repetidos, contar los pokemones por tipo y finalmente ordenar a los pokemones por su tipo, así puedo hacer que las funciones de consultas al tp1_t y de filtrado tengan una complejidad asintotica constante o dependiente de la cantidad de pokemones del tipo en cuestión que se pretende filtrar y no de la cantidad de todos los pokemones.
