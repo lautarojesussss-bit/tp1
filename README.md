@@ -137,8 +137,6 @@ Por las propiedades del análisis asintótico, sabemos que los coeficientes y lo
 Ahora el analisis de la función `ordenar_alfabeticamente`:
 
 
-**Conclusión:** La función `cargar_en_bruto` tiene una complejidad temporal **$O(N)$ amortizada**.
-
  Limpiar_y_contar es lineal, clasificar_por_tipo es lineal,
  
  
