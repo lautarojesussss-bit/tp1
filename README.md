@@ -104,19 +104,45 @@ Para el tp1_t decidí usar un vector de punteros a struct pokemon que los tenga 
 | `tp1_buscar_nombre`       |  $O(log(n))$   |El algortimo que uso para encontrar el pokemon solicitado dentro del vector de pokemones_nombre es la busqueda binaria, es un algortimo de divide y vencerás al que se le puede aplicar el teorema maestro, la parte función tiene una sola llamada recursiva así que las llamadas no crecen a medida que se avanza en los niveles del árbol de llamadas, es decir, el factor de ramificación es 1, y la parte no recursiva es constante, así que en todos los niveles el trabajo no solo es igual sino que es de complejidad asintotica constante, y la complejidad asintotica de la función en general se puede calcular con la cantidad de niveles, y que se calculan con el log en base b de n, siendo b el factor de reducción y n el tamaño del problema.|
 | `tp1_filtrar_tipo`       |  $O(n)$   |En esta función básicamente lo que hago son copias de los pokemones del arreglo exclusivo del tipo solicitado, que siempre es menor o igual al arreglo que contiene a todos los pokemones, si asumimos que n es la cantidad total de pokemones del tp1_t entonces en el peor de los casos (que justo todos los pokemones del tp1_t sean del tipo solicitado) la complejidad es 2n o sea la complejidad asintotica es O(n).|
 | `tp1_con_cada_pokemon`       |  $O(n)$   |Hago una iteración sobre el arreglo pokemones_nombre que tiene todos los pokemones, así que en el peor de los casos es justo n la cantidad de operaciones y eso se multiplica por la complejidad de f, que no conozco, por ende O(n.O(f)).|
-| `tp1_leer_archivo`       |  $O(n.log(n))$   | En el peor de los casos tengo 4 llamadas a funciones auxiliares de complejidad asintotica no constante, que son `cargar_en_bruto`, `ordenar_alfabeticamente`, `limpiar_y_contar`, y `clasificar_por_tipo`.
-Prosigo con el analisis de cada una, primero la función `cargar_en_bruto`:
-1. Analizando el while, que incluye un llamado a `agregar_pokemon` con complejidad amortizada, vemos que en el peor de los casos la complejidad asintotica de la función es lineal $f(N)$:
-$$f(N) = 3N - 2$$
 
-2. Por las propiedades del análisis asintótico, sabemos que las constantes multiplicativas y los términos de menor grado no afectan la tasa de crecimiento cuando $N$ tiende a infinito. 
+Analisis de la complejidad de la función `tp1_leer_archivo`:  En el peor de los casos realizo 4 llamadas a funciones auxiliares de complejidad asintotica no constante, estas son `cargar_en_bruto`, `ordenar_alfabeticamente`, `limpiar_y_contar`, y `clasificar_por_tipo`.
+Prosigo con el analisis de cada una para determinar la complejidad total de la función, primero `cargar_en_bruto`:
 
-3. Por lo tanto, podemos afirmar que:
-$$3N - 2 \in O(N)$$
+La función ejecuta un ciclo `while` que itera $N$ veces (una vez por cada línea/Pokémon leída del archivo). En cada iteración, insertar un elemento en un arreglo, lo que implica $1$ operación. Sin embargo, cuando la capacidad del arreglo se llena, la función `agregar_pokemon` realiza un `realloc` duplicando el tamaño del buffer y copiando los elementos existentes.
 
-Concluyendo que la función `cargar_en_bruto` tiene una complejidad temporal **$O(N)$ amortizada**. |
+Dado que las redimensiones del arreglo ocurren en potencias de 2 ($2, 4, 8, 16...$), la cantidad total de redimensiones para $N$ pokemones es $\log_2 N$. 
 
- Limpiar_y_contar es lineal, clasificar_por_tipo es lineal, ordenar_alfabeticamente tiene complejidad asintotica n(log(n)) porque uso merge_sort, carga_en_bruto tiene complejidad asontotica lineal, porque uso compejidad amortizada, como impera el término de mayor orden asintotico en la función polinomial, tp1_leer_archivo es de complejidad asontica n.log(n) .|
+Aplicando el análisis de la complejidad amortizada, el costo total de todas las copias de memoria en está dado por la siguiente sumatoria:
+
+$$\text{Costo de Copias} = \sum_{i=1}^{\log_2 N} 2^i$$
+
+Por la propiedad matemática de la suma de potencias de 2, sabemos que $\sum_{i=1}^{k} 2^i = 2^{k+1} - 2$. Reemplazando obtenemos:
+
+$$\text{Costo de Copias} = 2^{(\log_2 N) + 1} - 2$$
+
+Aplicando la propiedades de exponentes pasamos a tener ($x^{a+1} = x \cdot x^a$):
+
+$$\text{Costo de Copias} = 2 \cdot 2^{\log_2 N} - 2$$
+
+Y por propiedades de logaritmos, sabemos que $2^{\log_2 N} = N$. Por lo tanto, la expresión queda como:
+
+$$\text{Costo de Copias} = 2N - 2$$
+
+Para obtener el esfuerzo exacto $f(N)$ en el peor de los casos, sumamos el costo de las inserciones individuales ($N$) al costo total de las copias que acabamos de calcular y al costo de leer y parsear las lineas
+
+$$f(N) = N + (2N - 2) +2N = 5N - 2$$
+
+Por las propiedades del análisis asintótico, sabemos que los coeficientes y los términos de menor grado no afectan la tasa de crecimiento cuando $N$ tiende a infinito. Por lo tanto, podemos afirmar que la función tiene una complejidad asintotica lineal.
+
+Ahora el analisis de la función `ordenar_alfabeticamente`:
+
+
+**Conclusión:** La función `cargar_en_bruto` tiene una complejidad temporal **$O(N)$ amortizada**.
+
+ Limpiar_y_contar es lineal, clasificar_por_tipo es lineal,
+ 
+ 
+  ordenar_alfabeticamente tiene complejidad asintotica n(log(n)) porque uso merge_sort, carga_en_bruto tiene complejidad asontotica lineal, porque uso compejidad amortizada, como impera el término de mayor orden asintotico en la función polinomial, tp1_leer_archivo es de complejidad asontica n.log(n) .|
 
 ## 4. Decisiones de diseño y/o complejidades de implementación
 Decidí que el grueso del trabajo ocurra en la función tp1_leer_archivo, que tiene complejidad asintotica O(nlog(n)) ahí me encargo de leer los archivos, validar las lineas, crear y cargar los struct pokemon, ordenarlos por orden alfabético, quitar los repetidos, contar los pokemones por tipo y finalmente ordenar a los pokemones por su tipo, así puedo hacer que las funciones de consultas al tp1_t y de filtrado tengan una complejidad asintotica constante o dependiente de la cantidad de pokemones del tipo en cuestión que se pretende filtrar y no de la cantidad de todos los pokemones.
