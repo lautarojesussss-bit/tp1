@@ -59,7 +59,7 @@ El tp1_t y sus primitivas funciona para guardar y consultar información de dife
   <p>Diagrama de flujo de tp1_guardar_archivo.</p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_filtrar_tipo.svg" width="70%">
+  <img src="img/diagramas/tp1_filtrar_tipo_2.svg" width="70%">
   <p>Diagrama de flujo de tp1_filtrar_tipo.</p>
 </div>
 <div align="center">
@@ -75,19 +75,19 @@ El tp1_t y sus primitivas funciona para guardar y consultar información de dife
   <p>Diagrama de flujo de tp1_con_cada_pokemon.</p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_destruir.svg" width="70%">
+  <img src="img/diagramas/tp1_destruir_2.svg" width="70%">
   <p>Diagrama de flujo de tp1_destruir.</p>
 </div>
 
 
 ## 3. Estructura
-Para el tp1_t decidí usar un vector de punteros a struct pokemon que los tenga ordenados por orden alfabético y un arreglo de arreglos de punteros que tengan cada uno solo a los punteros a pokemones de un tipo (ELEC, FUEG, NORM etc etc), y tengo los respectivos topes de todos los vectores además de una variable booleana para saber si al destruir un tp1_t debo liberar también a los pokemones o solamente los punteros que este tp1_t tenía hacia ellos.
+Para el tp1_t decidí usar un vector de punteros a struct pokemon que los tenga ordenados por orden alfabético y un arreglo de arreglos de punteros que tengan cada uno solo a los punteros a pokemones de un tipo (ELEC, FUEG, NORM etc etc), y tengo los respectivos topes de todos los vectores.
 
 
 ### 3.1. Diagrama de memoria
 
 <div align="center">
-  <img src="img/diagramas/struct_tp1_t_3.svg" width="70%">
+  <img src="img/diagramas/struct_tp1_t_4.svg" width="70%">
   <p>Diagrama de memoria de tp1_t.</p>
 </div>
 
@@ -99,12 +99,24 @@ Para el tp1_t decidí usar un vector de punteros a struct pokemon que los tenga 
 |:-----------------:|:---------:|:----------------------------------------------:|
 | `tp1_cantidad`       |  $O(1)$   |Independientemente de la cantidad de punteros que tengan los arreglos del tp1_t sacar la cantidad total es simplemente consultar el campo size_t cantidad_total y nada más, es decir, es de complejidad asintotica constante.|
 |      `tp1_buscar_orden`       |  $O(1)$   |No importa qué posición tenga el pokemon solicitado en todos los casos hago un acceso directo a esa posición y devuelvo el valor, no tengo que recorrer el arreglo, así que la complejidad asintotica es constante.|
-|      `tp1_destruir`       |  $O(n)$ |La complejidad es lineal porque en caso de que el tp1_t pasado sea un tp1 dueño de los datos debo recorrer el arreglo que tiene a todos los pokemones e ir liberandolos, luego a parte libero los vectores exclusivos de cada tipo pero eso es constante porque son siempre 8 operaciones.|
+|      `tp1_destruir`       |  $O(n)$ |La complejidad es lineal porque debo recorrer el arreglo que tiene a todos los pokemones e ir liberandolos (liberarlos son dos operaciones nomás), luego a parte libero los vectores exclusivos de cada tipo pero eso es constante porque son siempre 8 operaciones.|
 | `tp1_guardar_archivo`       |  $O(n)$   |Es básicamente un caso de uso para el iterador interno, que es lineal, y la función que aplico es solamente una para escribir un pokemón, por lo tanto no hay bucles ni iteraciones, en todo caso esa función de escribir_pokemon depende del largo del nombre del pokemon. Si asumo n como la cantidad de pokemones del tp1_t tp1_guardar_archivo es de complejidad asintotica lineal.|
 | `tp1_buscar_nombre`       |  $O(log(n))$   |El algortimo que uso para encontrar el pokemon solicitado dentro del vector de pokemones_nombre es la busqueda binaria, es un algortimo de divide y vencerás al que se le puede aplicar el teorema maestro, la parte función tiene una sola llamada recursiva así que las llamadas no crecen a medida que se avanza en los niveles del árbol de llamadas, es decir, el factor de ramificación es 1, y la parte no recursiva es constante, así que en todos los niveles el trabajo no solo es igual sino que es de complejidad asintotica constante, y la complejidad asintotica de la función en general se puede calcular con la cantidad de niveles, y que se calculan con el log en base b de n, siendo b el factor de reducción y n el tamaño del problema.|
-| `tp1_filtrar_tipo`       |  $O(n)$   |En esta función básicamente lo que hago son simples copias de un arreglo dado que siempre es menor o igual al arreglo que contiene a todos los pokemones, si asumimos que n es la cantidad total de pokemones del tp1_t entonces en el peor de los casos (que justo todos los pokemones del tp1_t sean del tipo solicitado) la complejidad es 2n o sea la complejidad asintotica es O(n).|
+| `tp1_filtrar_tipo`       |  $O(n)$   |En esta función básicamente lo que hago son copias de los pokemones del arreglo exclusivo del tipo solicitado, que siempre es menor o igual al arreglo que contiene a todos los pokemones, si asumimos que n es la cantidad total de pokemones del tp1_t entonces en el peor de los casos (que justo todos los pokemones del tp1_t sean del tipo solicitado) la complejidad es 2n o sea la complejidad asintotica es O(n).|
 | `tp1_con_cada_pokemon`       |  $O(n)$   |Hago una iteración sobre el arreglo pokemones_nombre que tiene todos los pokemones, así que en el peor de los casos es justo n la cantidad de operaciones y eso se multiplica por la complejidad de f, que no conozco, por ende O(n.O(f)).|
-| `tp1_leer_archivo`       |  $O(n.log(n))$   |si .|
+| `tp1_leer_archivo`       |  $O(n.log(n))$   | En el peor de los casos tengo 4 llamadas a funciones auxiliares de complejidad asintotica no constante, que son `cargar_en_bruto`, `ordenar_alfabeticamente`, `limpiar_y_contar`, y `clasificar_por_tipo`.
+Prosigo con el analisis de cada una, primero la función `cargar_en_bruto`:
+1. Analizando el while, que incluye un llamado a `agregar_pokemon` con complejidad amortizada, vemos que en el peor de los casos la complejidad asintotica de la función es lineal $f(N)$:
+$$f(N) = 3N - 2$$
+
+2. Por las propiedades del análisis asintótico, sabemos que las constantes multiplicativas y los términos de menor grado no afectan la tasa de crecimiento cuando $N$ tiende a infinito. 
+
+3. Por lo tanto, podemos afirmar que:
+$$3N - 2 \in O(N)$$
+
+Concluyendo que la función `cargar_en_bruto` tiene una complejidad temporal **$O(N)$ amortizada**.
+
+ Limpiar_y_contar es lineal, clasificar_por_tipo es lineal, ordenar_alfabeticamente tiene complejidad asintotica n(log(n)) porque uso merge_sort, carga_en_bruto tiene complejidad asontotica lineal, porque uso compejidad amortizada, como impera el término de mayor orden asintotico en la función polinomial, tp1_leer_archivo es de complejidad asontica n.log(n) .|
 
 ## 4. Decisiones de diseño y/o complejidades de implementación
 Decidí que el grueso del trabajo ocurra en la función tp1_leer_archivo, que tiene complejidad asintotica O(nlog(n)) ahí me encargo de leer los archivos, validar las lineas, crear y cargar los struct pokemon, ordenarlos por orden alfabético, quitar los repetidos, contar los pokemones por tipo y finalmente ordenar a los pokemones por su tipo, así puedo hacer que las funciones de consultas al tp1_t y de filtrado tengan una complejidad asintotica constante o dependiente de la cantidad de pokemones del tipo en cuestión que se pretende filtrar y no de la cantidad de todos los pokemones.

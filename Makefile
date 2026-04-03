@@ -5,10 +5,10 @@ CFLAGS_MAIN = $(CFLAGS_BASE)
 VFLAGS = --leak-check=full --track-origins=yes --show-reachable=yes
 EJEC = pruebas_alumno
 EJEC_MAIN = tp1
-SRCS_MAIN = main.c src/tp1.c src/utils.c src/split.c
-HDRS_MAIN = src/tp1.h src/utils.h src/split.h 
-SRCS = src/tp1.c src/utils.c src/split.c  pruebas/pruebas_alumno.c
-HDRS = src/tp1.h src/utils.h src/split.h pruebas/pa2m.h
+SRCS_MAIN = main.c src/tp1.c src/utils.c 
+HDRS_MAIN = src/tp1.h src/utils.h
+SRCS = src/utils.c src/tp1.c  pruebas/pruebas_alumno.c
+HDRS = src/utils.h src/tp1.h  pruebas/pa2m.h
 
 # 1.1. Compilar: 'make' o 'make all' solo construye el ejecutable
 all: $(EJEC) $(EJEC_MAIN)
