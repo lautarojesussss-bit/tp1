@@ -142,7 +142,7 @@ La función `ordenar_alfabeticamente` actúa como punto de entrada para `merge_s
 
 Podemos modelar su complejidad $T(N)$ para un vector de $N$ Pokémones mediante la siguiente relación de recurrencia:
 
-$$\Large T(N) = 2T(N/2) + O(N)$$
+$$\Large T(N) = 2T(N/2) + O(N)$$ 
 
 Donde:
 * El término $2T(N/2)$ representa las dos llamadas recursivas, cada una procesando la mitad del arreglo.
@@ -165,11 +165,11 @@ Al comparar el esfuerzo de mezcla $f(N)$ con el polinomio crítico que represent
 
 La resolución para el Caso 2 dicta que la complejidad final se obtiene multiplicando el polinomio crítico (o el esfuerzo de mezcla, porque son equivalentes) por un factor logarítmico:
 
-$$\Large T(N) = 0(N^{\log_b a} \log_2 N)$$
+$$\Large T(N) = O(N^{\log_b a} \log_2 N)$$
 
 Sustituyendo en nuestros valores:
 
-$$\Large T(N) = 0(N \log_2 N)$$
+$$\Large T(N) = O(N \log_2 N)$$
 
 Aplicando el Teorema Maestro, se demostró que la complejidad temporal asintótica de `ordenar_alfabeticamente` en el peor de los casos pertenece a **$O(N \log N)$**.
 
