@@ -211,11 +211,7 @@ Dado que estas funciones se ejecutan de manera estrictamente secuencial una tras
 
 $$\Large T(N) = O(N) + O(N \log N) + O(N) + O(N)$$
 
-Para simplificar esta expresión, aplicamos la Regla del Término Dominante del análisis asintótico, la cual establece que la suma de varias complejidades pertenece al orden de la función con mayor tasa de crecimiento. Formalmente:
-
-$$\Large O(f(N)) + O(g(N)) \in O(\max(f(N), g(N)))$$
-
-Al comparar nuestras cotas, sabemos que el crecimiento lineal-logarítmico domina de forma estricta al crecimiento lineal cuando $N$ tiende a infinito ($N \log N > N$). Por lo tanto, los términos lineales de `cargar_en_bruto`, `limpiar_y_contar` y `clasificar_por_tipo` son absorbidos por el término dominante del ordenamiento:
+Para simplificar esta expresión, aplicamos la Regla del Término Dominante del análisis asintótico, la cual establece que la suma de varias complejidades pertenece al orden de la función con mayor tasa de crecimiento. Al comparar nuestras cotas, sabemos que el crecimiento lineal-logarítmico domina de forma estricta al crecimiento lineal cuando $N$ tiende a infinito ($N \log N > N$). Por lo tanto, los términos lineales de `cargar_en_bruto`, `limpiar_y_contar` y `clasificar_por_tipo` son absorbidos por el término dominante del ordenamiento:
 
 $$\Large T(N) \in O(N \log N)$$
 
