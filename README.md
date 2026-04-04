@@ -92,17 +92,17 @@ Para la estructura `tp1_t` se decidió utilizar un arreglo de punteros a `struct
 </div>
 
 
-### 3.2. Análisis de complejidades
+### 3.2. Análisis de complejidades temporales
 
 |      Función      |Complejidad|                 Justificación                  |
 |:-----------------:|:---------:|:----------------------------------------------:|
-| `tp1_cantidad`       |  $O(1)$   |Independientemente de la cantidad de punteros que tengan los arreglos del `tp1_t` sacar la cantidad total es simplemente consultar el campo size_t `cantidad_total` y nada más, es decir, es de complejidad asintótica constante.|
-|      `tp1_buscar_orden`       |  $O(1)$   |No importa qué posición tenga el pokemon solicitado, en todos los casos hago un acceso directo a esa posición y devuelvo el valor, la complejidad asintótica es constante.|
-|      `tp1_destruir`       |  $O(n)$ |La complejidad es lineal porque debo se recorre el arreglo, que tiene a todos los pokemones, y se los libera (liberarlos implica dos operaciones únicamente), luego a parte a parte se liberan los arreglos exclusivos de cada tipo, y eso es constante porque son siempre 8 operaciones, dado que `CANT_TIPO` vale 8.|
-| `tp1_con_cada_pokemon`       |  $O(n)$   |Hago una iteración sobre el arreglo pokemones_nombre que tiene todos los pokemones, así que en el peor de los casos es justo n la cantidad de operaciones y eso se multiplica por la complejidad de f, que no conozco, por ende O(n.O(f)).|
-| `tp1_guardar_archivo`       |  $O(n)$   |Es un caso de uso particular para el iterador interno, que como vimos es lineal, y la función que se le aplica a cada pokemon es de escritura, es decir, de complejidad asintótica constante en relación a la cantidad de pokemones, por lo tanto `tp1_t tp1_guardar_archivo` es de complejidad asintótica lineal.|
-| `tp1_buscar_nombre`       |  $O(log(n))$   |El algortimo que se usa para encontrar el pokemon solicitado dentro del arreglo de `pokemones_nombre` es la búsqueda binaria. La búsqueda binaria es un algortimo de divide y vencerás al que se le puede aplicar el teorema maestro, la función tiene una sola llamada recursiva por ende las llamadas no crecen a medida que se "profundiza" en los niveles del árbol de recursión, es decir, el factor de ramificación es 1, y la parte no recursiva es constante (calcular una posición y contrastar un valor con otro), por ende en todos los niveles el trabajo no solo es igual sino que es de complejidad asintótica constante, y la complejidad total se puede calcular con la cantidad de niveles, que se calcula con el $\log_b n$, siendo b el factor de reducción y n el tamaño del problema, ello nos da una complejidad temporal asintótica logarítmica.|
-| `tp1_filtrar_tipo`       |  $O(n)$   |En esta función se realizan copias de los pokemones del arreglo exclusivo del tipo solicitado, que siempre es menor o igual al arreglo que contiene a todos los pokemones, en el peor de los casos (que justo todos los pokemones del `tp1_t` sean del tipo solicitado) la complejidad es 2n, o sea, la complejidad temporal asintótica es lineal.|
+| `tp1_cantidad`       |  $O(1)$   |Independientemente de la cantidad de punteros que tengan los arreglos del `tp1_t` sacar la cantidad total es simplemente consultar el campo size_t `cantidad_total` y nada más, es decir, es de complejidad temporal asintótica constante.|
+|      `tp1_buscar_orden`       |  $O(1)$   |No importa qué posición tenga el pokemon solicitado, en todos los casos hago un acceso directo a esa posición y devuelvo el valor, la complejidad temporal asintótica es constante.|
+|      `tp1_destruir`       |  $O(n)$ |La complejidad temporal asintótica es lineal porque debo se recorre el arreglo, que tiene a todos los pokemones, y se los libera (liberarlos implica dos operaciones únicamente), luego a parte a parte se liberan los arreglos exclusivos de cada tipo, y eso es constante porque son siempre 8 operaciones, dado que `CANT_TIPO` vale 8.|
+| `tp1_con_cada_pokemon`       |  $O(n)$   |Hago una iteración sobre el arreglo pokemones_nombre que tiene todos los pokemones, así que en el peor de los casos es justo n la cantidad de operaciones y eso se multiplica por la complejidad temporal asintótica de f, que no conozco, por ende O(n.O(f)).|
+| `tp1_guardar_archivo`       |  $O(n)$   |Es un caso de uso particular para el iterador interno, que como vimos es lineal, y la función que se le aplica a cada pokemon es de escritura, es decir, de complejidad temporal asintótica constante en relación a la cantidad de pokemones, por lo tanto `tp1_t tp1_guardar_archivo` es de complejidad temporal asintótica lineal.|
+| `tp1_buscar_nombre`       |  $O(log(n))$   |El algortimo que se usa para encontrar el pokemon solicitado dentro del arreglo de `pokemones_nombre` es la búsqueda binaria. La búsqueda binaria es un algortimo de divide y vencerás al que se le puede aplicar el teorema maestro, la función tiene una sola llamada recursiva por ende las llamadas no crecen a medida que se "profundiza" en los niveles del árbol de recursión, es decir, el factor de ramificación es 1, y la parte no recursiva es constante (calcular una posición y contrastar un valor con otro), por ende en todos los niveles el trabajo no solo es igual sino que es de complejidad temporal asintótica constante, y la complejidad temporal asintótica del total de la función se puede calcular con la cantidad de niveles, que se calcula con el $\log_b n$, siendo b el factor de reducción y n el tamaño del problema, ello nos da una complejidad temporal asintótica logarítmica.|
+| `tp1_filtrar_tipo`       |  $O(n)$   |En esta función se realizan copias de los pokemones del arreglo exclusivo del tipo solicitado, que siempre es menor o igual al arreglo que contiene a todos los pokemones, en el peor de los casos (que justo todos los pokemones del `tp1_t` sean del tipo solicitado) la complejidad temporal asintótica es 2n, o sea, la complejidad temporal asintótica es lineal.|
 
 
 #### Analisis de la complejidad de `tp1_leer_archivo`:
@@ -135,13 +135,13 @@ Para obtener el esfuerzo exacto $f(N)$ en el peor de los casos, sumamos el costo
 
 $$\Large f(N) = N + (2N - 2) +2N = 5N - 2$$
 
-Por las propiedades del análisis asintótico, sabemos que los coeficientes y los términos de menor grado no afectan la tasa de crecimiento cuando $N$ tiende a infinito. Por lo tanto, podemos afirmar que la función tiene una complejidad asintótica lineal.
+Por las propiedades del análisis asintótico, sabemos que los coeficientes y los términos de menor grado no afectan la tasa de crecimiento cuando $N$ tiende a infinito. Por lo tanto, podemos afirmar que la función tiene una complejidad temporal asintótica lineal.
 
 ##### Analisis de la función `ordenar_alfabeticamente`:
 
 La función `ordenar_alfabeticamente` actúa como punto de entrada para `merge_sort_alfabetico`, el cual implementa un algoritmo del tipo *divide y vencerás*. 
 
-Podemos modelar su complejidad $T(N)$ para un arreglo de $N$ Pokémones mediante la siguiente relación de recurrencia:
+Podemos modelar su complejidad temporal $T(N)$ para un arreglo de $N$ Pokémones mediante la siguiente relación de recurrencia:
 
 $$\Large T(N) = 2T(N/2) + O(N)$$ 
 
@@ -164,7 +164,7 @@ $$\Large N^{\log_2 2} = N^1 = N$$
 
 Al comparar el esfuerzo de mezcla $f(N)$ con el polinomio crítico que representa la cantidad de hojas, observamos que crecen asintóticamente a la misma velocidad (es decir, $f(N)$ es proporcional a $N^{\log_b a}$). Esto significa que estamos en el **Caso 2** del Teorema Maestro.
 
-La resolución para el Caso 2 dicta que la complejidad final se obtiene multiplicando el polinomio crítico (o el esfuerzo de mezcla, porque son equivalentes) por un factor logarítmico:
+La resolución para el Caso 2 dicta que la complejidad temporal final se obtiene multiplicando el polinomio crítico (o el esfuerzo de mezcla, porque son equivalentes) por un factor logarítmico:
 
 $$\Large T(N) = O(N^{\log_b a} \log_2 N)$$
 
@@ -176,7 +176,7 @@ Aplicando el Teorema Maestro, se demostró que la complejidad temporal asintóti
 
 #### Análisis de la función `limpiar_y_contar`
 
-La función `limpiar_y_contar` tiene como objetivo eliminar los Pokémones duplicados y contar la distribución por tipos. Su algoritmo utiliza una técnica de "dos punteros" (`i` y `j`) para recorrer y modificar el arreglo *in-place* (en el mismo arreglo).
+La función `limpiar_y_contar` tiene como objetivo eliminar los Pokémones duplicados y contar la distribución por tipos. Su algoritmo utiliza una técnica de "dos punteros" (`i` y `j`) para recorrer y modificar el arreglo sin utilizar arreglos auxiliares.
 
 Para un arreglo de $N$ Pokémones, podemos dividir el análisis en dos etapas:
 
@@ -187,7 +187,7 @@ Aplicando la regla de la suma para bloques secuenciales, la función de costo as
 
 $$\Large T(N) = \mathcal{O}(N) + \mathcal{O}(N) \in \mathcal{O}(N)$$
 
-**Conclusión:** La complejidad temporal de `limpiar_y_contar` es estrictamente **$\mathcal{O}(N)$**.
+**Conclusión:** La complejidad temporal asintótica de `limpiar_y_contar` es estrictamente **$\mathcal{O}(N)$**.
 
 ---
 
@@ -204,14 +204,14 @@ Planteando la suma de complejidades secuenciales, el término constante es absor
 
 $$\Large T(N) = \mathcal{O}(1) + \mathcal{O}(N) \in \mathcal{O}(N)$$
 
-**Conclusión:** Gracias a la pre-asignación de memoria exacta, la complejidad temporal de `clasificar_por_tipo` es **$\mathcal{O}(N)$**.
+**Conclusión:** Gracias a la pre-asignación de memoria exacta, la complejidad temporal asintótica de `clasificar_por_tipo` es **$\mathcal{O}(N)$**.
  
 #### Conclusión final
 Dado que estas funciones se ejecutan de manera estrictamente secuencial una tras otra, el esfuerzo temporal total $T(N)$ de `tp1_leer_archivo` se representa como la suma de los esfuerzos asintóticos de sus componentes:
 
 $$\Large T(N) = O(N) + O(N \log N) + O(N) + O(N)$$
 
-Para simplificar esta expresión, aplicamos la Regla del Término Dominante del análisis asintótico, la cual establece que la suma de varias complejidades pertenece al orden de la función con mayor tasa de crecimiento. Al comparar nuestras cotas, sabemos que el crecimiento lineal-logarítmico domina de forma estricta al crecimiento lineal cuando $N$ tiende a infinito ($N \log N > N$). Por lo tanto, los términos lineales de `cargar_en_bruto`, `limpiar_y_contar` y `clasificar_por_tipo` son absorbidos por el término dominante del ordenamiento:
+Para simplificar esta expresión, aplicamos la Regla del Término Dominante del análisis asintótico, la cual establece que la suma de varias complejidades temporales pertenece al orden de la función con mayor tasa de crecimiento. Al comparar nuestras cotas, sabemos que el crecimiento lineal-logarítmico domina de forma estricta al crecimiento lineal cuando $N$ tiende a infinito ($N \log N > N$). Por lo tanto, los términos lineales de `cargar_en_bruto`, `limpiar_y_contar` y `clasificar_por_tipo` son absorbidos por el término dominante del ordenamiento:
 
 $$\Large T(N) \in O(N \log N)$$
 
@@ -220,11 +220,11 @@ $$\Large T(N) \in O(N \log N)$$
 
 
 ## 4. Decisiones de diseño y/o complejidades de implementación
-Se estableció que la mayor parte del procesamiento ocurra en la función `tp1_leer_archivo`, que tiene complejidad asintótica $O(N)$, esta función se encarga de leer el archivo, validar las lineas, crear y cargar los struct pokemon, ordenarlos por orden alfabético, quitar los repetidos, contar los pokemones por tipo y finalmente ordenar a los pokemones por su tipo.
+Se estableció que la mayor parte del procesamiento ocurra en la función `tp1_leer_archivo`, que tiene complejidad temporal asintótica $O(N)$, esta función se encarga de leer el archivo, validar las lineas, crear y cargar los struct pokemon, ordenarlos por orden alfabético, quitar los repetidos, contar los pokemones por tipo y finalmente ordenar a los pokemones por su tipo.
 
-Para la carga en bruto de los punteros se utilizó una estrategia de expansión geométrica (complejidad amortizada), evitando así que la función principal recaiga en una complejidad asintótica $O(N^2)$ por los `reallocs` excesivos, y para el orden alfabético se implementó una versión de merge sort con `strcasecmp` para la comparación de elementos; luego se ejecutan dos iteraciones distintas en arreglo que tiene a todos los pokemones, una para quitar los pokemones repetidos del arreglo y contabilizar los únicos en función de su tipo, y otra para colocar copias de los punteros en los arreglos que están dedicados a un solo tipo de pokemones.
+Para la carga en bruto de los punteros se utilizó una estrategia de expansión geométrica (complejidad amortizada), evitando así que la función principal recaiga en una complejidad temporal asintótica $O(N^2)$ por los `reallocs` excesivos, y para el orden alfabético se implementó una versión de merge sort con `strcasecmp` para la comparación de elementos; luego se ejecutan dos iteraciones distintas en arreglo que tiene a todos los pokemones, una para quitar los pokemones repetidos del arreglo y contabilizar los únicos en función de su tipo, y otra para colocar copias de los punteros en los arreglos que están dedicados a un solo tipo de pokemones.
 
-En la función `tp1_buscar_nombre` se implementó una búsqueda binaria para hacer que la complejidad asintótica de la función no fuese lineal sino logarítmica, aprovechando que en `tp1_leer_archivo` se ordenó alfabéticamente los pokemones.
+En la función `tp1_buscar_nombre` se implementó una búsqueda binaria para hacer que la complejidad temporal asintótica de la función no fuese lineal sino logarítmica, aprovechando que en `tp1_leer_archivo` se ordenó alfabéticamente los pokemones.
 
 Para `tp1_filtrar_tipo` se recorre únicamente el arreglo exclusivo del tipo solicitado de los pokemones del `tp1_t` fuente, y se copia la información al arreglo `pokemones_nombre` y al arreglo exclusivo del tipo solicitado del `tp1_t` destino, por último se actualiza el campo `cantidad_total` y el valor que representa la cantidad del tipo solicitado dentro del arreglo de cantidades del `tp1_t` destino.
 
