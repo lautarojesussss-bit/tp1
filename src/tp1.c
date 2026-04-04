@@ -8,15 +8,15 @@
 #define TAMANIO_INICIAL 101
 #define CANT_DATOS 5
 #define SEPARADOR ','
-#define CANT_TIPOS 8
+#define TIPOS_CANT 8
 #define FORMATO_ESCRITURA "%s,%s,%i,%i,%i\n"
 #define CANT_METRICAS 3
 
 struct tp1 {
 	struct pokemon **pokemones_nombre;
-	struct pokemon **pokemones_tipo[CANT_TIPOS];
+	struct pokemon **pokemones_tipo[TIPOS_CANT];
 	size_t cantidad_total;
-	size_t cant_tipos[CANT_TIPOS];
+	size_t cant_tipos[TIPOS_CANT];
 };
 
 void merge_alfabetico(struct pokemon **pokemones, int pos_inicio, int pos_mitad,
@@ -173,7 +173,7 @@ bool formato_es_correcto(struct vector *v, int *tipo, int *metricas)
 		else
 			son_correctos_nums = false;
 
-	for (int i = 0; *tipo == -1 && i < CANT_TIPOS; i++) {
+	for (int i = 0; *tipo == -1 && i < TIPOS_CANT; i++) {
 		if (strcmp(v->palabras[1], NOMBRES_TIPOS[i]) == 0)
 			*tipo = i;
 	}
@@ -296,7 +296,7 @@ void tp1_destruir(tp1_t *tp1)
 		i++;
 	}
 
-	for (size_t j = 0; j < CANT_TIPOS; j++)
+	for (size_t j = 0; j < TIPOS_CANT; j++)
 		free(tp1->pokemones_tipo[j]);
 
 	free(tp1->pokemones_nombre);
@@ -344,7 +344,7 @@ void clasificar_por_tipo(tp1_t *tp, bool *error_memoria)
 	if (!tp)
 		return;
 
-	for (size_t i = 0; !(*error_memoria) && i < CANT_TIPOS; i++) {
+	for (size_t i = 0; !(*error_memoria) && i < TIPOS_CANT; i++) {
 		tp->pokemones_tipo[i] =
 			malloc(tp->cant_tipos[i] * sizeof(struct pokemon *));
 		tp->cant_tipos[i] = 0;

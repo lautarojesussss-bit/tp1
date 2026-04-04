@@ -1,4 +1,4 @@
-#ifndef UTILS_H_ 
+#ifndef UTILS_H_
 #define UTILS_H_
 #include <stdbool.h>
 #include "tp1.h"
@@ -11,7 +11,7 @@ struct vector {
 	char **palabras;
 };
 
-extern const char* NOMBRES_TIPOS[];
+extern const char *NOMBRES_TIPOS[];
 
 bool escribir_pokemon(struct pokemon *pokemon, void *archivo);
 
@@ -23,5 +23,4 @@ struct vector *split(char *texto, char separador);
 
 void vector_destruir(struct vector *vector);
 
-
-#endif //UTILS_H_ 
+#endif //UTILS_H_

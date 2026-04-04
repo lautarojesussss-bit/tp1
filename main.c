@@ -1,7 +1,7 @@
 #include "src/tp1.h"
 #include <stdio.h>
 #include <string.h>
-#include "utils.h"
+#include "src/utils.h"
 
 #define ERROR -1
 #define CANT_ARGUMENTOS 4

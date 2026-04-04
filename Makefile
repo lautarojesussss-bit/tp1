@@ -34,7 +34,7 @@ valgrind-main: $(EJEC_MAIN)
 	valgrind $(VFLAGS) ./$(EJEC_MAIN) 5pokemones.csv buscar PIKACHU
 
 format:
-	clang-format -style=file -i main.c src/*.c pruebas/*.c
+	clang-format -style=file -i main.c src/*.c src/*.h pruebas/*.c
 
 .PHONY: all run valgrind clean format
 
