@@ -118,7 +118,7 @@ Aplicando el análisis de la complejidad amortizada, el costo total de todas las
 
 $$\Large \text{Costo de Copias} = \sum_{i=1}^{\log_2 N} 2^i$$
 
-Por la propiedad matemática de la suma de potencias de 2, sabemos que $\sum_{i=1}^{k} 2^i = 2^{k+1} - 2$. Reemplazando obtenemos:
+Por la propiedad matemática de la suma de potencias de 2, sabemos que $\Large \sum_{i=1}^{k} 2^i = 2^{k+1} - 2$. Reemplazando obtenemos:
 
 $$\Large \text{Costo de Copias} = 2^{(\log_2 N) + 1} - 2$$
 
