@@ -202,22 +202,22 @@ El algoritmo consta de dos bloques secuenciales:
 
 Planteando la suma de complejidades secuenciales, el término constante es absorbido por el término lineal:
 
-$$T(N) = \mathcal{O}(1) + \mathcal{O}(N) \in \mathcal{O}(N)$$
+$$\Large T(N) = \mathcal{O}(1) + \mathcal{O}(N) \in \mathcal{O}(N)$$
 
 **Conclusión:** Gracias a la pre-asignación de memoria exacta, la complejidad temporal de `clasificar_por_tipo` es **$\mathcal{O}(N)$**.
  
 #### Conclusión final
 Dado que estas funciones se ejecutan de manera estrictamente secuencial una tras otra, el esfuerzo temporal total $T(N)$ de `tp1_leer_archivo` se representa como la suma de los esfuerzos asintóticos de sus componentes:
 
-$$T(N) = O(N) + O(N \log N) + O(N) + O(N)$$
+$$\Large T(N) = O(N) + O(N \log N) + O(N) + O(N)$$
 
 Para simplificar esta expresión, aplicamos la Regla del Término Dominante del análisis asintótico, la cual establece que la suma de varias complejidades pertenece al orden de la función con mayor tasa de crecimiento. Formalmente:
 
-$$O(f(N)) + O(g(N)) \in O(\max(f(N), g(N)))$$
+$$\Large O(f(N)) + O(g(N)) \in O(\max(f(N), g(N)))$$
 
 Al comparar nuestras cotas, sabemos que el crecimiento lineal-logarítmico domina de forma estricta al crecimiento lineal cuando $N$ tiende a infinito ($N \log N > N$). Por lo tanto, los términos lineales de `cargar_en_bruto`, `limpiar_y_contar` y `clasificar_por_tipo` son absorbidos por el término dominante del ordenamiento:
 
-$$T(N) \in O(N \log N)$$
+$$\Large T(N) \in O(N \log N)$$
 
 **Conclusión:** La complejidad temporal asintótica total de la función `tp1_leer_archivo` está dictada por su operación más costosa, resultando en un tiempo de ejecución de **$O(N \log N)$**.
 
