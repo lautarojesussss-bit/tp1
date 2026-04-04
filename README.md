@@ -231,15 +231,15 @@ Para `tp1_filtrar_tipo` se recorre únicamente el arreglo exclusivo del tipo sol
 Se decidió modularizar algunas funciones de la implementación colocándolas en `utils.h` debido a que estas funciones no están relacionadas estrictamente con el TDA `tp1_t` del trabajo práctico y/o se necesitaban en el main.c
 
 ## 5. Respuestas a las preguntas teóricas
-Deberás incluir en esta sección las respuestas a las preguntas teóricas indicadas en el [enunciado](./ENUNCIADO.md) del TP.
 
-## 5. Respuestas a las preguntas teóricas (EJEMPLO)
+1) "Explicar la elección de la estructura para implementar la funcionalida pedida. Justifique el uso de cada uno de los campos de la estructura." Esto se explica en la sección 3, Estructura.
 
-### 5.1. ¿Porqué...?
-Respondido en su respectiva sección.
+2) "Dar una definición de complejidad computacional y explique cómo se calcula."
+La complejidad computacional es...
 
-### 5.2 ¿Cómo...?
-Para implementar el....
+3) "Explicar con diagramas cómo quedan dispuestas las estructuras y elementos en memoria." Esto también se explica en la sección 3, Estructura.
 
-### 5.3 ¿Cuál fue el...?
-El motivo fue....
+4) "Justificar la complejidad computacional temporal de cada una de las funciones que se piden implementar." Esto se justifica en la sección 3.2, Analisis de complejidades.
+
+5) "Explique qué dificultades tuvo para implementar las funcionalidades pedidas en el main (si tuvo alguna) y explique si alguna de estas dificultades se podría haber evitado modificando la definición del .h" 
+Esto se responde en la sección 4 del informe.
