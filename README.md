@@ -94,7 +94,6 @@ Para el tp1_t decidí usar un vector de punteros a struct pokemon que los tenga 
 
 ### 3.2. Análisis de complejidades
 
-### 3.2. Análisis de complejidades (EJEMPLO 2)
 |      Función      |Complejidad|                 Justificación                  |
 |:-----------------:|:---------:|:----------------------------------------------:|
 | `tp1_cantidad`       |  $O(1)$   |Independientemente de la cantidad de punteros que tengan los arreglos del tp1_t sacar la cantidad total es simplemente consultar el campo size_t cantidad_total y nada más, es decir, es de complejidad asintotica constante.|
@@ -105,8 +104,11 @@ Para el tp1_t decidí usar un vector de punteros a struct pokemon que los tenga 
 | `tp1_filtrar_tipo`       |  $O(n)$   |En esta función básicamente lo que hago son copias de los pokemones del arreglo exclusivo del tipo solicitado, que siempre es menor o igual al arreglo que contiene a todos los pokemones, si asumimos que n es la cantidad total de pokemones del tp1_t entonces en el peor de los casos (que justo todos los pokemones del tp1_t sean del tipo solicitado) la complejidad es 2n o sea la complejidad asintotica es O(n).|
 | `tp1_con_cada_pokemon`       |  $O(n)$   |Hago una iteración sobre el arreglo pokemones_nombre que tiene todos los pokemones, así que en el peor de los casos es justo n la cantidad de operaciones y eso se multiplica por la complejidad de f, que no conozco, por ende O(n.O(f)).|
 
-Analisis de la complejidad de la función `tp1_leer_archivo`:  En el peor de los casos realizo 4 llamadas a funciones auxiliares de complejidad asintotica no constante, estas son `cargar_en_bruto`, `ordenar_alfabeticamente`, `limpiar_y_contar`, y `clasificar_por_tipo`.
-Prosigo con el analisis de cada una para determinar la complejidad total de la función, primero `cargar_en_bruto`:
+#### Analisis de la complejidad de `tp1_leer_archivo`:
+  En el peor de los casos realizo 4 llamadas a funciones auxiliares de complejidad asintotica no constante, estas son `cargar_en_bruto`, `ordenar_alfabeticamente`, `limpiar_y_contar`, y `clasificar_por_tipo`.
+Prosigo con el analisis de cada una para determinar la complejidad total de la función. 
+
+##### Analis de la complejidad de `cargar_en_bruto`:
 
 La función ejecuta un ciclo `while` que itera $N$ veces (una vez por cada línea/Pokémon leída del archivo). En cada iteración, insertar un elemento en un arreglo, lo que implica $1$ operación. Sin embargo, cuando la capacidad del arreglo se llena, la función `agregar_pokemon` realiza un `realloc` duplicando el tamaño del buffer y copiando los elementos existentes.
 
@@ -134,7 +136,7 @@ $$f(N) = N + (2N - 2) +2N = 5N - 2$$
 
 Por las propiedades del análisis asintótico, sabemos que los coeficientes y los términos de menor grado no afectan la tasa de crecimiento cuando $N$ tiende a infinito. Por lo tanto, podemos afirmar que la función tiene una complejidad asintotica lineal.
 
-Analisis de la función `ordenar_alfabeticamente`:
+##### Analisis de la función `ordenar_alfabeticamente`:
 
 La función `ordenar_alfabeticamente` actúa como punto de entrada para `merge_sort_alfabetico`, el cual implementa un algoritmo del tipo *divide y vencerás*. 
 
@@ -171,11 +173,11 @@ $$T(N) = \Theta(N \log_2 N)$$
 
 Aplicando el Teorema Maestro, se demostró que la complejidad temporal asintótica de `ordenar_alfabeticamente` en el peor de los casos pertenece a **$O(N \log N)$**.
 
-Analisis de la función `limpiar_y_contar`:
+##### Analisis de la función `limpiar_y_contar`:
 En esta función lo único que hago que involucra a la cantidad de pokemones es recorrer el arreglo que los contiene, 1 sola vez, dentro de ese for no llamo a otra función auxiliar propia ni hago nada de no sea constante en relación a la cantidad de los pokemones del arreglo, por lo tanto la complejidad asíntotica de la función es lineal.
 
 
-Analisis de la función `clasificar_por_tipo`:
+##### Analisis de la función `clasificar_por_tipo`:
 En esta función lo único que hago que depende de la cantidad de pokemones, es decir, de n, es recorrer una sola vez el arreglo de pokemones para poner sus punteros en los vectores exclusivos por tipo al que pertenecen, la cantidad que reservó para cada vector exclusivo por tipo es exacta porque ya los conté en la función `limpiar_y_contar`, por ende no hay necesidad de reallocs, la complejidad asintotica de esta función es lineal.
  
 
