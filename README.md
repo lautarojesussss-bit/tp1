@@ -93,6 +93,8 @@ Para la estructura `tp1_t` se decidió utilizar un arreglo de punteros a `struct
 
 
 ### 3.2. Análisis de complejidades temporales
+Los siguientes analisis de complejidad temporal asintótica se realizan bajo la premisa de que el tamaño del problema, N ,representa siempre la cantidad de pokemones involucrados, ya sea en un archivo de entrada, dentro de la estructura `tp1_t`, o en un arreglo dinámico de punteros.
+El analisis de la complejidad de la función `tp1_leer_archivo` se detalla fuera de la siguiente tabla, debido a que requiere un desglose mucho más exhaustivo en comparación con el resto de las funciones que se analizan en esta sección. 
 
 |      Función      |Complejidad|                 Justificación                  |
 |:-----------------:|:---------:|:----------------------------------------------:|
