@@ -87,8 +87,8 @@ Para la estructura `tp1_t` se decidió utilizar un arreglo de punteros a `struct
 ### 3.1. Diagrama de memoria
 
 <div align="center">
-  <img src="img/diagramas/struct_tp1_t_4.svg" width="70%">
-  <p>Diagrama de memoria de tp1_t.</p>
+  <img src="img/diagramas/struct_tp1_t_6.svg" width="70%">
+  <p>Diagrama de memoria del TDA tp1_t en el caso de que tuviese cargado un pokemon de tipo ELEC.</p>
 </div>
 
 
