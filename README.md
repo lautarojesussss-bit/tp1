@@ -47,27 +47,27 @@ make valgrind-main
 El TDA `tp1_t` y sus primitivas sirven para guardar y consultar información de diferentes pokemones, después de cargar un `tp1_t` con pokemones de un archivo se puede consultar sobre un pokemon especifico dando su nombre o su posición por orden alfabético, y también se puede consultar por varios pokemones, dando el tipo que se quiere obtener. Se le puede aplicar cambios a los pokemones del tp1_t usando el iterador interno `tp1_con_cada_pokemon`, y se puede consultar la cantidad total de pokemones en un `tp1_t`.
 
 <div align="center">
-  <img src="img/diagramas/tp1_leer_archivo.svg" width="70%">
+  <img src="img/diagramas/tp1_leer_archivo.svg" width="100%">
   <p>Diagrama de flujo de tp1_leer_archivo.</p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_cantidad.svg" width="70%">
+  <img src="img/diagramas/tp1_cantidad.svg" width="100%">
   <p>Diagrama de flujo tp1_cantidad.</p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_guardar_archivo.svg" width="70%">
+  <img src="img/diagramas/tp1_guardar_archivo.svg" width="100%">
   <p>Diagrama de flujo de tp1_guardar_archivo.</p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_filtrar_tipo_2.svg" width="70%">
+  <img src="img/diagramas/tp1_filtrar_tipo_2.svg" width="100%">
   <p>Diagrama de flujo de tp1_filtrar_tipo.</p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_buscar_nombre.svg" width="70%">
+  <img src="img/diagramas/tp1_buscar_nombre.svg" width="100%">
   <p>Diagrama de flujo de tp1_buscar_nombre.</p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_buscar_orden.svg" width="70%">
+  <img src="img/diagramas/tp1_buscar_orden_3.svg" width="100%">
   <p>Diagrama de flujo de tp1_buscar_orden.</p>
 </div>
 <div align="center">
@@ -75,7 +75,7 @@ El TDA `tp1_t` y sus primitivas sirven para guardar y consultar información de 
   <p>Diagrama de flujo de tp1_con_cada_pokemon.</p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_destruir_2.svg" width="70%">
+  <img src="img/diagramas/tp1_destruir_2.svg" width="100%">
   <p>Diagrama de flujo de tp1_destruir.</p>
 </div>
 
