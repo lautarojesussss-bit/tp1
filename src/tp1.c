@@ -287,13 +287,12 @@ void tp1_destruir(tp1_t *tp1)
 	if (!tp1)
 		return;
 
-	size_t i = 0;
+	
 	size_t cant = tp1->cantidad_total;
 
-	while (i < cant) {
+	for(size_t i = 0; i < cant; i++) {
 		free(tp1->pokemones_nombre[i]->nombre);
 		free(tp1->pokemones_nombre[i]);
-		i++;
 	}
 
 	for (size_t j = 0; j < TIPOS_CANT; j++)
@@ -602,15 +601,15 @@ struct pokemon *tp1_buscar_nombre(tp1_t *tp, const char *nombre)
 size_t tp1_con_cada_pokemon(tp1_t *un_tp, bool (*f)(struct pokemon *, void *),
 			    void *extra)
 {
-	if (!un_tp)
+	if (!un_tp || !(un_tp->pokemones_nombre))
 		return 0;
 
-	bool seguimos = true;
+	bool continuar = true;
 	size_t i = 0;
 	size_t cant = un_tp->cantidad_total;
 
-	for (; seguimos && i < cant; i++)
-		seguimos = f(un_tp->pokemones_nombre[i], extra);
+	for (; continuar && i < cant; i++)
+		continuar = f(un_tp->pokemones_nombre[i], extra);
 
 	return i;
 }

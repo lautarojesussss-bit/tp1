@@ -51,7 +51,7 @@ El TDA `tp1_t` y sus primitivas sirven para guardar y consultar información de 
   <p><i>Diagrama de flujo de tp1_leer_archivo.</i></p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_cantidad_3.svg" width="100%">
+  <img src="img/diagramas/tp1_cantidad_4.svg" width="100%">
   <p><i>Diagrama de flujo tp1_cantidad.</i></p>
 </div>
 <div align="center">
@@ -67,11 +67,11 @@ El TDA `tp1_t` y sus primitivas sirven para guardar y consultar información de 
   <p><i>Diagrama de flujo de tp1_buscar_nombre.</i></p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_buscar_orden_4.svg" width="100%">
+  <img src="img/diagramas/tp1_buscar_orden_5.svg" width="100%">
   <p><i>Diagrama de flujo de tp1_buscar_orden.</i></p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_con_cada_pokemon.svg" width="100%">
+  <img src="img/diagramas/tp1_con_cada_pokemon_2.svg" width="100%">
   <p><i>Diagrama de flujo de tp1_con_cada_pokemon.</i></p>
 </div>
 <div align="center">
@@ -88,7 +88,7 @@ Para la estructura `tp1_t` se decidió utilizar un arreglo de punteros a `struct
 
 <div align="center">
   <img src="img/diagramas/struct_tp1_t_9.svg" width="100%">
-  <p><i>Diagrama de memoria del TDA tp1_t, en el caso de que tuviese cargado solamente un pokemon de tipo ELEC. Aquellos punteros de los cuales no salen flechas se los debe interpretar como punteros NULL.</i></p>
+  <p><i>Diagrama de memoria del TDA tp1_t, en el caso de que tuviese cargado solamente un pokemon de tipo ELEC. Aquellos punteros de los cuales no salen flechas deben ser interpretados como punteros NULL.</i></p>
 </div>
 
 
