@@ -134,14 +134,51 @@ $$f(N) = N + (2N - 2) +2N = 5N - 2$$
 
 Por las propiedades del análisis asintótico, sabemos que los coeficientes y los términos de menor grado no afectan la tasa de crecimiento cuando $N$ tiende a infinito. Por lo tanto, podemos afirmar que la función tiene una complejidad asintotica lineal.
 
-Ahora el analisis de la función `limpiar_y_contar`:
+Analisis de la función `ordenar_alfabeticamente`:
+
+La función `ordenar_alfabeticamente` actúa como punto de entrada para `merge_sort_alfabetico`, el cual implementa un algoritmo del tipo *divide y vencerás*. 
+
+Podemos modelar su complejidad $T(N)$ para un vector de $N$ Pokémones mediante la siguiente relación de recurrencia:
+
+$$T(N) = 2T(N/2) + O(N)$$
+
+Donde:
+* El término $2T(N/2)$ representa las dos llamadas recursivas, cada una procesando la mitad del arreglo.
+* El término $O(N)$ representa el costo lineal de la función `merge_alfabetico`, la cual recorre y mezcla las dos mitades en un arreglo ordenado auxiliar.
+
+Para resolver esta recurrencia, aplicamos el **Teorema Maestro**, cuya forma general es:
+
+$$T(N) = aT(N/b) + f(N)$$
+
+Extrayendo las constantes de nuestra función, obtenemos:
+* $a = 2$ (factor de ramificación)
+* $b = 2$ (factor de reducción)
+* $f(N) = O(N)$ (esfuerzo de mezcla)
+
+Para determinar en qué caso del teorema nos encontramos, calculamos el polinomio crítico $N^{\log_b a}$ que representa la cantida de hojas del árbol:
+
+$$N^{\log_2 2} = N^1 = N$$
+
+Al comparar el esfuerzo de mezcla $f(N)$ con el polinomio crítico que representa la cantidad de hojas, observamos que crecen asintóticamente a la misma velocidad (es decir, $f(N)$ es proporcional a $N^{\log_b a}$). Esto significa que estamos en el **Caso 2** del Teorema Maestro.
+
+La resolución para el Caso 2 dicta que la complejidad final se obtiene multiplicando el polinomio crítico (o el esfuerzo de mezcla, porque son equivalentes) por un factor logarítmico:
+
+$$T(N) = \Theta(N^{\log_b a} \log_2 N)$$
+
+Sustituyendo en nuestros valores:
+
+$$T(N) = \Theta(N \log_2 N)$$
+
+Aplicando el Teorema Maestro, se demostró que la complejidad temporal asintótica de `ordenar_alfabeticamente` en el peor de los casos pertenece a **$O(N \log N)$**.
+
+Analisis de la función `limpiar_y_contar`:
 En esta función lo único que hago que involucra a la cantidad de pokemones es recorrer el arreglo que los contiene, 1 sola vez, dentro de ese for no llamo a otra función auxiliar propia ni hago nada de no sea constante en relación a la cantidad de los pokemones del arreglo, por lo tanto la complejidad asíntotica de la función es lineal.
 
 
 Analisis de la función `clasificar_por_tipo`:
 En esta función lo único que hago que depende de la cantidad de pokemones, es decir, de n, es recorrer una sola vez el arreglo de pokemones para poner sus punteros en los vectores exclusivos por tipo al que pertenecen, la cantidad que reservó para cada vector exclusivo por tipo es exacta porque ya los conté en la función `limpiar_y_contar`, por ende no hay necesidad de reallocs, la complejidad asintotica de esta función es lineal.
  
-Analisis de la función `ordenar_alfabeticamente`:
+
 
 
 ## 4. Decisiones de diseño y/o complejidades de implementación
