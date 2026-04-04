@@ -48,35 +48,35 @@ El TDA `tp1_t` y sus primitivas sirven para guardar y consultar información de 
 
 <div align="center">
   <img src="img/diagramas/tp1_leer_archivo.svg" width="100%">
-  <p>Diagrama de flujo de tp1_leer_archivo.</p>
+  <p>*Diagrama de flujo de tp1_leer_archivo.*</p>
 </div>
 <div align="center">
   <img src="img/diagramas/tp1_cantidad.svg" width="100%">
-  <p>Diagrama de flujo tp1_cantidad.</p>
+  <p>*Diagrama de flujo tp1_cantidad.*</p>
 </div>
 <div align="center">
   <img src="img/diagramas/tp1_guardar_archivo.svg" width="100%">
-  <p>Diagrama de flujo de tp1_guardar_archivo.</p>
+  <p>*Diagrama de flujo de tp1_guardar_archivo.*</p>
 </div>
 <div align="center">
   <img src="img/diagramas/tp1_filtrar_tipo_2.svg" width="100%">
-  <p>Diagrama de flujo de tp1_filtrar_tipo.</p>
+  <p>*Diagrama de flujo de tp1_filtrar_tipo.*</p>
 </div>
 <div align="center">
   <img src="img/diagramas/tp1_buscar_nombre.svg" width="100%">
-  <p>Diagrama de flujo de tp1_buscar_nombre.</p>
+  <p>*Diagrama de flujo de tp1_buscar_nombre.*</p>
 </div>
 <div align="center">
   <img src="img/diagramas/tp1_buscar_orden_3.svg" width="100%">
-  <p>Diagrama de flujo de tp1_buscar_orden.</p>
+  <p>*Diagrama de flujo de tp1_buscar_orden.*</p>
 </div>
 <div align="center">
   <img src="img/diagramas/tp1_con_cada_pokemon.svg" width="100%">
-  <p>Diagrama de flujo de tp1_con_cada_pokemon.</p>
+  <p>*Diagrama de flujo de tp1_con_cada_pokemon.*</p>
 </div>
 <div align="center">
   <img src="img/diagramas/tp1_destruir_2.svg" width="100%">
-  <p>Diagrama de flujo de tp1_destruir.</p>
+  <p>*Diagrama de flujo de tp1_destruir.*</p>
 </div>
 
 
@@ -88,7 +88,7 @@ Para la estructura `tp1_t` se decidió utilizar un arreglo de punteros a `struct
 
 <div align="center">
   <img src="img/diagramas/struct_tp1_t_6.svg" width="100%">
-  <p>Diagrama de memoria del TDA tp1_t en el caso de que tuviese cargado solamente un pokemon de tipo ELEC.</p>
+  <p>*Diagrama de memoria del TDA tp1_t en el caso de que tuviese cargado solamente un pokemon de tipo ELEC.*</p>
 </div>
 
 
