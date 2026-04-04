@@ -185,7 +185,7 @@ Para un arreglo de $N$ Pokémones, podemos dividir el análisis en dos etapas:
 
 Aplicando la regla de la suma para bloques secuenciales, la función de costo asintótico resulta:
 
-$$T(N) = \mathcal{O}(N) + \mathcal{O}(N) \in \mathcal{O}(N)$$
+$$\Large T(N) = \mathcal{O}(N) + \mathcal{O}(N) \in \mathcal{O}(N)$$
 
 **Conclusión:** La complejidad temporal de `limpiar_y_contar` es estrictamente **$\mathcal{O}(N)$**.
 
