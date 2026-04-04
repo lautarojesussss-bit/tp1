@@ -81,7 +81,7 @@ El TDA `tp1_t` y sus primitivas sirven para guardar y consultar información de 
 
 
 ## 3. Estructura
-Para la estructura `tp1_t` se decidió utilizar un arreglo de punteros a `struct pokemon`, mantenido en orden alfabético, junto con un arreglo de arreglos de punteros donde cada sub-arreglo almacena exclusivamente punteros a Pokémones de un tipo específico. Además, se mantienen los topes respectivos de todos los arreglos.
+Para la estructura `tp1_t` se decidió utilizar un arreglo de punteros a `struct pokemon`, mantenido en orden alfabético (`pokemones_nombre`) junto con un arreglo de arreglos de punteros donde cada sub-arreglo almacena exclusivamente punteros a Pokémones de un tipo específico (`pokemones_tipo`). Además, se mantienen los topes respectivos de todos los arreglos.
 
 
 ### 3.1. Diagrama de memoria
