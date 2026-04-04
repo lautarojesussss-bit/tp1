@@ -105,7 +105,7 @@ Para el tp1_t decidí usar un vector de punteros a struct pokemon que los tenga 
 | `tp1_con_cada_pokemon`       |  $O(n)$   |Hago una iteración sobre el arreglo pokemones_nombre que tiene todos los pokemones, así que en el peor de los casos es justo n la cantidad de operaciones y eso se multiplica por la complejidad de f, que no conozco, por ende O(n.O(f)).|
 
 #### Analisis de la complejidad de `tp1_leer_archivo`:
-  En el peor de los casos realizo 4 llamadas a funciones auxiliares de complejidad asintotica no constante, estas son `cargar_en_bruto`, `ordenar_alfabeticamente`, `limpiar_y_contar`, y `clasificar_por_tipo`.
+  Esta es la función más compleja de las que se pedía implementar, por eso hago el analisis por separado. En el peor de los casos realizo 4 llamadas a funciones auxiliares de complejidad asintotica no constante, estas son `cargar_en_bruto`, `ordenar_alfabeticamente`, `limpiar_y_contar`, y `clasificar_por_tipo`.
 Prosigo con el analisis de cada una para determinar la complejidad total de la función. 
 
 ##### Analis de la complejidad de `cargar_en_bruto`:
@@ -116,23 +116,23 @@ Dado que las redimensiones del arreglo ocurren en potencias de 2 ($2, 4, 8, 16..
 
 Aplicando el análisis de la complejidad amortizada, el costo total de todas las copias de memoria en está dado por la siguiente sumatoria:
 
-$$\text{Costo de Copias} = \sum_{i=1}^{\log_2 N} 2^i$$
+$$\Large \text{Costo de Copias} = \sum_{i=1}^{\log_2 N} 2^i$$
 
 Por la propiedad matemática de la suma de potencias de 2, sabemos que $\sum_{i=1}^{k} 2^i = 2^{k+1} - 2$. Reemplazando obtenemos:
 
-$$\text{Costo de Copias} = 2^{(\log_2 N) + 1} - 2$$
+$$\Large \text{Costo de Copias} = 2^{(\log_2 N) + 1} - 2$$
 
 Aplicando la propiedades de exponentes pasamos a tener ($x^{a+1} = x \cdot x^a$):
 
-$$\text{Costo de Copias} = 2 \cdot 2^{\log_2 N} - 2$$
+$$\Large \text{Costo de Copias} = 2 \cdot 2^{\log_2 N} - 2$$
 
 Y por propiedades de logaritmos, sabemos que $2^{\log_2 N} = N$. Por lo tanto, la expresión queda como:
 
-$$\text{Costo de Copias} = 2N - 2$$
+$$\Large \text{Costo de Copias} = 2N - 2$$
 
 Para obtener el esfuerzo exacto $f(N)$ en el peor de los casos, sumamos el costo de las inserciones individuales ($N$) al costo total de las copias que acabamos de calcular y al costo de leer y parsear las lineas
 
-$$f(N) = N + (2N - 2) +2N = 5N - 2$$
+$$\Large f(N) = N + (2N - 2) +2N = 5N - 2$$
 
 Por las propiedades del análisis asintótico, sabemos que los coeficientes y los términos de menor grado no afectan la tasa de crecimiento cuando $N$ tiende a infinito. Por lo tanto, podemos afirmar que la función tiene una complejidad asintotica lineal.
 
@@ -142,7 +142,7 @@ La función `ordenar_alfabeticamente` actúa como punto de entrada para `merge_s
 
 Podemos modelar su complejidad $T(N)$ para un vector de $N$ Pokémones mediante la siguiente relación de recurrencia:
 
-$$T(N) = 2T(N/2) + O(N)$$
+$$\Large T(N) = 2T(N/2) + O(N)$$
 
 Donde:
 * El término $2T(N/2)$ representa las dos llamadas recursivas, cada una procesando la mitad del arreglo.
@@ -150,7 +150,7 @@ Donde:
 
 Para resolver esta recurrencia, aplicamos el **Teorema Maestro**, cuya forma general es:
 
-$$T(N) = aT(N/b) + f(N)$$
+$$\Large T(N) = aT(N/b) + f(N)$$
 
 Extrayendo las constantes de nuestra función, obtenemos:
 * $a = 2$ (factor de ramificación)
@@ -159,17 +159,17 @@ Extrayendo las constantes de nuestra función, obtenemos:
 
 Para determinar en qué caso del teorema nos encontramos, calculamos el polinomio crítico $N^{\log_b a}$ que representa la cantida de hojas del árbol:
 
-$$N^{\log_2 2} = N^1 = N$$
+$$\Large N^{\log_2 2} = N^1 = N$$
 
 Al comparar el esfuerzo de mezcla $f(N)$ con el polinomio crítico que representa la cantidad de hojas, observamos que crecen asintóticamente a la misma velocidad (es decir, $f(N)$ es proporcional a $N^{\log_b a}$). Esto significa que estamos en el **Caso 2** del Teorema Maestro.
 
 La resolución para el Caso 2 dicta que la complejidad final se obtiene multiplicando el polinomio crítico (o el esfuerzo de mezcla, porque son equivalentes) por un factor logarítmico:
 
-$$T(N) = \Theta(N^{\log_b a} \log_2 N)$$
+$$\Large T(N) = \Theta(N^{\log_b a} \log_2 N)$$
 
 Sustituyendo en nuestros valores:
 
-$$T(N) = \Theta(N \log_2 N)$$
+$$\Large T(N) = \Theta(N \log_2 N)$$
 
 Aplicando el Teorema Maestro, se demostró que la complejidad temporal asintótica de `ordenar_alfabeticamente` en el peor de los casos pertenece a **$O(N \log N)$**.
 
