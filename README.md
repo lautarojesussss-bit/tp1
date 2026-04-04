@@ -51,7 +51,7 @@ El TDA `tp1_t` y sus primitivas sirven para guardar y consultar información de 
   <p><i>Diagrama de flujo de tp1_leer_archivo.</i></p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_cantidad.svg" width="100%">
+  <img src="img/diagramas/tp1_cantidad_2.svg" width="100%">
   <p><i>Diagrama de flujo tp1_cantidad.</i></p>
 </div>
 <div align="center">
