@@ -63,7 +63,7 @@ El TDA `tp1_t` y sus primitivas sirven para guardar y consultar información de 
   <p><i>Diagrama de flujo de tp1_filtrar_tipo.</i></p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_buscar_nombre_2.svg" width="100%">
+  <img src="img/diagramas/tp1_buscar_nombre_3.svg" width="100%">
   <p><i>Diagrama de flujo de tp1_buscar_nombre.</i></p>
 </div>
 <div align="center">
