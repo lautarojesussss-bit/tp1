@@ -105,7 +105,7 @@ Se tomó la decisión de almacenar únicamente referencias de memoria (punteros)
 
 <div align="center">
   <img src="img/diagramas/struct_tp1_t_9.svg" width="100%">
-  <p><i>Diagrama de memoria del TDA tp1_t. Se representa aquí un escenario en el cual solo se ha cargado un pokémon, de tipo ELEC. Aquellos punteros de los cuales no salen flechas deben ser interpretados como NULL.</i></p>
+  <p><i>Diagrama de memoria del TDA tp1_t. Se representa aquí un escenario en el que solo se ha cargado al tp1_t un pokémon, de tipo ELEC. Aquellos punteros de los cuales no salen flechas deben ser interpretados como NULL.</i></p>
 </div>
 
 
@@ -272,7 +272,7 @@ En las ciencias de la computación, el término "complejidad computacional" pose
 **Definición:**
 La complejidad computacional (entendida como propiedad) expresa la cantidad de recursos que un algoritmo demanda para su ejecución en función del tamaño de la entrada de datos (denotado como $N$). Los dos recursos principales (pero no los únicos) que se analizan son el **tiempo de ejecución** (complejidad temporal, medida en operaciones elementales) y la **memoria utilizada** (complejidad espacial, medida en espacio de almacenamiento auxiliar). El objetivo es establecer el comportamiento teórico del algoritmo a medida que $N$ tiende al infinito (comportamiento asintótico). 
 
-En la materia, de momento, solo se ha abordado la complejidad temporal, pero el método utilizado para ambos tipos de complejidades computacionales no difiere demasiado.
+En la materia, de momento, solo se ha abordado la complejidad temporal, pero el método utilizado para analizar ambos tipos de complejidades es, a grandes rasgos, el mismo.
 
 **Método de Cálculo:**
 El cálculo se realiza mediante el análisis asintótico, y se expresa a través de la notación Big-O ($O$). Para determinar la complejidad de un algoritmo, se sigue un procedimiento de abstracción:
