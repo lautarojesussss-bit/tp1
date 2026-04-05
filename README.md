@@ -263,7 +263,7 @@ En las ciencias de la computación, el término "complejidad computacional" pose
 * **Como propiedad de los algortimos:** Se refiere a la característica estructural, inmutable y puramente matemática de un algoritmo específico, la cual es completamente independiente del hardware físico o del lenguaje de programación utilizado.
 
 **Definición:**
-La complejidad computacional expresa la cantidad de recursos que un algoritmo demanda para su ejecución en función del tamaño de la entrada de datos (denotado como $N$). Los dos recursos principales (pero no los únicos) que se analizan son el **tiempo de ejecución** (complejidad temporal, medida en operaciones elementales) y la **memoria utilizada** (complejidad espacial, medida en espacio de almacenamiento auxiliar). El objetivo es establecer el comportamiento teórico del algoritmo a medida que $N$ tiende al infinito (comportamiento asintótico). 
+La complejidad computacional (entendida como propiedad) expresa la cantidad de recursos que un algoritmo demanda para su ejecución en función del tamaño de la entrada de datos (denotado como $N$). Los dos recursos principales (pero no los únicos) que se analizan son el **tiempo de ejecución** (complejidad temporal, medida en operaciones elementales) y la **memoria utilizada** (complejidad espacial, medida en espacio de almacenamiento auxiliar). El objetivo es establecer el comportamiento teórico del algoritmo a medida que $N$ tiende al infinito (comportamiento asintótico). 
 
 En la materia, de momento, solo se ha abordado la complejidad temporal, pero el método utilizado para ambos tipos de complejidades computacionales no difiere demasiado.
 
