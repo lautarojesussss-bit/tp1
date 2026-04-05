@@ -6,6 +6,33 @@
 #include "pa2m.h"
 #include "../src/constantes.h"
 
+void cargar_pokemon(struct pokemon *p, char *nombre, enum tipo_pokemon tipo,
+		    int ataque, int defensa, int velocidad)
+{
+	if (!nombre || !p)
+		return;
+
+	p->ataque = ataque;
+	p->defensa = defensa;
+	p->velocidad = velocidad;
+	p->tipo = tipo;
+	p->nombre = nombre;
+}
+
+void inicializar_escenario_estandar(
+	struct pokemon pokemones[CANT_POKEMONES_PRUEBA],
+	struct pokemon *punteros[CANT_POKEMONES_PRUEBA])
+{
+	cargar_pokemon(&pokemones[0], "Bulbasaur", TIPO_PLAN, 49, 49, 45);
+	cargar_pokemon(&pokemones[1], "Charmander", TIPO_FUEG, 52, 43, 65);
+	cargar_pokemon(&pokemones[2], "Jigglypuff", TIPO_NORM, 45, 20, 20);
+	cargar_pokemon(&pokemones[3], "Pikachu", TIPO_ELEC, 55, 40, 90);
+	cargar_pokemon(&pokemones[4], "Squirtle", TIPO_AGUA, 48, 65, 43);
+
+	for (int i = 0; i < CANT_POKEMONES_PRUEBA; i++)
+		punteros[i] = &pokemones[i];
+}
+
 bool es_el_mismo_pokemon(struct pokemon *pokemon_1, struct pokemon *pokemon_2)
 {
 	if (!pokemon_1 || !pokemon_2)
@@ -27,7 +54,7 @@ bool es_el_tp_esperado(struct pokemon **pokemones, tp1_t *tpB)
 
 	bool son_iguales = true;
 
-	for (int i = 0; i < cant; i++) {
+	for (int i = 0; son_iguales && i < cant; i++) {
 		if (!es_el_mismo_pokemon(pokemones[i],
 					 tp1_buscar_orden(tpB, i)))
 			son_iguales = false;
@@ -48,7 +75,7 @@ bool son_el_mismo_tp(tp1_t *tpA, tp1_t *tpB)
 
 	bool son_iguales = true;
 
-	for (int i = 0; i < cant; i++) {
+	for (int i = 0; son_iguales && i < cant; i++) {
 		if (!es_el_mismo_pokemon(tp1_buscar_orden(tpA, i),
 					 tp1_buscar_orden(tpB, i)))
 			son_iguales = false;
@@ -57,18 +84,7 @@ bool son_el_mismo_tp(tp1_t *tpA, tp1_t *tpB)
 	return son_iguales;
 }
 
-void cargar_pokemon(struct pokemon *p, char *nombre, enum tipo_pokemon tipo,
-		    int ataque, int defensa, int velocidad)
-{
-	if (!nombre || !p)
-		return;
 
-	p->ataque = ataque;
-	p->defensa = defensa;
-	p->velocidad = velocidad;
-	p->tipo = tipo;
-	p->nombre = nombre;
-}
 
 void prueba_destruir_tp_vacio()
 {
@@ -160,27 +176,10 @@ void prueba_tp1_uno_bien()
 
 void prueba_pokemones_desordenados()
 {
-	struct pokemon pokemon_correcto_1;
-	struct pokemon pokemon_correcto_2;
-	struct pokemon pokemon_correcto_3;
-	struct pokemon pokemon_correcto_4;
-	struct pokemon pokemon_correcto_5;
+	struct pokemon pokemones[CANT_POKEMONES_PRUEBA];
+	struct pokemon *punteros_pokemones[CANT_POKEMONES_PRUEBA];
 
-	cargar_pokemon(&pokemon_correcto_1, "Bulbasaur", TIPO_PLAN, 49, 49, 45);
-	cargar_pokemon(&pokemon_correcto_2, "Charmander", TIPO_FUEG, 52, 43,
-		       65);
-	cargar_pokemon(&pokemon_correcto_3, "Jigglypuff", TIPO_NORM, 45, 20,
-		       20);
-	cargar_pokemon(&pokemon_correcto_4, "Pikachu", TIPO_ELEC, 55, 40, 90);
-	cargar_pokemon(&pokemon_correcto_5, "Squirtle", TIPO_AGUA, 48, 65, 43);
-
-	struct pokemon *pokemones_aux[5];
-
-	pokemones_aux[0] = &pokemon_correcto_1;
-	pokemones_aux[1] = &pokemon_correcto_2;
-	pokemones_aux[2] = &pokemon_correcto_3;
-	pokemones_aux[3] = &pokemon_correcto_4;
-	pokemones_aux[4] = &pokemon_correcto_5;
+	inicializar_escenario_estandar(pokemones, punteros_pokemones);
 
 	tp1_t *tp_aux = NULL;
 	bool cumple = false;
@@ -191,7 +190,7 @@ void prueba_pokemones_desordenados()
 	tp_aux = tp1_leer_archivo(nombre_archivo);
 
 	if (tp_aux != NULL) {
-		cumple = es_el_tp_esperado(pokemones_aux, tp_aux);
+		cumple = es_el_tp_esperado(punteros_pokemones, tp_aux);
 		tp1_destruir(tp_aux);
 	}
 
@@ -202,27 +201,10 @@ void prueba_pokemones_desordenados()
 
 void prueba_ignorar_lineas_vacias()
 {
-	struct pokemon pokemon_correcto_1;
-	struct pokemon pokemon_correcto_2;
-	struct pokemon pokemon_correcto_3;
-	struct pokemon pokemon_correcto_4;
-	struct pokemon pokemon_correcto_5;
+	struct pokemon pokemones[CANT_POKEMONES_PRUEBA];
+	struct pokemon *punteros_pokemones[CANT_POKEMONES_PRUEBA];
 
-	cargar_pokemon(&pokemon_correcto_1, "Bulbasaur", TIPO_PLAN, 49, 49, 45);
-	cargar_pokemon(&pokemon_correcto_2, "Charmander", TIPO_FUEG, 52, 43,
-		       65);
-	cargar_pokemon(&pokemon_correcto_3, "Jigglypuff", TIPO_NORM, 45, 20,
-		       20);
-	cargar_pokemon(&pokemon_correcto_4, "Pikachu", TIPO_ELEC, 55, 40, 90);
-	cargar_pokemon(&pokemon_correcto_5, "Squirtle", TIPO_AGUA, 48, 65, 43);
-
-	struct pokemon *pokemones_aux[5];
-
-	pokemones_aux[0] = &pokemon_correcto_1;
-	pokemones_aux[1] = &pokemon_correcto_2;
-	pokemones_aux[2] = &pokemon_correcto_3;
-	pokemones_aux[3] = &pokemon_correcto_4;
-	pokemones_aux[4] = &pokemon_correcto_5;
+	inicializar_escenario_estandar(pokemones, punteros_pokemones);
 
 	tp1_t *tp_aux = NULL;
 	bool cumple = false;
@@ -233,8 +215,8 @@ void prueba_ignorar_lineas_vacias()
 	tp_aux = tp1_leer_archivo(nombre_archivo);
 
 	if (tp_aux != NULL) {
-		cumple = tp1_cantidad(tp_aux) == 5 &&
-			 es_el_tp_esperado(pokemones_aux, tp_aux);
+		cumple = tp1_cantidad(tp_aux) == CANT_POKEMONES_PRUEBA &&
+			 es_el_tp_esperado(punteros_pokemones, tp_aux);
 		tp1_destruir(tp_aux);
 	}
 
@@ -245,27 +227,10 @@ void prueba_ignorar_lineas_vacias()
 
 void prueba_ignorar_pokemones_truchos()
 {
-	struct pokemon pokemon_correcto_1;
-	struct pokemon pokemon_correcto_2;
-	struct pokemon pokemon_correcto_3;
-	struct pokemon pokemon_correcto_4;
-	struct pokemon pokemon_correcto_5;
+	struct pokemon pokemones[CANT_POKEMONES_PRUEBA];
+	struct pokemon *punteros_pokemones[CANT_POKEMONES_PRUEBA];
 
-	cargar_pokemon(&pokemon_correcto_1, "Bulbasaur", TIPO_PLAN, 49, 49, 45);
-	cargar_pokemon(&pokemon_correcto_2, "Charmander", TIPO_FUEG, 52, 43,
-		       65);
-	cargar_pokemon(&pokemon_correcto_3, "Jigglypuff", TIPO_NORM, 45, 20,
-		       20);
-	cargar_pokemon(&pokemon_correcto_4, "Pikachu", TIPO_ELEC, 55, 40, 90);
-	cargar_pokemon(&pokemon_correcto_5, "Squirtle", TIPO_AGUA, 48, 65, 43);
-
-	struct pokemon *pokemones_aux[5];
-
-	pokemones_aux[0] = &pokemon_correcto_1;
-	pokemones_aux[1] = &pokemon_correcto_2;
-	pokemones_aux[2] = &pokemon_correcto_3;
-	pokemones_aux[3] = &pokemon_correcto_4;
-	pokemones_aux[4] = &pokemon_correcto_5;
+	inicializar_escenario_estandar(pokemones, punteros_pokemones);
 
 	tp1_t *tp_aux = NULL;
 	bool cumple = false;
@@ -277,7 +242,7 @@ void prueba_ignorar_pokemones_truchos()
 
 	if (tp_aux != NULL) {
 		cumple = tp1_cantidad(tp_aux) == 5 &&
-			 es_el_tp_esperado(pokemones_aux, tp_aux);
+			 es_el_tp_esperado(punteros_pokemones, tp_aux);
 		tp1_destruir(tp_aux);
 	}
 
@@ -400,27 +365,10 @@ void prueba_buscar_nombre_mal_escrito()
 
 void prueba_guardar_archivo()
 {
-	struct pokemon pokemon_correcto_1;
-	struct pokemon pokemon_correcto_2;
-	struct pokemon pokemon_correcto_3;
-	struct pokemon pokemon_correcto_4;
-	struct pokemon pokemon_correcto_5;
+	struct pokemon pokemones[CANT_POKEMONES_PRUEBA];
+	struct pokemon *punteros_pokemones[CANT_POKEMONES_PRUEBA];
 
-	cargar_pokemon(&pokemon_correcto_1, "Bulbasaur", TIPO_PLAN, 49, 49, 45);
-	cargar_pokemon(&pokemon_correcto_2, "Charmander", TIPO_FUEG, 52, 43,
-		       65);
-	cargar_pokemon(&pokemon_correcto_3, "Jigglypuff", TIPO_NORM, 45, 20,
-		       20);
-	cargar_pokemon(&pokemon_correcto_4, "Pikachu", TIPO_ELEC, 55, 40, 90);
-	cargar_pokemon(&pokemon_correcto_5, "Squirtle", TIPO_AGUA, 48, 65, 43);
-
-	struct pokemon *pokemones_aux[5];
-
-	pokemones_aux[0] = &pokemon_correcto_1;
-	pokemones_aux[1] = &pokemon_correcto_2;
-	pokemones_aux[2] = &pokemon_correcto_3;
-	pokemones_aux[3] = &pokemon_correcto_4;
-	pokemones_aux[4] = &pokemon_correcto_5;
+	inicializar_escenario_estandar(pokemones, punteros_pokemones);
 
 	tp1_t *tp_aux = NULL;
 	tp1_t *tp_releido = NULL;
@@ -434,7 +382,7 @@ void prueba_guardar_archivo()
 
 	tp_aux = tp1_leer_archivo(nombre_archivo);
 
-	if (tp_aux != NULL && es_el_tp_esperado(pokemones_aux, tp_aux)) {
+	if (tp_aux != NULL && es_el_tp_esperado(punteros_pokemones, tp_aux)) {
 		tp1_guardar_archivo(tp_aux, archivo_escribir);
 		tp_releido = tp1_leer_archivo(archivo_escribir);
 		cumple = son_el_mismo_tp(tp_aux, tp_releido);

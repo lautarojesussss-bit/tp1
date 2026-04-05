@@ -19,7 +19,8 @@
 #define ACCION_1_FORMA_1 "nombre"
 #define ACCION_1_FORMA_2 "tipo"
 #define CANT_TIPOS 8
-#define FORMATO_IMPRESION "Nombre: %-15s | Tipo: %-10s | Ataque: %-3d | Defensa: %-3d | Velocidad: %-3d\n"
+#define FORMATO_IMPRESION \
+	"Nombre: %-15s | Tipo: %-10s | Ataque: %-3d | Defensa: %-3d | Velocidad: %-3d\n"
 
 //pruebas_alumno.c
 #define MAX_NOMBRE 200
@@ -30,5 +31,6 @@
 #define CANT_LEIDA_ESPERADA 5
 #define N_POKEMON 2
 #define POKEMON_BUSCADO "Pikachu"
+#define CANT_POKEMONES_PRUEBA 5
 
 #endif //CONSTANTES_H_
