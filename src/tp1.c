@@ -4,12 +4,10 @@
 #include <string.h>
 #include <strings.h>
 #include "utils.h"
+#include "constantes.h"
 
-#define TAMANIO_INICIAL 101
-#define CANT_DATOS 5
-#define SEPARADOR ','
-#define TIPOS_CANT 8
-#define CANT_METRICAS_POKEMON 3
+const char *TIPOS_CSV[] = { "ELEC", "FUEG", "PLAN", "AGUA",
+			    "NORM", "FANT", "PSI",  "LUCH" };
 
 struct tp1 {
 	struct pokemon **pokemones_nombre;
@@ -18,10 +16,36 @@ struct tp1 {
 	size_t cant_tipos[TIPOS_CANT];
 };
 
+bool escribir_pokemon(struct pokemon *pokemon, void *archivo)
+{
+	if (!pokemon || !archivo || !(pokemon->nombre))
+		return false;
+
+	fprintf(archivo, FORMATO_ESCRITURA, pokemon->nombre,
+		TIPOS_CSV[pokemon->tipo], pokemon->ataque, pokemon->defensa,
+		pokemon->velocidad);
+
+	return true;
+}
+
+void escribir_pokemones(tp1_t *tp1, FILE *archivo)
+{
+	if (!tp1 || !archivo)
+		return;
+
+	tp1_con_cada_pokemon(tp1, escribir_pokemon, archivo);
+}
+
+/*
+ * PRE: 'pokemones' no debe ser NULL y 'error_memoria' debe ser false. Los sub-arreglos [pos_inicio..pos_mitad] 
+ * y [pos_mitad+1..pos_fin] deben estar ordenados alfabéticamente.
+ * POST: Mezcla ambos sub-arreglos de forma ordenada en el arreglo original. 
+ * En caso de fallo de memoria, actualiza '*error_memoria' a true.
+ */
 void merge_alfabetico(struct pokemon **pokemones, int pos_inicio, int pos_mitad,
 		      int pos_fin, bool *error_memoria)
 {
-	if (!pokemones || !error_memoria)
+	if (!pokemones || !error_memoria || *error_memoria)
 		return;
 
 	int i = pos_inicio;
@@ -69,6 +93,11 @@ void merge_alfabetico(struct pokemon **pokemones, int pos_inicio, int pos_mitad,
 	free(pokemones_aux);
 }
 
+/*
+ * PRE: 'pokemones' no debe ser NULL y 'error_memoria' debe ser false.
+ * POST: Ordena recursivamente el sub-arreglo delimitado por 'pos_inicio' y 'pos_fin'. 
+ * Si '*error_memoria' es true, se aborta.
+ */
 void merge_sort_alfabetico(struct pokemon **pokemones, int pos_inicio,
 			   int pos_fin, bool *error_memoria)
 {
@@ -88,6 +117,11 @@ void merge_sort_alfabetico(struct pokemon **pokemones, int pos_inicio,
 	}
 }
 
+/*
+ * PRE: 'pokemones' no deber NULL y 'error_memoria' debe ser false. 'cantidad' >= 2.
+ * POST: Ordena el arreglo de punteros in-place alfabéticamente (de menor a mayor) 
+ * utilizando el algoritmo Merge Sort. Si ocurre un error, actualiza '*error_memoria' a true.
+ */
 void ordenar_alfabeticamente(struct pokemon **pokemones, bool *error_memoria,
 			     size_t cantidad)
 {
@@ -95,67 +129,6 @@ void ordenar_alfabeticamente(struct pokemon **pokemones, bool *error_memoria,
 		return;
 
 	merge_sort_alfabetico(pokemones, 0, (int)(cantidad - 1), error_memoria);
-}
-
-void *ajustar_buffer(void *buffer, bool *error_memoria, size_t ocupado)
-{
-	void *buffer_ajustado = realloc(buffer, ocupado);
-
-	if (!buffer_ajustado) {
-		*error_memoria = true;
-		return NULL;
-	}
-	return buffer_ajustado;
-}
-
-char *leer_linea(FILE *archivo, bool *error_memoria, bool *termino_el_archivo)
-{
-	if (!archivo || !error_memoria || !termino_el_archivo)
-		return NULL;
-
-	size_t tamanio_buffer = TAMANIO_INICIAL;
-
-	char *buffer = malloc(tamanio_buffer * sizeof(char));
-	if (!buffer) {
-		*error_memoria = true;
-		return NULL;
-	}
-
-	size_t ocupado = 0;
-	bool encontramos_salto_de_linea = false;
-
-	while (!(*error_memoria) && !encontramos_salto_de_linea &&
-	       fgets(buffer + ocupado, (int)(tamanio_buffer - ocupado),
-		     archivo) != NULL) {
-		ocupado += strlen(buffer + ocupado);
-
-		if (buffer[ocupado - 1] == '\n') {
-			encontramos_salto_de_linea = true;
-			buffer[ocupado - 1] = '\0';
-			ocupado--;
-		} else {
-			char *buffer_aux = realloc(
-				buffer, tamanio_buffer * 2 * sizeof(char));
-			if (!buffer_aux) {
-				*error_memoria = true;
-			} else {
-				buffer = buffer_aux;
-				tamanio_buffer = tamanio_buffer * 2;
-			}
-		}
-	}
-
-	*termino_el_archivo = (!encontramos_salto_de_linea && ocupado == 0);
-
-	if (*error_memoria || *termino_el_archivo) {
-		free(buffer);
-		return NULL;
-	}
-
-	char *buffer_ajustado = ajustar_buffer(buffer, error_memoria,
-					       (ocupado + 1) * sizeof(char));
-
-	return buffer_ajustado;
 }
 
 bool formato_es_correcto(struct vector *v, int *tipo, int *metricas)
@@ -173,7 +146,7 @@ bool formato_es_correcto(struct vector *v, int *tipo, int *metricas)
 			son_correctos_nums = false;
 
 	for (int i = 0; *tipo == -1 && i < TIPOS_CANT; i++) {
-		if (strcmp(v->palabras[1], NOMBRES_TIPOS[i]) == 0)
+		if (strcmp(v->palabras[1], TIPOS_CSV[i]) == 0)
 			*tipo = i;
 	}
 
@@ -594,7 +567,6 @@ tp1_t *tp1_filtrar_tipo(tp1_t *un_tp, enum tipo_pokemon tipo)
 
 	return tp_aux;
 }
-
 
 /**
 * Busca un pokemon por nombre.

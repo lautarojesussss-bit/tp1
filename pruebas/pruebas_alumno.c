@@ -4,21 +4,7 @@
 #include <strings.h>
 #include <string.h>
 #include "pa2m.h"
-
-#define MAX_NOMBRE 200
-
-#define ARCHIVO_UN_POKEMON "pruebas/archivos_csv/un_pokemon.csv"
-
-#define ARCHIVO_VACIO "pruebas/archivos_csv/vacio.csv"
-
-#define NOMBRE_ARCHIVO_NUEVO "pruebas/archivos_csv/pokemones_filtrados.csv"
-
-#define ARCHIVO_VARIOS_POKEMONES "pruebas/archivos_csv/5pokemones.csv"
-
-#define CANT_LEIDA_ESPERADA 5
-
-#define N_POKEMON 2
-#define POKEMON_BUSCADO "Pikachu"
+#include "../src/constantes.h"
 
 bool es_el_mismo_pokemon(struct pokemon *pokemon_1, struct pokemon *pokemon_2)
 {
@@ -71,19 +57,6 @@ bool son_el_mismo_tp(tp1_t *tpA, tp1_t *tpB)
 	return son_iguales;
 }
 
-/* 
-void imprimir_pokemon(struct pokemon *pokemon)
-{
-	printf("%s,%s,%i,%i,%i\n", pokemon->nombre, NOMBRES_TIPOS[pokemon->tipo],
-	       pokemon->ataque, pokemon->defensa, pokemon->velocidad);
-}
-
-void imprimir_tp(tp1_t *tp)
-{
-	for (int i = 0; i < tp->cantidad; i++)
-		imprimir_pokemon(tp->pokemones[i]);
-}
-*/
 void cargar_pokemon(struct pokemon *p, char *nombre, enum tipo_pokemon tipo,
 		    int ataque, int defensa, int velocidad)
 {
@@ -96,21 +69,6 @@ void cargar_pokemon(struct pokemon *p, char *nombre, enum tipo_pokemon tipo,
 	p->tipo = tipo;
 	p->nombre = nombre;
 }
-
-/* 
-
-void prueba_destruir_tp_con_uno()
-{
-	tp1_t *tp = malloc(sizeof(tp1_t));
-
-	if (!tp) {
-		printf("Se abortó esta prueba por fallo al reservar memoria. \n\n");
-		return;
-	}
-
-
-}
-*/
 
 void prueba_destruir_tp_vacio()
 {

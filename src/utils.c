@@ -1,20 +1,5 @@
 #include "utils.h"
-#define FORMATO_ESCRITURA "%s,%s,%i,%i,%i\n"
-
-const char *NOMBRES_TIPOS[] = { "ELEC", "FUEG", "PLAN", "AGUA",
-				"NORM", "FANT", "PSI",	"LUCH" };
-
-bool escribir_pokemon(struct pokemon *pokemon, void *archivo)
-{
-	if (!pokemon || !archivo || !(pokemon->nombre))
-		return false;
-
-	fprintf(archivo, FORMATO_ESCRITURA, pokemon->nombre,
-		NOMBRES_TIPOS[pokemon->tipo], pokemon->ataque, pokemon->defensa,
-		pokemon->velocidad);
-
-	return true;
-}
+#include "constantes.h"
 
 bool es_numero_valido(const char *cadena, int *valor)
 {
@@ -32,14 +17,6 @@ bool es_numero_valido(const char *cadena, int *valor)
 	*valor = (int)valor_convertido;
 
 	return true;
-}
-
-void escribir_pokemones(tp1_t *tp1, FILE *archivo)
-{
-	if (!tp1 || !archivo)
-		return;
-
-	tp1_con_cada_pokemon(tp1, escribir_pokemon, archivo);
 }
 
 void vector_destruir(struct vector *vector)
@@ -151,4 +128,65 @@ struct vector *split(char *texto, char caracter_separador)
 
 	vector_resultado->palabras = buffer_ajustado;
 	return vector_resultado;
+}
+
+void *ajustar_buffer(void *buffer, bool *error_memoria, size_t ocupado)
+{
+	void *buffer_ajustado = realloc(buffer, ocupado);
+
+	if (!buffer_ajustado) {
+		*error_memoria = true;
+		return NULL;
+	}
+	return buffer_ajustado;
+}
+
+char *leer_linea(FILE *archivo, bool *error_memoria, bool *termino_el_archivo)
+{
+	if (!archivo || !error_memoria || !termino_el_archivo)
+		return NULL;
+
+	size_t tamanio_buffer = TAMANIO_INICIAL;
+
+	char *buffer = malloc(tamanio_buffer * sizeof(char));
+	if (!buffer) {
+		*error_memoria = true;
+		return NULL;
+	}
+
+	size_t ocupado = 0;
+	bool encontramos_salto_de_linea = false;
+
+	while (!(*error_memoria) && !encontramos_salto_de_linea &&
+	       fgets(buffer + ocupado, (int)(tamanio_buffer - ocupado),
+		     archivo) != NULL) {
+		ocupado += strlen(buffer + ocupado);
+
+		if (buffer[ocupado - 1] == '\n') {
+			encontramos_salto_de_linea = true;
+			buffer[ocupado - 1] = '\0';
+			ocupado--;
+		} else {
+			char *buffer_aux = realloc(
+				buffer, tamanio_buffer * 2 * sizeof(char));
+			if (!buffer_aux) {
+				*error_memoria = true;
+			} else {
+				buffer = buffer_aux;
+				tamanio_buffer = tamanio_buffer * 2;
+			}
+		}
+	}
+
+	*termino_el_archivo = (!encontramos_salto_de_linea && ocupado == 0);
+
+	if (*error_memoria || *termino_el_archivo) {
+		free(buffer);
+		return NULL;
+	}
+
+	char *buffer_ajustado = ajustar_buffer(buffer, error_memoria,
+					       (ocupado + 1) * sizeof(char));
+
+	return buffer_ajustado;
 }

@@ -2,14 +2,30 @@
 #include <stdio.h>
 #include <string.h>
 #include "src/utils.h"
+#include "src/constantes.h"
 
-#define ERROR -1
-#define CANT_ARGUMENTOS 4
-#define ACCION_1 "mostrar"
-#define ACCION_2 "buscar"
-#define ACCION_1_FORMA_1 "nombre"
-#define ACCION_1_FORMA_2 "tipo"
-#define CANT_TIPOS 8
+const char *NOMBRES_TIPOS[] = { "Eléctrico", "Fuego",	  "Planta",   "Agua",
+				"Normal",    "Fantasmas", "Psíquico", "Lucha" };
+
+bool imprimir_pokemon(struct pokemon *pokemon, void *archivo)
+{
+	if (!pokemon || !archivo || !(pokemon->nombre))
+		return false;
+
+	fprintf(archivo, FORMATO_ESCRITURA, pokemon->nombre,
+		NOMBRES_TIPOS[pokemon->tipo], pokemon->ataque, pokemon->defensa,
+		pokemon->velocidad);
+
+	return true;
+}
+
+void imprimir_pokemones(tp1_t *tp1, FILE *archivo)
+{
+	if (!tp1 || !archivo)
+		return;
+
+	tp1_con_cada_pokemon(tp1, imprimir_pokemon, archivo);
+}
 
 void imprimir_tp_por_tipo(tp1_t *tp)
 {
@@ -22,7 +38,7 @@ void imprimir_tp_por_tipo(tp1_t *tp)
 		if (!tp_aux) {
 			error_memoria = true;
 		} else {
-			escribir_pokemones(tp_aux, stdout);
+			imprimir_pokemones(tp_aux, stdout);
 			tp1_destruir(tp_aux);
 		}
 	}
@@ -56,7 +72,7 @@ int main(int argc, char const *argv[])
 		bool error_memoria = false;
 
 		if (es_forma_1)
-			escribir_pokemones(tp, stdout);
+			imprimir_pokemones(tp, stdout);
 		else if (es_forma_2)
 			imprimir_tp_por_tipo(tp);
 
@@ -72,14 +88,14 @@ int main(int argc, char const *argv[])
 				printf("Error, el pokemon %d no se encontró.\n",
 				       n);
 			else
-				escribir_pokemon(pokemon_buscado, stdout);
+				imprimir_pokemon(pokemon_buscado, stdout);
 		} else {
 			pokemon_buscado = tp1_buscar_nombre(tp, argv[3]);
 			if (!pokemon_buscado)
 				printf("Error el pokemon %s no se encontró.\n",
 				       argv[3]);
 			else
-				escribir_pokemon(pokemon_buscado, stdout);
+				imprimir_pokemon(pokemon_buscado, stdout);
 		}
 	}
 

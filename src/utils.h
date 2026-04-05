@@ -1,7 +1,6 @@
 #ifndef UTILS_H_
 #define UTILS_H_
 #include <stdbool.h>
-#include "tp1.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -11,16 +10,14 @@ struct vector {
 	char **palabras;
 };
 
-extern const char *NOMBRES_TIPOS[];
-
-bool escribir_pokemon(struct pokemon *pokemon, void *archivo);
-
 bool es_numero_valido(const char *cadena, int *valor);
-
-void escribir_pokemones(tp1_t *tp1, FILE *archivo);
 
 struct vector *split(char *texto, char separador);
 
 void vector_destruir(struct vector *vector);
+
+char *leer_linea(FILE *archivo, bool *error_memoria, bool *termino_el_archivo);
+
+void *ajustar_buffer(void *buffer, bool *error_memoria, size_t ocupado);
 
 #endif //UTILS_H_

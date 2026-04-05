@@ -240,15 +240,40 @@ $$\Large T(N) \in O(N \log N)$$
 
 
 ## 4. Decisiones de diseño y/o complejidades de implementación
-Se estableció que la mayor parte del procesamiento ocurra en la función `tp1_leer_archivo`, que tiene complejidad temporal asintótica **$O(N \log N)$**, esta función se encarga de leer el archivo, validar las lineas, crear y cargar los struct pokémon, ordenarlos por orden alfabético, quitar los repetidos, contar los pokémones por tipo y finalmente ordenar a los pokémones por su tipo.
 
-Para la carga en bruto de los punteros se utilizó una estrategia de expansión geométrica (complejidad amortizada), evitando así que la función principal recaiga en una complejidad temporal asintótica $O(N^2)$ por los `reallocs` excesivos, y para el orden alfabético se implementó una versión de merge sort con `strcasecmp` para la comparación de elementos; luego se ejecutan dos iteraciones distintas en arreglo que tiene a todos los pokémones, una para quitar los pokémones repetidos del arreglo y contabilizar los únicos en función de su tipo, y otra para colocar copias de los punteros en los arreglos que están dedicados a un solo tipo de pokémones.
+### Concentración del flujo en `tp1_leer_archivo`
+Se estableció que el núcleo del procesamiento masivo ocurra dentro de la función `tp1_leer_archivo`. Esta función actúa como el orquestador principal del TDA, con una complejidad temporal asintótica total de **$O(N \log N)$** (la de mayor orden entre las funciones que se pedía implementar). Su diseño centraliza y secuencia el flujo de trabajo: lee el archivo dinámicamente, valida los formatos, instancia los registros (`struct pokemon`), los ordena alfabéticamente, depura los duplicados, calcula los totales de cada tipo y, finalmente, clasifica los punteros según su tipo elemental.
 
-En la función `tp1_buscar_nombre` se implementó una búsqueda binaria para hacer que la complejidad temporal asintótica de la función no fuese lineal sino logarítmica, aprovechando que en `tp1_leer_archivo` se ordenó alfabéticamente los pokémones.
+### Implementación con complejidad amortizada
+Para mitigar el costo temporal de las reasignaciones de memoria dinámica, se implementó una estrategia de expansión geométrica (duplicación de capacidad) que garantiza una complejidad amortizada lineal. Esta decisión se aplicó en dos instancias:
 
-Para `tp1_filtrar_tipo` se recorre únicamente el arreglo exclusivo del tipo solicitado de los pokémones del `tp1_t` fuente, y se copia la información al arreglo `pokémones_nombre` y al arreglo exclusivo del tipo solicitado del `tp1_t` destino, por último se actualiza el campo `cantidad_total` y el valor que representa la cantidad del tipo solicitado dentro del arreglo de cantidades del `tp1_t` destino.
+1. **En el arreglo de Pokémones (`agregar_pokemon`):** Evita que la función principal recaiga en una complejidad asintótica $O(N^2)$ generada por el sobrecosto de realizar un `realloc` por cada nueva línea parseada.
+2. **En la lectura del archivo (`leer_linea`):** Aunque el esfuerzo de esta función se considera constante respecto a la cantidad total de líneas ($N$), su costo real depende estrictamente de la longitud de la cadena leída ($L$). El enunciado del trabajo práctico impone la siguiente restricción:
+> *"Tampoco se permite presuponer una longitud máxima de línea, nombres, vectores, etc. Debe utilizarse memoria dinámica."*
 
-Se decidió modularizar algunas funciones de la implementación colocándolas en `utils.h` debido a que estas funciones no están relacionadas estrictamente con el TDA `tp1_t` del trabajo práctico y/o se necesitaban en el main.c
+Al estar formalmente prohibido asumir un tope máximo para $L$ (lo que hubiese permitido abstraerlo como una constante $O(1)$), el uso de memoria dinámica con expansión geométrica previene que el costo temporal de leer una sola línea degrade a un escenario cuadrático $O(L^2)$ respecto a su longitud.
+
+### Optimización en la función `split`
+Para el parseo de las cadenas, se optó por evitar redimensiones incrementales (`reallocs` sucesivos) durante el ciclo principal. En su lugar, se determina inicialmente el tamaño del arreglo de punteros asumiendo el límite superior teórico (el peor de los casos: que la cadena esté compuesta enteramente por caracteres separadores). Cualquier implementación funcional de `split` requiere forzosamente evaluar cada carácter del texto original para identificar los cortes, lo que impone un piso ineludible de complejidad temporal lineal $\mathcal{O}(L)$. Por ende, realizar una iteración adicional al comienzo para conocer la longitud de la cadena y pre-asignar la memoria representa un esfuerzo secuencial de $\mathcal{O}(L) + \mathcal{O}(L)$, lo cual, por propiedades del análisis asintótico, no altera el orden de complejidad final del algoritmo. Este enfoque simplifica notablemente la lógica y minimiza la interacción con el *heap*, requiriendo un único `realloc` al finalizar para encoger y ajustar el *buffer* a la memoria estrictamente utilizada, aunque por supuesto esto tiene un mayor "desperdicio temporal" de memoria durante la ejecución de la función, en comparación con una implementación de la complejidad amortizada que duplique el tamaño del buffer solo al llenarlo, lo que imposibilita que en cualquier momento de la función se esté ocupando menos del 50% de la memoria reservada.
+
+### Uso de búsqueda binaria para `tp1_buscar_nombre`
+Se implementó el algoritmo de Búsqueda Binaria (*divide y vencerás*) para optimizar las consultas por nombre. Al aprovechar la precondición de que el arreglo base ya fue ordenado alfabéticamente durante la carga en `tp1_leer_archivo`, se logró reducir la complejidad temporal asintótica de las búsquedas de un esfuerzo lineal $\mathcal{O}(N)$ a un esfuerzo logarítmico $\mathcal{O}(\log N)$.
+
+### Modularización mediante `utils.h`
+Se decidió desacoplar ciertas funciones utilitarias (como el parseo numérico, la división de cadenas y la escritura de archivos) moviéndolas a un archivo `utils.h`. Esto responde al principio de cohesión: dichas funciones no están estrictamente vinculadas al estado interno del TDA `tp1_t` y, adicionalmente, son requeridas por el archivo `main.c` para operar independientemente.
+
+### Modularización de constantes
+Atendiendo a las correcciones recibidas en la entrega anterior (TP0), se implementó un archivo de cabecera `constantes.h` destinado a centralizar todas las constantes simbólicas (directivas `#define`) del proyecto. Se incluyeron comentarios aclaratorios indicando qué módulos consumen cada conjunto de constantes.
+
+### Elección del Algoritmo de Ordenamiento (Merge Sort)
+Para la implementación de la función `ordenar_alfabeticamente` se desestimó el uso de algoritmos elementales (como *Bubble Sort* o *Selection Sort*) y se optó por desarrollar un *Merge Sort*. Esta decisión se fundamenta en dos características críticas del algoritmo:
+
+1. **Eficiencia asintótica:** Frente a la complejidad temporal cuadrática de $O(N^2)$ de los métodos elementales, Merge Sort garantiza un rendimiento de $O(N \log N)$ en el peor de los casos.
+2. **Estabilidad del ordenamiento:** Merge Sort es un algoritmo estable, lo que implica que preserva estrictamente el orden relativo original de aquellos elementos que resultan iguales bajo el criterio de comparación (Pokémones homónimos). Esta propiedad es vital para la integridad del procesamiento posterior: al garantizar que los Pokémones repetidos queden agrupados de forma adyacente y respetando su orden de lectura original, la función `limpiar_y_contar` puede limitar su lógica a iterar secuencialmente, conservando únicamente la primera aparición y descartando las siguientes con una eficiencia de $O(N)$, sin requerir estructuras auxiliares para identificar cuál fue el registro original.
+
+### Dificultades durante la implementación
+
+La mayor dificultad que se halló durante la implementación se basa en la lectura y parseo de las lineas del archivo en la función `tp1_leer_archivo` y el proceso 
 
 ## 5. Respuestas a las preguntas teóricas
 
