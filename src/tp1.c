@@ -281,6 +281,9 @@ tp1_t *tp1_crear()
 	return tp1_aux;
 }
 
+/**
+ * Libera toda la memoria asociada al tp1
+ */
 void tp1_destruir(tp1_t *tp1)
 {
 	if (!tp1)
@@ -439,6 +442,10 @@ tp1_t *tp1_leer_archivo(const char *nombre)
 	return tp;
 }
 
+/**
+ * Devuevle la cantidad de pokemones leidos correctamente.
+ * En caso de error devuelve 0.
+*/
 size_t tp1_cantidad(tp1_t *tp1)
 {
 	if (!tp1)
@@ -453,7 +460,6 @@ size_t tp1_cantidad(tp1_t *tp1)
  *
  * Devuelve NULL en caso de error o el tp1 pasado por parámetro en caso de exito.
 */
-
 tp1_t *tp1_guardar_archivo(tp1_t *tp1, const char *nombre)
 {
 	if (!tp1 || !nombre)
@@ -589,6 +595,11 @@ tp1_t *tp1_filtrar_tipo(tp1_t *un_tp, enum tipo_pokemon tipo)
 	return tp_aux;
 }
 
+
+/**
+* Busca un pokemon por nombre.
+* En caso de no encontrarlo devuelve NULL.
+*/
 struct pokemon *tp1_buscar_nombre(tp1_t *tp, const char *nombre)
 {
 	if (!tp || !nombre || tp->cantidad_total == 0)
