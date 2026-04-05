@@ -56,11 +56,11 @@ El Tipo de Dato Abstracto (TDA) `tp1_t` está diseñado para la gestión y consu
   <p><i>Diagrama de flujo de tp1_leer_archivo.</i></p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_cantidad_4.svg" width="100%">
+  <img src="img/diagramas/tp1_cantidad_5.svg" width="100%">
   <p><i>Diagrama de flujo tp1_cantidad.</i></p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_guardar_archivo_2.svg" width="100%">
+  <img src="img/diagramas/tp1_guardar_archivo_3.svg" width="100%">
   <p><i>Diagrama de flujo de tp1_guardar_archivo.</i></p>
 </div>
 <div align="center">
@@ -72,15 +72,15 @@ El Tipo de Dato Abstracto (TDA) `tp1_t` está diseñado para la gestión y consu
   <p><i>Diagrama de flujo de tp1_buscar_nombre.</i></p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_buscar_orden_5.svg" width="100%">
+  <img src="img/diagramas/tp1_buscar_orden_6.svg" width="100%">
   <p><i>Diagrama de flujo de tp1_buscar_orden.</i></p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_con_cada_pokemon_2.svg" width="100%">
+  <img src="img/diagramas/tp1_con_cada_pokemon_3.svg" width="100%">
   <p><i>Diagrama de flujo de tp1_con_cada_pokemon.</i></p>
 </div>
 <div align="center">
-  <img src="img/diagramas/tp1_destruir_3.svg" width="100%">
+  <img src="img/diagramas/tp1_destruir_4.svg" width="100%">
   <p><i>Diagrama de flujo de tp1_destruir.</i></p>
 </div>
 
