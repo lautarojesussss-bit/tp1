@@ -53,7 +53,7 @@ El Tipo de Dato Abstracto (TDA) `tp1_t` está diseñado para la gestión y consu
 
 <div align="center">
   <img src="img/diagramas/tp1_leer_archivo_2.svg" width="100%">
-  <p><i>Diagrama de flujo de tp1_leer_archivo.</i></p>
+  <p><i>Diagrama de flujo de tp1_leer_archivo. Es importante recalcar que al agrupar los pokémones en función de su tipo no se pierde el orden alfabético para los mismos.</i></p>
 </div>
 <div align="center">
   <img src="img/diagramas/tp1_cantidad_5.svg" width="100%">
@@ -86,14 +86,26 @@ El Tipo de Dato Abstracto (TDA) `tp1_t` está diseñado para la gestión y consu
 
 
 ## 3. Estructura
-Para la estructura `tp1_t` se decidió utilizar un arreglo de punteros a `struct pokemon`, mantenido en orden alfabético (`pokémones_nombre`) junto con un arreglo de arreglos de punteros donde cada sub-arreglo almacena exclusivamente punteros a Pokémones de un tipo específico (`pokémones_tipo`). Además, se mantienen los topes respectivos de todos los arreglos.
+### Arquitectura de la Estructura `tp1_t`
+
+El Tipo de Dato Abstracto `tp1_t` está diseñado para gestionar la colección de Pokémones de manera eficiente, separando el almacenamiento de los datos de su organización lógica. La estructura se compone de los siguientes campos:
+
+* **`pokemones_nombre`**: Un arreglo dinámico de punteros a `struct pokemon`, mediante el cual se mantiene a toda la colección ordenada alfabéticamente.
+* **`pokemones_tipo`**: Un arreglo de arreglos de punteros (o matriz de referencias), donde cada sub-arreglo agrupa exclusivamente los punteros a los Pokémones correspondientes a un tipo específico de Pokémon.
+* **Variables de estado (`cantidad_total` y `cant_tipos`)**: Son contadores que representan el tamaño (tope) del arreglo principal y de cada sub-arreglo por tipo, respectivamente.
+
+#### Justificación de Diseño: Uso exclusivo de punteros
+Se tomó la decisión de almacenar únicamente referencias de memoria (punteros) dentro de los arreglos de `tp1_t`, en lugar de alojar copias literales de los `struct pokemon`. Esto brinda dos ventajas fundamentales:
+
+1. **Eficiencia temporal en el ordenamiento:** Durante la fase de carga, los datos se leen secuencialmente y luego deben ser reordenados alfabéticamente, por su nombre, y clasificados en función de su tipo. Realizar intercambios (*swaps*) utilizando únicamente punteros (cuyo tamaño es de 4 o 8 bytes como máximo, según el sistema operativo) requiere una fracción del tiempo de procesamiento en comparación con copiar y reescribir un `struct` completo de mayor tamaño.
+2. **Optimización espacial e integridad de datos:** Al utilizar referencias, un mismo Pokémon puede coexistir simultáneamente en el arreglo ordenado alfabéticamente (`pokemones_nombre`) y en su respectiva categoría (`pokemones_tipo`) sin necesidad de duplicar la información del `struct` en la memoria *heap*.
 
 
 ### 3.1. Diagrama de memoria
 
 <div align="center">
   <img src="img/diagramas/struct_tp1_t_9.svg" width="100%">
-  <p><i>Diagrama de memoria del TDA tp1_t, en el caso de que tuviese cargado solamente un pokémon de tipo ELEC. Aquellos punteros de los cuales no salen flechas deben ser interpretados como punteros NULL.</i></p>
+  <p><i>Diagrama de memoria del TDA tp1_t. Se representa aquí un escenario en el cual solo se ha cargado un pokémon, de tipo ELEC. Aquellos punteros de los cuales no salen flechas deben ser interpretados como NULL.</i></p>
 </div>
 
 
@@ -243,7 +255,25 @@ Se decidió modularizar algunas funciones de la implementación colocándolas en
 1) "Explicar la elección de la estructura para implementar la funcionalida pedida. Justifique el uso de cada uno de los campos de la estructura." Esto se explica en la sección 3, Estructura.
 
 2) "Dar una definición de complejidad computacional y explique cómo se calcula."
-La complejidad computacional es...
+### Complejidad Computacional
+
+En las ciencias de la computación, el término "complejidad computacional" posee una doble acepción dependiendo del contexto en el que se utilice:
+
+* **Como campo de estudio:** Hace referencia a la *Teoría de la Complejidad Computacional*, una rama de las ciencia de la computación dedicada a entender y clasificar el "costo" intrínseco de los algoritmos y los límites teóricos de procesamiento.
+* **Como propiedad de los algortimos:** Se refiere a la característica estructural, inmutable y puramente matemática de un algoritmo específico, la cual es completamente independiente del hardware físico o del lenguaje de programación utilizado.
+
+**Definición:**
+La complejidad computacional expresa la cantidad de recursos que un algoritmo demanda para su ejecución en función del tamaño de la entrada de datos (denotado como $N$). Los dos recursos principales (pero no los únicos) que se analizan son el **tiempo de ejecución** (complejidad temporal, medida en operaciones elementales) y la **memoria utilizada** (complejidad espacial, medida en espacio de almacenamiento auxiliar). El objetivo es establecer el comportamiento teórico del algoritmo a medida que $N$ tiende al infinito (comportamiento asintótico). 
+
+En la materia, de momento, solo se ha abordado la complejidad temporal, pero el método utilizado para ambos tipos de complejidades computacionales no difiere demasiado.
+
+**Método de Cálculo:**
+El cálculo se realiza mediante el análisis asintótico, y se expresa a través de la notación Big-O ($O$). Para determinar la complejidad de un algoritmo, se sigue un procedimiento de abstracción:
+
+1. **Se identifica del tamaño del problema:** Se define qué variable específica representa el volumen de datos a procesar ($N$).
+2. **Conteo de operaciones:** Se contabilizan las operaciones primitivas (asignaciones, comparaciones, saltos, operaciones aritméticas) que se ejecutan, asumiendo siempre el peor de los casos posibles.
+3. **Identificación del término dominante:** Se formula una función matemática $f(N)$ que describe el costo total del algortimo. De esta función, se aísla exclusivamente el término de mayor orden de crecimiento, ya que es el único que impacta de forma significativa cuando $N$ tiende a infinito.
+4. **Eliminación de constantes:** Se descartan los coeficientes y las constantes aditivas, dado que la notación busca clasificar la "tasa de crecimiento" y no el costo exacto en operaciones elementales. Por ejemplo, una función de complejidad temporal $f(N) = 3N^2 + 5N + 10$ se reduce y clasifica algebraicamente bajo la complejidad asintótica $O(N^2)$.
 
 3) "Explicar con diagramas cómo quedan dispuestas las estructuras y elementos en memoria." Esto también se explica en la sección 3, Estructura.
 
