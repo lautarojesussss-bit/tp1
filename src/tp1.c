@@ -91,7 +91,7 @@ void merge_sort_alfabetico(struct pokemon **pokemones, int pos_inicio,
 void ordenar_alfabeticamente(struct pokemon **pokemones, bool *error_memoria,
 			     size_t cantidad)
 {
-	if (!pokemones || !error_memoria || cantidad < 2)
+	if (!pokemones || !error_memoria || cantidad < 2 || *error_memoria)
 		return;
 
 	merge_sort_alfabetico(pokemones, 0, (int)(cantidad - 1), error_memoria);
@@ -302,7 +302,7 @@ void tp1_destruir(tp1_t *tp1)
 
 void limpiar_y_contar(tp1_t *tp, bool *error_memoria)
 {
-	if (!tp || !error_memoria || tp->cantidad_total == 0)
+	if (!tp || !error_memoria || *error_memoria || tp->cantidad_total == 0)
 		return;
 
 	tp->cant_tipos[tp->pokemones_nombre[0]->tipo]++;
@@ -338,7 +338,7 @@ void limpiar_y_contar(tp1_t *tp, bool *error_memoria)
 
 void clasificar_por_tipo(tp1_t *tp, bool *error_memoria)
 {
-	if (!tp)
+	if (!tp || !error_memoria || *error_memoria)
 		return;
 
 	for (size_t i = 0; !(*error_memoria) && i < TIPOS_CANT; i++) {
@@ -367,7 +367,7 @@ void clasificar_por_tipo(tp1_t *tp, bool *error_memoria)
 
 void cargar_en_bruto(tp1_t *tp, FILE *archivo, bool *error_memoria)
 {
-	if (!tp || !archivo || !error_memoria)
+	if (!tp || !archivo || !error_memoria || *error_memoria)
 		return;
 
 	bool termino_el_archivo = false;
@@ -400,7 +400,7 @@ void cargar_en_bruto(tp1_t *tp, FILE *archivo, bool *error_memoria)
  * Lee el archivo indicado y devuelve la estructura tp1 con los pokemones.
  * En caso de error devuelve NULL.
  * Tengo que abrir un archivo, leerlo con cierto formato ()
-*/
+*/ 
 tp1_t *tp1_leer_archivo(const char *nombre)
 {
 	if (!nombre)
@@ -424,15 +424,12 @@ tp1_t *tp1_leer_archivo(const char *nombre)
 
 	fclose(archivo);
 
-	if (!error_memoria)
-		ordenar_alfabeticamente(tp->pokemones_nombre, &error_memoria,
-					tp->cantidad_total);
+	ordenar_alfabeticamente(tp->pokemones_nombre, &error_memoria,
+				tp->cantidad_total);
 
-	if (!error_memoria)
-		limpiar_y_contar(tp, &error_memoria);
+	limpiar_y_contar(tp, &error_memoria);
 
-	if (!error_memoria)
-		clasificar_por_tipo(tp, &error_memoria);
+	clasificar_por_tipo(tp, &error_memoria);
 
 	if (error_memoria) {
 		tp1_destruir(tp);
@@ -441,6 +438,7 @@ tp1_t *tp1_leer_archivo(const char *nombre)
 
 	return tp;
 }
+
 
 size_t tp1_cantidad(tp1_t *tp1)
 {
