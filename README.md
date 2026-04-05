@@ -252,15 +252,22 @@ Se decidió modularizar algunas funciones de la implementación colocándolas en
 
 ## 5. Respuestas a las preguntas teóricas
 
-1) "Explicar la elección de la estructura para implementar la funcionalida pedida. Justifique el uso de cada uno de los campos de la estructura." Esto se explica en la sección 3, Estructura.
+### Consigna 1
+> *"Explicar la elección de la estructura para implementar la funcionalidad pedida. Justifique el uso de cada uno de los campos de la estructura."*
 
-2) "Dar una definición de complejidad computacional y explique cómo se calcula."
-### Complejidad Computacional
+📌 **Respuesta:** Esta justificación se encuentra desarrollada en detalle en la [sección 3, Estructura](#3-estructura).
+
+---
+
+### Consigna 2
+> *"Dar una definición de complejidad computacional y explique cómo se calcula."*
+
+#### Complejidad Computacional
 
 En las ciencias de la computación, el término "complejidad computacional" posee una doble acepción dependiendo del contexto en el que se utilice:
 
-* **Como campo de estudio:** Hace referencia a la *Teoría de la Complejidad Computacional*, una rama de las ciencia de la computación dedicada a entender y clasificar el "costo" intrínseco de los algoritmos y los límites teóricos de procesamiento.
-* **Como propiedad de los algortimos:** Se refiere a la característica estructural, inmutable y puramente matemática de un algoritmo específico, la cual es completamente independiente del hardware físico o del lenguaje de programación utilizado.
+* **Como campo de estudio:** Hace referencia a la *Teoría de la Complejidad Computacional*, una rama de la ciencia de la computación dedicada a entender y clasificar el "costo" intrínseco de los algoritmos y los límites teóricos de procesamiento.
+* **Como propiedad de los algoritmos:** Se refiere a la característica estructural, inmutable y puramente matemática de un algoritmo específico, la cual es completamente independiente del hardware físico o del lenguaje de programación utilizado.
 
 **Definición:**
 La complejidad computacional (entendida como propiedad) expresa la cantidad de recursos que un algoritmo demanda para su ejecución en función del tamaño de la entrada de datos (denotado como $N$). Los dos recursos principales (pero no los únicos) que se analizan son el **tiempo de ejecución** (complejidad temporal, medida en operaciones elementales) y la **memoria utilizada** (complejidad espacial, medida en espacio de almacenamiento auxiliar). El objetivo es establecer el comportamiento teórico del algoritmo a medida que $N$ tiende al infinito (comportamiento asintótico). 
@@ -270,14 +277,28 @@ En la materia, de momento, solo se ha abordado la complejidad temporal, pero el 
 **Método de Cálculo:**
 El cálculo se realiza mediante el análisis asintótico, y se expresa a través de la notación Big-O ($O$). Para determinar la complejidad de un algoritmo, se sigue un procedimiento de abstracción:
 
-1. **Se identifica del tamaño del problema:** Se define qué variable específica representa el volumen de datos a procesar ($N$).
+1. **Se identifica el tamaño del problema:** Se define qué variable específica representa el volumen de datos a procesar ($N$).
 2. **Conteo de operaciones:** Se contabilizan las operaciones primitivas (asignaciones, comparaciones, saltos, operaciones aritméticas) que se ejecutan, asumiendo siempre el peor de los casos posibles.
-3. **Identificación del término dominante:** Se formula una función matemática $f(N)$ que describe el costo total del algortimo. De esta función, se aísla exclusivamente el término de mayor orden de crecimiento, ya que es el único que impacta de forma significativa cuando $N$ tiende a infinito.
+3. **Identificación del término dominante:** Se formula una función matemática $f(N)$ que describe el costo total del algoritmo. De esta función, se aísla exclusivamente el término de mayor orden de crecimiento, ya que es el único que impacta de forma significativa cuando $N$ tiende a infinito.
 4. **Eliminación de constantes:** Se descartan los coeficientes y las constantes aditivas, dado que la notación busca clasificar la "tasa de crecimiento" y no el costo exacto en operaciones elementales. Por ejemplo, una función de complejidad temporal $f(N) = 3N^2 + 5N + 10$ se reduce y clasifica algebraicamente bajo la complejidad asintótica $O(N^2)$.
 
-3) "Explicar con diagramas cómo quedan dispuestas las estructuras y elementos en memoria." Esto también se explica en la sección 3, Estructura.
+---
 
-4) "Justificar la complejidad computacional temporal de cada una de las funciones que se piden implementar." Esto se justifica en la sección 3.2, Analisis de complejidades.
+### Consigna 3
+> *"Explicar con diagramas cómo quedan dispuestas las estructuras y elementos en memoria."*
 
-5) "Explique qué dificultades tuvo para implementar las funcionalidades pedidas en el main (si tuvo alguna) y explique si alguna de estas dificultades se podría haber evitado modificando la definición del .h" 
-Esto se responde en la sección 4 del informe.
+📌 **Respuesta:** El diagrama de memoria y su explicación se encuentran en la [sección 3.1, Diagrama de memoria](#31-diagrama-de-memoria).
+
+---
+
+### Consigna 4
+> *"Justificar la complejidad computacional temporal de cada una de las funciones que se piden implementar."*
+
+📌 **Respuesta:** Las justificaciones y cálculos asintóticos se detallan en la [sección 3.2, Análisis de complejidades](#32-análisis-de-complejidades).
+
+---
+
+### Consigna 5
+> *"Explique qué dificultades tuvo para implementar las funcionalidades pedidas en el main (si tuvo alguna) y explique si alguna de estas dificultades se podría haber evitado modificando la definición del .h"*
+
+📌 **Respuesta:** Las decisiones tomadas respecto a las funcionalidades y la necesidad de modularizar ciertas operaciones en `utils.h` se responden en la [sección 4, Decisiones de diseño y/o complejidades de implementación](#4-decisiones-de-diseño-yo-complejidades-de-implementación).
