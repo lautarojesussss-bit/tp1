@@ -400,7 +400,7 @@ void cargar_en_bruto(tp1_t *tp, FILE *archivo, bool *error_memoria)
  * Lee el archivo indicado y devuelve la estructura tp1 con los pokemones.
  * En caso de error devuelve NULL.
  * Tengo que abrir un archivo, leerlo con cierto formato ()
-*/ 
+*/
 tp1_t *tp1_leer_archivo(const char *nombre)
 {
 	if (!nombre)
@@ -438,7 +438,6 @@ tp1_t *tp1_leer_archivo(const char *nombre)
 
 	return tp;
 }
-
 
 size_t tp1_cantidad(tp1_t *tp1)
 {

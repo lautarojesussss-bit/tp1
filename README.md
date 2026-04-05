@@ -52,7 +52,7 @@ El Tipo de Dato Abstracto (TDA) `tp1_t` está diseñado para la gestión y consu
 * **Consulta de estado:** Provee primitivas para obtener la cantidad total de Pokémones almacenados en la estructura en todo momento.
 
 <div align="center">
-  <img src="img/diagramas/tp1_leer_archivo.svg" width="100%">
+  <img src="img/diagramas/tp1_leer_archivo_2.svg" width="100%">
   <p><i>Diagrama de flujo de tp1_leer_archivo.</i></p>
 </div>
 <div align="center">
