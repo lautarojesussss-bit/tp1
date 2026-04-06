@@ -33,6 +33,11 @@ void vector_destruir(struct vector *vector)
 	free(vector);
 }
 
+/*
+ * PRE: 'vector_destino' y 'fuente' deben ser válidos (no NULL). 'pos_final' debe ser mayor o igual a 'pos_inicio'.
+ * POST: Se extrae el substring de 'fuente' delimitado por pos_inicio y pos_final, se reserva memoria para él,
+ * y lo agrega al final de 'vector_destino'. Devuelve true en caso de éxito, o false si falla la memoria.
+ */
 bool cargar_subpalabra(struct vector *vector_destino, char *fuente,
 		       size_t pos_inicio, size_t pos_final)
 {
@@ -57,6 +62,11 @@ bool cargar_subpalabra(struct vector *vector_destino, char *fuente,
 	return true;
 }
 
+/*
+ * PRE: 'n_palabras_iniciales' indica la capacidad inicial del arreglo interno de palabras.
+ * POST: Reserva memoria dinámica para una estructura vector y para su arreglo de punteros a char. 
+ * Devuelve el puntero al vector inicializado. Si ocurre algún error de memoria en cualquiera de los pasos, devuelve NULL.
+ */
 struct vector *crear_vector_para_n_palabras(size_t n_palabras_iniciales)
 {
 	struct vector *nuevo_vector = calloc(1, sizeof(struct vector));
@@ -76,13 +86,6 @@ struct vector *crear_vector_para_n_palabras(size_t n_palabras_iniciales)
 	return nuevo_vector;
 }
 
-/*
- *PRE: texto debe ser un string
- *POST: se devuelve un puntero a una instancia de struct vector que tiene las
- *palabras, ya separadas,
- *y su tamaño en el campo cantidad, si falla algo se devuelve NULL y se imprime
- *un aviso
- */
 struct vector *split(char *texto, char caracter_separador)
 {
 	if (!texto)
@@ -130,17 +133,6 @@ struct vector *split(char *texto, char caracter_separador)
 	return vector_resultado;
 }
 
-void *ajustar_buffer(void *buffer, bool *error_memoria, size_t ocupado)
-{
-	void *buffer_ajustado = realloc(buffer, ocupado);
-
-	if (!buffer_ajustado) {
-		*error_memoria = true;
-		return NULL;
-	}
-	return buffer_ajustado;
-}
-
 char *leer_linea(FILE *archivo, bool *error_memoria, bool *termino_el_archivo)
 {
 	if (!archivo || !error_memoria || !termino_el_archivo)
@@ -185,8 +177,14 @@ char *leer_linea(FILE *archivo, bool *error_memoria, bool *termino_el_archivo)
 		return NULL;
 	}
 
-	char *buffer_ajustado = ajustar_buffer(buffer, error_memoria,
-					       (ocupado + 1) * sizeof(char));
+	char *buffer_ajustado = realloc(buffer, (ocupado + 1) * sizeof(char));
 
-	return buffer_ajustado;
+	if (!buffer_ajustado) {
+		*error_memoria = true;
+		free(buffer);
+		return NULL;
+	}
+
+	buffer = buffer_ajustado;
+	return buffer;
 }

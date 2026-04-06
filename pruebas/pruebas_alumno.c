@@ -6,6 +6,22 @@
 #include "pa2m.h"
 #include "../src/constantes.h"
 
+bool es_un_pokemon(struct pokemon *pokemon, void *extra)
+{
+	if (!pokemon)
+		return false;
+
+	return true;
+}
+
+bool es_rapido(struct pokemon *p, void *extra)
+{
+	if (!p)
+		return false;
+
+	return p->velocidad > VELOCIDAD_MINIMA;
+}
+
 void cargar_pokemon(struct pokemon *p, char *nombre, enum tipo_pokemon tipo,
 		    int ataque, int defensa, int velocidad)
 {
@@ -84,72 +100,66 @@ bool son_el_mismo_tp(tp1_t *tpA, tp1_t *tpB)
 	return son_iguales;
 }
 
-
-
 void prueba_destruir_tp_vacio()
 {
-	bool se_rompe = true;
-
 	const char *archivo = "pruebas/archivos_csv/vacio.csv";
 
 	tp1_t *tp = tp1_leer_archivo(archivo);
+	bool cumple = false;
 
-	if (!tp) {
-		printf("Se abortó esta prueba por fallo al reservar memoria. \n\n");
-		return;
+	if (tp != NULL) {
+		tp1_destruir(tp);
+		cumple = true;
 	}
 
-	tp1_destruir(tp);
-
-	se_rompe = false;
-
 	pa2m_afirmar(
-		!se_rompe,
-		"Se lamma a tp1_destruir con un tp inicializado vacío y el programa no explota.");
+		cumple,
+		"Destruir un tp1 inicializado a partir de un archivo vacío no genera errores de memoria.");
 }
 
 void prueba_tp1_leer_archivo_vacio()
 {
-	tp1_t *tp = NULL;
-	tp = tp1_leer_archivo(ARCHIVO_VACIO);
+	const char *archivo = "pruebas/archivos_csv/vacio.csv";
 
-	bool funciona = tp != NULL;
+	tp1_t *tp = tp1_leer_archivo(archivo);
+
+	bool cumple = tp != NULL;
 
 	pa2m_afirmar(
-		funciona && tp1_cantidad(tp) == 0,
-		"Leer un archivo vacío y que no se rompa el programa, que diga que la cantidad de pokemones del tp es cero.");
-	if (funciona)
-		tp1_destruir(tp);
+		cumple && tp1_cantidad(tp) == 0,
+		"Leer un archivo vacío inicializa el tp1 correctamente con una cantidad de cero pokemones.");
+
+	tp1_destruir(tp);
 }
 
 void prueba_tp1_leer_algo()
 {
 	tp1_t *tp = NULL;
-	tp = tp1_leer_archivo(ARCHIVO_UN_POKEMON);
+	const char *archivo = "pruebas/archivos_csv/un_pokemon.csv";
+	tp = tp1_leer_archivo(archivo);
 
 	pa2m_afirmar(
 		tp != NULL,
-		"Leer algo a partir del archivo %s que tiene 1 pokemon con formato válido.",
-		ARCHIVO_UN_POKEMON);
+		"Leer un archivo con un único pokemon de formato válido crea el tp1 exitosamente.",
+		archivo);
 
-	if (tp != NULL)
-		tp1_destruir(tp);
+	tp1_destruir(tp);
 }
 
 void prueba_tp1_leer_cantidad_correcta()
 {
-	tp1_t *tp = NULL;
-	tp = tp1_leer_archivo(ARCHIVO_VARIOS_POKEMONES);
+	const char *archivo = "pruebas/archivos_csv/5pokemones.csv";
+	tp1_t *tp = tp1_leer_archivo(archivo);
 
 	size_t cant_leida = 0;
 	if (tp != NULL)
 		cant_leida = tp1_cantidad(tp);
 
-	pa2m_afirmar(cant_leida == CANT_LEIDA_ESPERADA,
-		     "Leer la cantidad esperada de pokemones.");
+	pa2m_afirmar(
+		cant_leida == 5,
+		"La cantidad de pokemones almacenados en el tp1 coincide con los registros válidos del archivo.");
 
-	if (tp != NULL)
-		tp1_destruir(tp);
+	tp1_destruir(tp);
 }
 
 void prueba_tp1_uno_bien()
@@ -158,20 +168,25 @@ void prueba_tp1_uno_bien()
 
 	cargar_pokemon(&pokemon_correcto, "Charmander", TIPO_FUEG, 52, 43, 65);
 
-	struct pokemon *dirrecion_correcta = &pokemon_correcto;
+	struct pokemon *direccion_correcta = &pokemon_correcto;
 
-	tp1_t *tp_aux = tp1_leer_archivo(ARCHIVO_UN_POKEMON);
+	const char *archivo = "pruebas/archivos_csv/un_pokemon.csv";
+
+	tp1_t *tp_aux = tp1_leer_archivo(archivo);
 
 	bool cumple = false;
 
 	if (tp_aux != NULL) {
 		cumple = tp1_cantidad(tp_aux) &&
-			 es_el_tp_esperado(&dirrecion_correcta, tp_aux);
-		tp1_destruir(tp_aux);
+			 es_el_tp_esperado(&direccion_correcta, tp_aux);
 	}
 
-	pa2m_afirmar(cumple, "Leer correctamente el pokemon %s del archivo %s",
-		     pokemon_correcto.nombre, ARCHIVO_UN_POKEMON);
+	pa2m_afirmar(
+		cumple,
+		"Los atributos del pokemon leído desde el archivo %s coinciden exactamente con los esperados.",
+		archivo);
+
+	tp1_destruir(tp_aux);
 }
 
 void prueba_pokemones_desordenados()
@@ -181,22 +196,22 @@ void prueba_pokemones_desordenados()
 
 	inicializar_escenario_estandar(pokemones, punteros_pokemones);
 
-	tp1_t *tp_aux = NULL;
 	bool cumple = false;
 
 	const char *nombre_archivo =
 		"pruebas/archivos_csv/pokemones_desordenados.csv";
 
-	tp_aux = tp1_leer_archivo(nombre_archivo);
+	tp1_t *tp_aux = tp1_leer_archivo(nombre_archivo);
 
 	if (tp_aux != NULL) {
 		cumple = es_el_tp_esperado(punteros_pokemones, tp_aux);
-		tp1_destruir(tp_aux);
 	}
 
 	pa2m_afirmar(
 		cumple,
-		"Leer correctamente pokemones de un archivo que los tiene desordenados");
+		"Leer un archivo con registros desordenados los almacena correctamente ordenados alfabéticamente.");
+
+	tp1_destruir(tp_aux);
 }
 
 void prueba_ignorar_lineas_vacias()
@@ -206,23 +221,23 @@ void prueba_ignorar_lineas_vacias()
 
 	inicializar_escenario_estandar(pokemones, punteros_pokemones);
 
-	tp1_t *tp_aux = NULL;
 	bool cumple = false;
 
 	const char *nombre_archivo =
 		"pruebas/archivos_csv/pokemones_lineas_vacias.csv";
 
-	tp_aux = tp1_leer_archivo(nombre_archivo);
+	tp1_t *tp_aux = tp1_leer_archivo(nombre_archivo);
 
 	if (tp_aux != NULL) {
 		cumple = tp1_cantidad(tp_aux) == CANT_POKEMONES_PRUEBA &&
 			 es_el_tp_esperado(punteros_pokemones, tp_aux);
-		tp1_destruir(tp_aux);
 	}
 
 	pa2m_afirmar(
 		cumple,
-		"Leer correctamente pokemones de un archivo que tiene lineas vacias");
+		"El proceso de lectura ignora correctamente las líneas vacías del archivo.");
+
+	tp1_destruir(tp_aux);
 }
 
 void prueba_ignorar_pokemones_truchos()
@@ -232,46 +247,69 @@ void prueba_ignorar_pokemones_truchos()
 
 	inicializar_escenario_estandar(pokemones, punteros_pokemones);
 
-	tp1_t *tp_aux = NULL;
 	bool cumple = false;
 
 	const char *nombre_archivo =
 		"pruebas/archivos_csv/pokemones_tramposo.csv";
 
-	tp_aux = tp1_leer_archivo(nombre_archivo);
+	tp1_t *tp_aux = tp1_leer_archivo(nombre_archivo);
 
 	if (tp_aux != NULL) {
 		cumple = tp1_cantidad(tp_aux) == 5 &&
 			 es_el_tp_esperado(punteros_pokemones, tp_aux);
-		tp1_destruir(tp_aux);
 	}
 
 	pa2m_afirmar(
 		cumple,
-		"Leer correctamente pokemones de un archivo que tiene algunos truchos");
+		"El proceso de lectura ignora correctamente las líneas con formato inválido o campos faltantes.");
+
+	tp1_destruir(tp_aux);
 }
 
-void pruebas_filtrar_tipo_cant()
+void prueba_conservar_el_primero_de_repetidos()
 {
-	tp1_t *tp_aux = NULL;
+	size_t cant_leida = 0;
+	const char *archivo = "pruebas/archivos_csv/pokemones_repetidos.csv";
+	tp1_t *tp = tp1_leer_archivo(archivo);
+	struct pokemon *primero = NULL;
+	bool cumple = false;
+
+	if (tp != NULL) {
+		cant_leida = tp1_cantidad(tp);
+		primero = tp1_buscar_orden(tp, 0);
+		cumple = (cant_leida == 1 && primero != NULL &&
+			  primero->ataque == 1 && primero->defensa == 2 &&
+			  primero->velocidad == 3);
+	}
+
+	pa2m_afirmar(
+		cumple,
+		"Al leer repetidos, solo se conserva uno, especificamente el que se lea primero.");
+
+	tp1_destruir(tp);
+}
+
+void prueba_filtrar_tipo_cant()
+{
 	tp1_t *tp_filtrado = NULL;
 	bool cumple = false;
 
 	const char *nombre_archivo =
 		"pruebas/archivos_csv/pokemones_varios.csv";
 
-	tp_aux = tp1_leer_archivo(nombre_archivo);
+	tp1_t *tp_aux = tp1_leer_archivo(nombre_archivo);
 
 	if (tp_aux != NULL) {
 		tp_filtrado = tp1_filtrar_tipo(tp_aux, TIPO_FUEG);
 		cumple = tp1_cantidad(tp_filtrado) == 3;
-		tp1_destruir(tp_filtrado);
-		tp1_destruir(tp_aux);
 	}
 
 	pa2m_afirmar(
 		cumple,
-		"Filtrar correctamente la cantidad de pokemones de cierto tipo en un archivo.");
+		"Filtrar por tipo devuelve un nuevo tp1 con la cantidad exacta de pokemones esperada.");
+
+	tp1_destruir(tp_filtrado);
+	tp1_destruir(tp_aux);
 }
 
 void filtrar_pokemones_correctamente()
@@ -291,24 +329,46 @@ void filtrar_pokemones_correctamente()
 	const char *nombre_archivo =
 		"pruebas/archivos_csv/pokemones_varios.csv";
 
-	tp1_t *tp_aux = NULL;
-	tp1_t *tp_filtrado = NULL;
 	bool cumple = false;
 
-	tp_aux = tp1_leer_archivo(nombre_archivo);
+	tp1_t *tp_aux = tp1_leer_archivo(nombre_archivo);
+	tp1_t *tp_filtrado = NULL;
 
 	if (tp_aux != NULL) {
 		tp_filtrado = tp1_filtrar_tipo(tp_aux, TIPO_FUEG);
 		cumple = (tp1_cantidad(tp_filtrado) == 3) &&
 			 es_el_tp_esperado(pokemones_aux, tp_filtrado);
-		//cant_leida = tp1_con_cada_pokemon(tp_filtrado, escribir_pokemon, stdout);
-		tp1_destruir(tp_filtrado);
-		tp1_destruir(tp_aux);
 	}
 
 	pa2m_afirmar(
 		cumple,
-		"Filtrar correctamente pokemones de cierto tipo en un archivo.");
+		"Filtrar por tipo devuelve un nuevo tp1 con los pokemones correctos y sus atributos intactos.");
+
+	tp1_destruir(tp_filtrado);
+	tp1_destruir(tp_aux);
+}
+
+void filtrar_por_tipo_no_disponible()
+{
+	tp1_t *tp_filtrado = NULL;
+	bool cumple = false;
+
+	const char *nombre_archivo =
+		"pruebas/archivos_csv/pokemones_varios.csv";
+
+	tp1_t *tp_aux = tp1_leer_archivo(nombre_archivo);
+
+	if (tp_aux != NULL) {
+		tp_filtrado = tp1_filtrar_tipo(tp_aux, TIPO_FANT);
+		cumple = tp_filtrado != NULL && tp1_cantidad(tp_filtrado) == 0;
+	}
+
+	pa2m_afirmar(
+		cumple,
+		"Filtrar un tipo inexistente en el archivo devuelve un TDA válido pero vacío.");
+
+	tp1_destruir(tp_filtrado);
+	tp1_destruir(tp_aux);
 }
 
 void prueba_encontrar_pokemon_nombre()
@@ -316,13 +376,12 @@ void prueba_encontrar_pokemon_nombre()
 	struct pokemon pokemon_correcto_1;
 	cargar_pokemon(&pokemon_correcto_1, "Vulpix", TIPO_FUEG, 41, 40, 65);
 
-	tp1_t *tp_aux = NULL;
 	struct pokemon *buscado = NULL;
 	bool cumple = false;
 	const char *nombre_archivo =
 		"pruebas/archivos_csv/pokemones_varios.csv";
 
-	tp_aux = tp1_leer_archivo(nombre_archivo);
+	tp1_t *tp_aux = tp1_leer_archivo(nombre_archivo);
 
 	if (tp_aux != NULL)
 		buscado = tp1_buscar_nombre(tp_aux, "Vulpix");
@@ -330,10 +389,11 @@ void prueba_encontrar_pokemon_nombre()
 	if (buscado != NULL)
 		cumple = es_el_mismo_pokemon(&pokemon_correcto_1, buscado);
 
-	pa2m_afirmar(cumple, "Encontrar correctamente un pokemón por nombre.");
+	pa2m_afirmar(
+		cumple,
+		"Buscar un pokemon por su nombre devuelve el registro correcto.");
 
-	if (tp_aux != NULL)
-		tp1_destruir(tp_aux);
+	tp1_destruir(tp_aux);
 }
 
 void prueba_buscar_nombre_mal_escrito()
@@ -341,13 +401,12 @@ void prueba_buscar_nombre_mal_escrito()
 	struct pokemon pokemon_correcto_1;
 	cargar_pokemon(&pokemon_correcto_1, "Vulpix", TIPO_FUEG, 41, 40, 65);
 
-	tp1_t *tp_aux = NULL;
 	struct pokemon *buscado = NULL;
 	bool cumple = false;
 	const char *nombre_archivo =
 		"pruebas/archivos_csv/pokemones_varios.csv";
 
-	tp_aux = tp1_leer_archivo(nombre_archivo);
+	tp1_t *tp_aux = tp1_leer_archivo(nombre_archivo);
 
 	if (tp_aux != NULL)
 		buscado = tp1_buscar_nombre(tp_aux, "VULpix");
@@ -357,10 +416,70 @@ void prueba_buscar_nombre_mal_escrito()
 
 	pa2m_afirmar(
 		cumple,
-		"Encontrar correctamente un pokemón por nombre aunque esté mal escrito.");
+		"La búsqueda por nombre ignora correctamente las diferencias entre mayúsculas y minúsculas.");
+
+	tp1_destruir(tp_aux);
+}
+
+void prueba_buscar_pokemon_inexistente()
+{
+	struct pokemon *buscado = NULL;
+	bool cumple = false;
+	const char *nombre_archivo =
+		"pruebas/archivos_csv/pokemones_varios.csv";
+
+	tp1_t *tp_aux = tp1_leer_archivo(nombre_archivo);
 
 	if (tp_aux != NULL)
-		tp1_destruir(tp_aux);
+		buscado = tp1_buscar_nombre(tp_aux, "Inexistente");
+
+	if (tp_aux != NULL && buscado == NULL)
+		cumple = true;
+
+	pa2m_afirmar(cumple, "Buscar un nombre inexistente devuelve NULL.");
+
+	tp1_destruir(tp_aux);
+}
+
+void prueba_buscar_n()
+{
+	struct pokemon *pokemon_aux = NULL;
+	struct pokemon pokemon_correcto_1;
+	cargar_pokemon(&pokemon_correcto_1, "Bulbasaur", TIPO_PLAN, 49, 49, 45);
+	const char *archivo = "pruebas/archivos_csv/pokemones_filtrados.csv";
+	bool cumple = false;
+
+	tp1_t *tp_aux = tp1_leer_archivo(archivo);
+	if (tp_aux != NULL) {
+		pokemon_aux = tp1_buscar_orden(tp_aux, 0);
+		cumple = es_el_mismo_pokemon(pokemon_aux, &pokemon_correcto_1);
+	}
+
+	pa2m_afirmar(
+		cumple,
+		"Buscar un pokemon por su índice devuelve el registro correcto según el orden alfabético.");
+
+	tp1_destruir(tp_aux);
+}
+
+void prueba_buscar_posicion_inexistente()
+{
+	struct pokemon *pokemon_aux = NULL;
+	const char *archivo = "pruebas/archivos_csv/pokemones_filtrados.csv";
+	bool cumple = false;
+
+	tp1_t *tp_aux = tp1_leer_archivo(archivo);
+
+	if (tp_aux != NULL) {
+		pokemon_aux = tp1_buscar_orden(tp_aux, 400);
+		cumple = pokemon_aux == NULL;
+	}
+
+	pa2m_afirmar(
+		cumple,
+		"Buscar el pokemon en el índice N (fuera de rango) devuelve NULL.");
+
+	tp1_destruir(tp_aux);
 }
 
 void prueba_guardar_archivo()
@@ -370,9 +489,6 @@ void prueba_guardar_archivo()
 
 	inicializar_escenario_estandar(pokemones, punteros_pokemones);
 
-	tp1_t *tp_aux = NULL;
-	tp1_t *tp_releido = NULL;
-
 	bool cumple = false;
 
 	const char *nombre_archivo =
@@ -380,48 +496,66 @@ void prueba_guardar_archivo()
 	const char *archivo_escribir =
 		"pruebas/archivos_csv/pokemones_escritos.csv";
 
-	tp_aux = tp1_leer_archivo(nombre_archivo);
+	tp1_t *tp_aux = tp1_leer_archivo(nombre_archivo);
+	tp1_t *tp_releido = NULL;
 
 	if (tp_aux != NULL && es_el_tp_esperado(punteros_pokemones, tp_aux)) {
 		tp1_guardar_archivo(tp_aux, archivo_escribir);
 		tp_releido = tp1_leer_archivo(archivo_escribir);
 		cumple = son_el_mismo_tp(tp_aux, tp_releido);
-		tp1_destruir(tp_aux);
-		tp1_destruir(tp_releido);
 	}
 
 	pa2m_afirmar(
 		cumple,
-		"Leer correctamente pokemones de un archivo, escribirlo en otro archivo, y releerlos.");
+		"Guardar el tp1 en un archivo y volver a leerlo genera una estructura idéntica a la original.");
+
+	tp1_destruir(tp_aux);
+	tp1_destruir(tp_releido);
 }
 
-void prueba_buscar_n()
+void prueba_iterador_corte_anticipado()
 {
-	tp1_t *tp_aux = NULL;
-	struct pokemon *pokemon_aux = NULL;
-	struct pokemon pokemon_correcto_1;
-	cargar_pokemon(&pokemon_correcto_1, "Bulbasaur", TIPO_PLAN, 49, 49, 45);
-	const char *archivo = "pruebas/archivos_csv/pokemones_filtrados.csv";
+	size_t visitados = 0;
+
+	const char *archivo = "pruebas/archivos_csv/pokemones_desordenados.csv";
+	tp1_t *tp = tp1_leer_archivo(archivo);
+
+	if (tp != NULL)
+		visitados = tp1_con_cada_pokemon(tp, es_rapido, NULL);
+
+	pa2m_afirmar(
+		visitados == 3,
+		"El iterador interrumpe su ejecución correctamente en el momento en que la función callback devuelve false.");
+
+	tp1_destruir(tp);
+}
+
+void prueba_iterar_sobre_todos()
+{
+	size_t visitados = 0;
 	bool cumple = false;
 
-	tp_aux = tp1_leer_archivo(archivo);
-	if (tp_aux != NULL) {
-		pokemon_aux = tp1_buscar_orden(tp_aux, 0);
-		cumple = es_el_mismo_pokemon(pokemon_aux, &pokemon_correcto_1);
-		tp1_destruir(tp_aux);
+	const char *archivo = "pruebas/archivos_csv/pokemones_desordenados.csv";
+	tp1_t *tp = tp1_leer_archivo(archivo);
+
+	if (tp != NULL) {
+		visitados = tp1_con_cada_pokemon(tp, es_un_pokemon, NULL);
+		cumple = visitados == tp1_cantidad(tp);
 	}
 
 	pa2m_afirmar(
 		cumple,
-		"Encontrar un pokemon en un tp1 mediante su posición por orden alfábetico.");
+		"El iterador recorre la totalidad de elementos si la función devuelve siempre true.");
+
+	tp1_destruir(tp);
 }
 
-void pruebas_unitarias_tp1_destruir()
+void pruebas_tp1_destruir()
 {
 	prueba_destruir_tp_vacio();
 }
 
-void pruebas_unitarias_tp1_leer()
+void pruebas_tp1_leer_archivo()
 {
 	prueba_tp1_leer_archivo_vacio();
 	prueba_tp1_leer_algo();
@@ -430,21 +564,24 @@ void pruebas_unitarias_tp1_leer()
 	prueba_ignorar_pokemones_truchos();
 	prueba_pokemones_desordenados();
 	prueba_ignorar_lineas_vacias();
+	prueba_conservar_el_primero_de_repetidos();
 }
 
-void pruebas_unitarias_filtrar()
+void pruebas_tp1_filtrar_tipo()
 {
-	pruebas_filtrar_tipo_cant();
+	prueba_filtrar_tipo_cant();
 	filtrar_pokemones_correctamente();
+	filtrar_por_tipo_no_disponible();
 }
 
-void pruebas_unitarias_buscar_nombre()
+void pruebas_tp1_buscar_nombre()
 {
 	prueba_encontrar_pokemon_nombre();
 	prueba_buscar_nombre_mal_escrito();
+	prueba_buscar_pokemon_inexistente();
 }
 
-void pruebas_escribir_archivo()
+void pruebas_tp1_guardar_archivo()
 {
 	prueba_guardar_archivo();
 }
@@ -452,6 +589,30 @@ void pruebas_escribir_archivo()
 void pruebas_tp1_buscar_n()
 {
 	prueba_buscar_n();
+	prueba_buscar_posicion_inexistente();
+}
+
+void pruebas_tp1_con_cada_pokemon()
+{
+	prueba_iterador_corte_anticipado();
+	prueba_iterar_sobre_todos();
+}
+
+void pruebas_manejando_null()
+{
+	pa2m_afirmar(tp1_cantidad(NULL) == 0,
+		     "Obtener cantidad de un tp1 NULL devuelve 0.");
+	pa2m_afirmar(tp1_buscar_nombre(NULL, "Pikachu") == NULL,
+		     "Buscar por nombre en un tp1 NULL devuelve NULL.");
+	pa2m_afirmar(tp1_buscar_orden(NULL, 0) == NULL,
+		     "Buscar por orden en un tp1 NULL devuelve NULL.");
+	pa2m_afirmar(tp1_filtrar_tipo(NULL, TIPO_FUEG) == NULL,
+		     "Filtrar un tp1 NULL devuelve NULL.");
+
+	tp1_destruir(NULL);
+	pa2m_afirmar(
+		true,
+		"Llamar a tp1_destruir con NULL no genera errores de memoria.");
 }
 
 int main()
@@ -459,22 +620,28 @@ int main()
 	pa2m_nuevo_grupo("============== PRUEBAS DEL TP1 ===============");
 
 	pa2m_nuevo_grupo("Pruebas de tp1_destruir");
-	pruebas_unitarias_tp1_destruir();
+	pruebas_tp1_destruir();
 
 	pa2m_nuevo_grupo("Pruebas de tp1_leer_archivo");
-	pruebas_unitarias_tp1_leer();
+	pruebas_tp1_leer_archivo();
 
 	pa2m_nuevo_grupo("Pruebas de tp1_filtrar_tipo");
-	pruebas_unitarias_filtrar();
+	pruebas_tp1_filtrar_tipo();
 
 	pa2m_nuevo_grupo("Pruebas de tp1_buscar_nombre");
-	pruebas_unitarias_buscar_nombre();
+	pruebas_tp1_buscar_nombre();
 
 	pa2m_nuevo_grupo("Pruebas de tp1_guardar_archivo");
-	prueba_guardar_archivo();
+	pruebas_tp1_guardar_archivo();
 
 	pa2m_nuevo_grupo("Pruebas de tp1_buscar_orden");
 	pruebas_tp1_buscar_n();
+
+	pa2m_nuevo_grupo("Pruebas de tp1_con_cada_pokemon");
+	pruebas_tp1_con_cada_pokemon();
+
+	pa2m_nuevo_grupo("Pruebas de todas las funciones al recibir NULL");
+	pruebas_manejando_null();
 
 	return pa2m_mostrar_reporte();
 }

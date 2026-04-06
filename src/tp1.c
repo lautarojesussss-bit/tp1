@@ -16,6 +16,11 @@ struct tp1 {
 	size_t cant_tipos[TIPOS_CANT];
 };
 
+/*
+ * PRE: pokemon debe ser un puntero válido y archivo debe ser un puntero a un FILE abierto en modo escritura.
+ * POST: Escribe los datos del pokemon en el archivo siguiendo el formato especificado en FORMATO_ESCRITURA.
+ * Devuelve true si los parámetros son válidos, false en caso contrario.
+ */
 bool escribir_pokemon(struct pokemon *pokemon, void *archivo)
 {
 	if (!pokemon || !archivo || !(pokemon->nombre))
@@ -28,34 +33,38 @@ bool escribir_pokemon(struct pokemon *pokemon, void *archivo)
 	return true;
 }
 
+/*
+ * PRE: tp1 debe ser un tp1 válido y archivo debe ser un puntero a un FILE abierto en modo escritura.
+ * POST: Recorre todos los pokemones del TDA y los escribe en el archivo.
+ */
 void escribir_pokemones(tp1_t *tp1, FILE *archivo)
 {
-	if (!tp1 || !archivo)
+	if (!tp1 || !archivo || tp1->cantidad_total == 0)
 		return;
 
 	tp1_con_cada_pokemon(tp1, escribir_pokemon, archivo);
 }
 
 /*
- * PRE: 'pokemones' no debe ser NULL y 'error_memoria' debe ser false. Los sub-arreglos [pos_inicio..pos_mitad] 
+ * PRE: pokemones no debe ser NULL y error_memoria debe ser false. Los sub-arreglos [pos_inicio..pos_mitad] 
  * y [pos_mitad+1..pos_fin] deben estar ordenados alfabéticamente.
  * POST: Mezcla ambos sub-arreglos de forma ordenada en el arreglo original. 
- * En caso de fallo de memoria, actualiza '*error_memoria' a true.
+ * En caso de fallo de memoria, actualiza *error_memoria a true.
  */
-void merge_alfabetico(struct pokemon **pokemones, int pos_inicio, int pos_mitad,
-		      int pos_fin, bool *error_memoria)
+void merge_alfabetico(struct pokemon **pokemones, size_t pos_inicio,
+		      size_t pos_mitad, size_t pos_fin, bool *error_memoria)
 {
 	if (!pokemones || !error_memoria || *error_memoria)
 		return;
 
-	int i = pos_inicio;
-	int j = pos_mitad + 1;
-	int k = 0;
+	size_t i = pos_inicio;
+	size_t j = pos_mitad + 1;
+	size_t k = 0;
 
-	int tamanio = pos_fin - pos_inicio + 1;
+	size_t tamanio = pos_fin - pos_inicio + 1;
 
 	struct pokemon **pokemones_aux =
-		malloc((size_t)(tamanio) * sizeof(struct pokemon *));
+		malloc((tamanio) * sizeof(struct pokemon *));
 
 	if (!pokemones_aux) {
 		*error_memoria = true;
@@ -94,18 +103,18 @@ void merge_alfabetico(struct pokemon **pokemones, int pos_inicio, int pos_mitad,
 }
 
 /*
- * PRE: 'pokemones' no debe ser NULL y 'error_memoria' debe ser false.
- * POST: Ordena recursivamente el sub-arreglo delimitado por 'pos_inicio' y 'pos_fin'. 
- * Si '*error_memoria' es true, se aborta.
+ * PRE: pokemones no debe ser NULL y error_memoria debe ser false.
+ * POST: Ordena recursivamente el sub-arreglo delimitado por pos_inicio y 'pos_fin'. 
+ * Si *error_memoria es true, se aborta.
  */
-void merge_sort_alfabetico(struct pokemon **pokemones, int pos_inicio,
-			   int pos_fin, bool *error_memoria)
+void merge_sort_alfabetico(struct pokemon **pokemones, size_t pos_inicio,
+			   size_t pos_fin, bool *error_memoria)
 {
 	if (!pokemones || !error_memoria)
 		return;
 
 	if (pos_fin > pos_inicio) {
-		int pos_mitad = pos_inicio + (pos_fin - pos_inicio) / 2;
+		size_t pos_mitad = pos_inicio + (pos_fin - pos_inicio) / 2;
 		merge_sort_alfabetico(pokemones, pos_inicio, pos_mitad,
 				      error_memoria);
 		merge_sort_alfabetico(pokemones, pos_mitad + 1, pos_fin,
@@ -118,9 +127,9 @@ void merge_sort_alfabetico(struct pokemon **pokemones, int pos_inicio,
 }
 
 /*
- * PRE: 'pokemones' no deber NULL y 'error_memoria' debe ser false. 'cantidad' >= 2.
- * POST: Ordena el arreglo de punteros in-place alfabéticamente (de menor a mayor) 
- * utilizando el algoritmo Merge Sort. Si ocurre un error, actualiza '*error_memoria' a true.
+ * PRE: pokemones no deber NULL y error_memoria debe ser false. cantidad >= 2.
+ * POST: Ordena el arreglo de punteros alfabéticamente (de menor a mayor). 
+ * Si ocurre un error, actualiza *error_memoria a true.
  */
 void ordenar_alfabeticamente(struct pokemon **pokemones, bool *error_memoria,
 			     size_t cantidad)
@@ -128,33 +137,51 @@ void ordenar_alfabeticamente(struct pokemon **pokemones, bool *error_memoria,
 	if (!pokemones || !error_memoria || cantidad < 2 || *error_memoria)
 		return;
 
-	merge_sort_alfabetico(pokemones, 0, (int)(cantidad - 1), error_memoria);
+	merge_sort_alfabetico(pokemones, 0, cantidad - 1, error_memoria);
 }
 
-bool formato_es_correcto(struct vector *v, int *tipo, int *metricas)
+/*
+ * PRE: 'datos_separados' debe ser un struct vector válido creado por la función split. 'tipo' y 'metricas' deben ser punteros válidos.
+ * POST: Valida que el vector contenga datos convertibles (un tipo válido y 3 métricas enteras).
+ * Si el formato es correcto, guarda los valores convertidos en '*tipo' y '*metricas' y devuelve true.
+ * Si el formato es inválido, devuelve false.
+ */
+bool formato_es_correcto(struct vector *datos_separados, int *tipo,
+			 int *metricas)
 {
-	if (!v)
+	if (!datos_separados || !tipo || !metricas)
 		return false;
 
 	bool son_correctos_nums = true;
 	int valor_leido = 0;
 
-	for (unsigned int i = 2; son_correctos_nums && i < v->cantidad; i++)
-		if (es_numero_valido(v->palabras[i], &valor_leido))
+	for (unsigned int i = 2;
+	     son_correctos_nums && i < datos_separados->cantidad; i++)
+		if (es_numero_valido(datos_separados->palabras[i],
+				     &valor_leido))
 			metricas[i - 2] = valor_leido;
 		else
 			son_correctos_nums = false;
 
 	for (int i = 0; *tipo == -1 && i < TIPOS_CANT; i++) {
-		if (strcmp(v->palabras[1], TIPOS_CSV[i]) == 0)
+		if (strcmp(datos_separados->palabras[1], TIPOS_CSV[i]) == 0)
 			*tipo = i;
 	}
 
 	return (son_correctos_nums && *tipo != -1);
 }
 
+/*
+ * PRE: linea debe ser un string con formato CSV. error_memoria debe apuntar a un bool inicializado en false.
+ * POST: Analiza la línea, extrae los datos y devuelve un puntero a una nueva estructura pokemon alojada dinámicamente.
+ * Si la línea tiene un formato inválido o si ocurre un fallo de memoria, devuelve NULL.
+ * En caso de fallo de memoria, actualiza *error_memoria a true.
+ */
 struct pokemon *parsear_linea(char *linea, bool *error_memoria)
 {
+	if (!linea || !error_memoria || *error_memoria)
+		return NULL;
+
 	struct pokemon *pokemon_aux = malloc(sizeof(struct pokemon));
 	if (!pokemon_aux) {
 		*error_memoria = true;
@@ -166,30 +193,30 @@ struct pokemon *parsear_linea(char *linea, bool *error_memoria)
 	int tipo = -1;
 	int metricas[CANT_METRICAS_POKEMON] = { -1, -1, -1 };
 
-	struct vector *v = split(linea, SEPARADOR);
+	struct vector *datos_separados = split(linea, SEPARADOR);
 
-	if (!v) {
+	if (!datos_separados) {
 		free(pokemon_aux);
 		*error_memoria = true;
 		return NULL;
 	}
 
-	if (v->cantidad != CANT_DATOS ||
-	    !formato_es_correcto(v, &tipo, metricas)) {
+	if (datos_separados->cantidad != CANT_DATOS ||
+	    !formato_es_correcto(datos_separados, &tipo, metricas)) {
 		free(pokemon_aux);
-		vector_destruir(v);
+		vector_destruir(datos_separados);
 		return NULL;
 	}
 
-	char *nombre = malloc(strlen(v->palabras[0]) + 1);
+	char *nombre = malloc(strlen(datos_separados->palabras[0]) + 1);
 	if (!nombre) {
 		free(pokemon_aux);
-		vector_destruir(v);
+		vector_destruir(datos_separados);
 		*error_memoria = true;
 		return NULL;
 	}
 
-	strcpy(nombre, v->palabras[0]);
+	strcpy(nombre, datos_separados->palabras[0]);
 
 	pokemon_aux->nombre = nombre;
 	pokemon_aux->tipo = tipo;
@@ -197,13 +224,23 @@ struct pokemon *parsear_linea(char *linea, bool *error_memoria)
 	pokemon_aux->defensa = metricas[1];
 	pokemon_aux->velocidad = metricas[2];
 
-	vector_destruir(v);
+	vector_destruir(datos_separados);
 	return pokemon_aux;
 }
 
+/*
+ * PRE: 'pokemones' debe ser un puntero a un arreglo dinámico válido. 'pokemon_aux' debe ser un pokemon válido.
+ * 'cantidad' y 'tam_buffer' deben apuntar a las variables de control del arreglo. 'error_memoria' debe estar inicializado en false.
+ * POST: Inserta 'pokemon_aux' al final del arreglo. Si se alcanza la capacidad, redimensiona de forma amortizada.
+ * Devuelve true si la inserción fue exitosa, o false si ocurrió un error de memoria (y actualiza '*error_memoria' a true).
+ */
 bool agregar_pokemon(struct pokemon ***pokemones, struct pokemon *pokemon_aux,
 		     bool *error_memoria, size_t *cantidad, size_t *tam_buffer)
 {
+	if (!pokemones || !pokemon_aux || !error_memoria || *error_memoria ||
+	    !cantidad || !tam_buffer)
+		return false;
+
 	size_t nuevo_tam = 0;
 
 	if (*tam_buffer == *cantidad) {
@@ -226,10 +263,15 @@ bool agregar_pokemon(struct pokemon ***pokemones, struct pokemon *pokemon_aux,
 	return true;
 }
 
+/*
+ * PRE: 'pokemones' debe estar ordenado alfabéticamente, y 'nombre' debe ser un string válido.
+ * POST: Busca un pokemon por su nombre.
+ * Si lo encuentra, devuelve un puntero a dicho pokemon. Si no lo encuentra, devuelve NULL.
+ */
 struct pokemon *busqueda(struct pokemon **pokemones, int pos_inicio,
 			 int pos_fin, const char *nombre)
 {
-	if (pos_fin < pos_inicio)
+	if (pos_fin < pos_inicio || !pokemones || !nombre)
 		return NULL;
 
 	int centro = pos_inicio + ((pos_fin - pos_inicio) / 2);
@@ -245,6 +287,10 @@ struct pokemon *busqueda(struct pokemon **pokemones, int pos_inicio,
 		return busqueda(pokemones, centro + 1, pos_fin, nombre);
 }
 
+/*
+ * PRE: -
+ * POST: Reserva memoria y devuelve una instancia de tp1_t inicializado en cero. Si falla la memoria, devuelve NULL.
+ */
 tp1_t *tp1_crear()
 {
 	tp1_t *tp1_aux = calloc(1, sizeof(tp1_t));
@@ -276,6 +322,12 @@ void tp1_destruir(tp1_t *tp1)
 	free(tp1);
 }
 
+/*
+ * PRE: 'tp' debe estar ordenado alfabéticamente, y 'error_memoria' en false.
+ * POST: Elimina duplicados (conservando el primero en dicho caso).
+ * Cuenta la cantidad de pokemones por tipo (guardando los datos en el campo cant_tipos del tp1) y ajusta el tamaño del arreglo principal (y su tope).
+ * Si ocurre un error de memoria, actualiza '*error_memoria' a true.
+ */
 void limpiar_y_contar(tp1_t *tp, bool *error_memoria)
 {
 	if (!tp || !error_memoria || *error_memoria || tp->cantidad_total == 0)
@@ -283,35 +335,48 @@ void limpiar_y_contar(tp1_t *tp, bool *error_memoria)
 
 	tp->cant_tipos[tp->pokemones_nombre[0]->tipo]++;
 
-	size_t i = 1;
-	size_t j = 0;
+	size_t pos_lectura = 1;
+	size_t pos_escritura = 0;
 
 	size_t cant_original = tp->cantidad_total;
 
-	while (i < cant_original && j < cant_original - 1) {
-		struct pokemon *pokemon_aux = tp->pokemones_nombre[i];
+	while (pos_lectura < cant_original &&
+	       pos_escritura < cant_original - 1) {
+		struct pokemon *pokemon_aux = tp->pokemones_nombre[pos_lectura];
 
 		if (strcasecmp(pokemon_aux->nombre,
-			       tp->pokemones_nombre[j]->nombre) == 0) {
+			       tp->pokemones_nombre[pos_escritura]->nombre) ==
+		    0) {
 			free(pokemon_aux->nombre);
 			free(pokemon_aux);
 		} else {
-			tp->pokemones_nombre[j + 1] = tp->pokemones_nombre[i];
-			tp->cant_tipos[tp->pokemones_nombre[i]->tipo]++;
-			j++;
+			tp->pokemones_nombre[pos_escritura + 1] =
+				tp->pokemones_nombre[pos_lectura];
+			tp->cant_tipos[tp->pokemones_nombre[pos_lectura]->tipo]++;
+			pos_escritura++;
 		}
-		i++;
+		pos_lectura++;
 	}
 
-	tp->cantidad_total = (j + 1);
+	tp->cantidad_total = (pos_escritura + 1);
 
-	struct pokemon **pokemones_ajustado =
-		ajustar_buffer(tp->pokemones_nombre, error_memoria,
-			       (j + 1) * sizeof(struct pokemon *));
+	struct pokemon **pokemones_nombre_aux =
+		realloc(tp->pokemones_nombre,
+			(pos_escritura + 1) * sizeof(struct pokemon *));
 
-	tp->pokemones_nombre = pokemones_ajustado;
+	if (!pokemones_nombre_aux) {
+		*error_memoria = true;
+		return;
+	}
+
+	tp->pokemones_nombre = pokemones_nombre_aux;
 }
 
+/*
+ * PRE: 'tp' no debe tener duplicados y su arreglo 'cant_tipos' debe estar inicializado. 'error_memoria' debe estar inicializado en false.
+ * POST: Reserva la memoria exacta para los sub-arreglos y distribuye los punteros del arreglo principal según su tipo.
+ * Si ocurre un error de memoria, actualiza '*error_memoria' a true.
+ */
 void clasificar_por_tipo(tp1_t *tp, bool *error_memoria)
 {
 	if (!tp || !error_memoria || *error_memoria)
@@ -341,6 +406,11 @@ void clasificar_por_tipo(tp1_t *tp, bool *error_memoria)
 	}
 }
 
+/*
+ * PRE: 'tp' debe ser válido. 'archivo' debe ser un puntero a un FILE abierto en modo lectura. 'error_memoria' inicializada en false.
+ * POST: parsea los pokemones válidos del archivo y los agrega al arreglo principal del tp1 (pokemon_nombre).
+ * Si ocurre un error de memoria durante la lectura o inserción, actualiza '*error_memoria' a true.
+ */
 void cargar_en_bruto(tp1_t *tp, FILE *archivo, bool *error_memoria)
 {
 	if (!tp || !archivo || !error_memoria || *error_memoria)
@@ -461,12 +531,18 @@ struct pokemon *tp1_buscar_orden(tp1_t *tp, int n)
 	return tp->pokemones_nombre[n];
 }
 
-struct pokemon *crear_copia_pokemon(struct pokemon *p, bool *error_memoria)
+/*
+ * PRE: 'pokemon' debe ser un puntero válido. 'error_memoria' debe estar inicializado en false.
+ * POST: Crea y devuelve una copia profunda (nueva memoria) del pokemon recibido.
+ * Si ocurre un error de memoria, devuelve NULL y actualiza '*error_memoria' a true.
+ */
+struct pokemon *crear_copia_pokemon(struct pokemon *pokemon,
+				    bool *error_memoria)
 {
-	if (!p || !error_memoria)
+	if (!pokemon || !error_memoria || *error_memoria)
 		return NULL;
 
-	size_t len_nombre = strlen(p->nombre);
+	size_t len_nombre = strlen(pokemon->nombre);
 	char *nombre_aux = malloc(sizeof(char) * (len_nombre + 1));
 
 	if (!nombre_aux) {
@@ -474,49 +550,60 @@ struct pokemon *crear_copia_pokemon(struct pokemon *p, bool *error_memoria)
 		return NULL;
 	}
 
-	struct pokemon *pokemon_aux = malloc(sizeof(struct pokemon));
-	if (!pokemon_aux) {
+	struct pokemon *pokemon_copia_aux = malloc(sizeof(struct pokemon));
+	if (!pokemon_copia_aux) {
 		*error_memoria = true;
 		free(nombre_aux);
 		return NULL;
 	}
 
-	*pokemon_aux = *p;
-	memcpy(nombre_aux, p->nombre, (len_nombre + 1) * sizeof(char));
-	pokemon_aux->nombre = nombre_aux;
+	*pokemon_copia_aux = *pokemon;
+	memcpy(nombre_aux, pokemon->nombre, (len_nombre + 1) * sizeof(char));
+	pokemon_copia_aux->nombre = nombre_aux;
 
-	return pokemon_aux;
+	return pokemon_copia_aux;
 }
 
-bool cargar_copias(tp1_t *tp_dst, struct pokemon **src, size_t cant,
+/*
+ * PRE: 'tp_destino' debe ser un tp1_t válido. 'fuente' debe ser un arreglo de pokemones origen válido. 
+ * 'cant' debe ser el tamaño de 'fuente'.
+ * POST: Realiza copias profundas de todos los elementos de 'fuente' y los almacena en 'tp_destino'.
+ * Devuelve true si la carga fue exitosa, o false si ocurrió un error de memoria.
+ */
+bool cargar_copias(tp1_t *tp_destino, struct pokemon **fuente, size_t cant,
 		   enum tipo_pokemon tipo)
 {
-	if (!tp_dst || !src)
+	if (!tp_destino || !fuente)
 		return false;
 
 	bool error_memoria = false;
 	struct pokemon *pokemon_copia = NULL;
 
 	for (size_t i = 0; !error_memoria && i < cant; i++) {
-		pokemon_copia = crear_copia_pokemon(src[i], &error_memoria);
+		pokemon_copia = crear_copia_pokemon(fuente[i], &error_memoria);
 		if (pokemon_copia != NULL) {
-			tp_dst->pokemones_nombre[i] = pokemon_copia;
-			tp_dst->pokemones_tipo[tipo][i] = pokemon_copia;
-			tp_dst->cantidad_total++;
-			tp_dst->cant_tipos[tipo]++;
+			tp_destino->pokemones_nombre[i] = pokemon_copia;
+			tp_destino->pokemones_tipo[tipo][i] = pokemon_copia;
+			tp_destino->cantidad_total++;
+			tp_destino->cant_tipos[tipo]++;
 		}
 	}
 
 	return !error_memoria;
 }
 
-bool copiar_pokemones_filtrados(tp1_t *un_tp, tp1_t *tp_aux,
+/*
+ * PRE: tp fuente y tp_destino deben ser punteros a tp1_t válidos
+ * POST: copia desde tp_fuente y hacia tp_destino los pokemons que tengan el tipo recibido.
+ * En caso de error de vuelve false, en caso de éxito devuelve true.
+ */
+bool copiar_pokemones_filtrados(tp1_t *tp_fuente, tp1_t *tp_destino,
 				enum tipo_pokemon tipo)
 {
-	if (!un_tp || !tp_aux)
+	if (!tp_fuente || !tp_destino)
 		return false;
 
-	size_t cant = un_tp->cant_tipos[tipo];
+	size_t cant = tp_fuente->cant_tipos[tipo];
 
 	if (cant == 0)
 		return true;
@@ -534,11 +621,11 @@ bool copiar_pokemones_filtrados(tp1_t *un_tp, tp1_t *tp_aux,
 		return false;
 	}
 
-	tp_aux->pokemones_nombre = pokemones_aux;
-	tp_aux->pokemones_tipo[tipo] = pokemones_tipo_aux;
+	tp_destino->pokemones_nombre = pokemones_aux;
+	tp_destino->pokemones_tipo[tipo] = pokemones_tipo_aux;
 
-	bool carga_exitosa =
-		cargar_copias(tp_aux, un_tp->pokemones_tipo[tipo], cant, tipo);
+	bool carga_exitosa = cargar_copias(
+		tp_destino, tp_fuente->pokemones_tipo[tipo], cant, tipo);
 
 	return carga_exitosa;
 }
@@ -553,19 +640,20 @@ tp1_t *tp1_filtrar_tipo(tp1_t *un_tp, enum tipo_pokemon tipo)
 	if (!un_tp)
 		return NULL;
 
-	tp1_t *tp_aux = tp1_crear();
+	tp1_t *tp_filtrado = tp1_crear();
 
-	if (!tp_aux)
+	if (!tp_filtrado)
 		return NULL;
 
-	bool filtrado_exitoso = copiar_pokemones_filtrados(un_tp, tp_aux, tipo);
+	bool filtrado_exitoso =
+		copiar_pokemones_filtrados(un_tp, tp_filtrado, tipo);
 
 	if (!filtrado_exitoso) {
-		tp1_destruir(tp_aux);
+		tp1_destruir(tp_filtrado);
 		return NULL;
 	}
 
-	return tp_aux;
+	return tp_filtrado;
 }
 
 /**

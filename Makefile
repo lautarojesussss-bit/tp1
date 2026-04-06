@@ -30,8 +30,19 @@ run-main: $(EJEC_MAIN)
 valgrind: $(EJEC)
 	valgrind $(VFLAGS) ./$(EJEC)
 
-valgrind-main: $(EJEC_MAIN)
+valgrind-main-buscar-nombre: $(EJEC_MAIN)
 	valgrind $(VFLAGS) ./$(EJEC_MAIN) 5pokemones.csv buscar PIKACHU
+
+valgrind-main-buscar-posicion: $(EJEC_MAIN)
+	valgrind $(VFLAGS) ./$(EJEC_MAIN) 5pokemones.csv buscar 0
+
+valgrind-main-mostrar-nombre: $(EJEC_MAIN)
+	valgrind $(VFLAGS) ./$(EJEC_MAIN) 5pokemones.csv mostrar nombre
+
+valgrind-main-mostrar-tipo: $(EJEC_MAIN)
+	valgrind $(VFLAGS) ./$(EJEC_MAIN) 5pokemones.csv mostrar tipo
+
+
 
 format:
 	clang-format -style=file -i main.c src/*.c src/*.h pruebas/*.c

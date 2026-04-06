@@ -37,9 +37,16 @@ make
 make run
 ```
 
-### 1.3. Ejecutar el programa con Valgrind
+### 1.3. Ejecutar las pruebas con Valgrind
 ```bash
-make valgrind-main
+make valgrind
+
+```
+
+### 1.4. Ejecutar main (mostrar nombre) con valgrind
+```bash
+make valgrind-main-mostrar-nombre
+
 ```
 
 ## 2. Funcionamiento
@@ -129,7 +136,7 @@ El analisis de la complejidad de la función `tp1_leer_archivo` se detalla fuera
   Esta es la función más compleja y larga de las que se pedía implementar, por eso hago el analisis por separado, fuera de la tabla. En el peor de los casos se realizan 4 llamadas a funciones auxiliares de complejidad temporal asintótica no constante, estas son `cargar_en_bruto`, `ordenar_alfabeticamente`, `limpiar_y_contar`, y `clasificar_por_tipo`.
 Prosigo con el analisis de cada una para determinar la complejidad total de la función. 
 
-##### Analis de la complejidad de `cargar_en_bruto`:
+#### Análisis de la complejidad de `cargar_en_bruto`:
 
 La función ejecuta un ciclo `while` que itera $N$ veces (una vez por cada línea/Pokémon leída del archivo). En cada iteración, insertar un elemento en un arreglo, lo que implica $1$ operación. Sin embargo, cuando la capacidad del arreglo se llena, la función `agregar_pokemon` realiza un `realloc` duplicando el tamaño del buffer y copiando los elementos existentes.
 
@@ -157,7 +164,7 @@ $$\Large f(N) = N + (2N - 2) +2N = 5N - 2$$
 
 Por las propiedades del análisis asintótico, sabemos que los coeficientes y los términos de menor grado no afectan la tasa de crecimiento cuando $N$ tiende a infinito. Por lo tanto, podemos afirmar que la función tiene una complejidad temporal asintótica lineal.
 
-##### Analisis de la función `ordenar_alfabeticamente`:
+#### Analisis de la función `ordenar_alfabeticamente`:
 
 La función `ordenar_alfabeticamente` actúa como punto de entrada para `merge_sort_alfabetico`, el cual implementa un algoritmo del tipo *divide y vencerás*. 
 
@@ -254,7 +261,9 @@ Para mitigar el costo temporal de las reasignaciones de memoria dinámica, se im
 Al estar formalmente prohibido asumir un tope máximo para $L$ (lo que hubiese permitido abstraerlo como una constante $O(1)$), el uso de memoria dinámica con expansión geométrica previene que el costo temporal de leer una sola línea degrade a un escenario cuadrático $O(L^2)$ respecto a su longitud.
 
 ### Optimización en la función `split`
-Para el parseo de las cadenas, se optó por evitar redimensiones incrementales (`reallocs` sucesivos) durante el ciclo principal. En su lugar, se determina inicialmente el tamaño del arreglo de punteros asumiendo el límite superior teórico (el peor de los casos: que la cadena esté compuesta enteramente por caracteres separadores). Cualquier implementación funcional de `split` requiere forzosamente evaluar cada carácter del texto original para identificar los cortes, lo que impone un piso ineludible de complejidad temporal lineal $\mathcal{O}(L)$. Por ende, realizar una iteración adicional al comienzo para conocer la longitud de la cadena y pre-asignar la memoria representa un esfuerzo secuencial de $\mathcal{O}(L) + \mathcal{O}(L)$, lo cual, por propiedades del análisis asintótico, no altera el orden de complejidad final del algoritmo. Este enfoque simplifica notablemente la lógica y minimiza la interacción con el *heap*, requiriendo un único `realloc` al finalizar para encoger y ajustar el *buffer* a la memoria estrictamente utilizada, aunque por supuesto esto tiene un mayor "desperdicio temporal" de memoria durante la ejecución de la función, en comparación con una implementación de la complejidad amortizada que duplique el tamaño del buffer solo al llenarlo, lo que imposibilita que en cualquier momento de la función se esté ocupando menos del 50% de la memoria reservada.
+Para el parseo de las cadenas, se optó por evitar redimensiones incrementales (`reallocs` sucesivos) durante el ciclo principal. En su lugar, se determina inicialmente el tamaño del arreglo de punteros asumiendo el límite superior teórico (el peor de los casos: que la cadena esté compuesta enteramente por caracteres separadores). Cualquier implementación funcional de `split` requiere forzosamente evaluar cada carácter del texto original para identificar los cortes, lo que impone un piso ineludible de complejidad temporal lineal $\mathcal{O}(L)$. Por ende, realizar una iteración adicional al comienzo para conocer la longitud de la cadena y pre-asignar la memoria representa un esfuerzo secuencial de $\mathcal{O}(L) + \mathcal{O}(L)$, lo cual, por propiedades del análisis asintótico, no altera el orden de complejidad final del algoritmo.
+
+ Este enfoque simplifica notablemente la lógica y minimiza la interacción con el *heap*, requiriendo un único `realloc` al finalizar para encoger y ajustar el *buffer* a la memoria estrictamente utilizada, aunque por supuesto esto tiene un mayor "desperdicio temporal" de memoria durante la ejecución de la función, en comparación con una implementación de la complejidad amortizada que duplique el tamaño del buffer solo al llenarlo, lo que imposibilita que en cualquier momento de la función se esté ocupando menos del 50% de la memoria reservada.
 
 ### Uso de búsqueda binaria para `tp1_buscar_nombre`
 Se implementó el algoritmo de Búsqueda Binaria (*divide y vencerás*) para optimizar las consultas por nombre. Al aprovechar la precondición de que el arreglo base ya fue ordenado alfabéticamente durante la carga en `tp1_leer_archivo`, se logró reducir la complejidad temporal asintótica de las búsquedas de un esfuerzo lineal $\mathcal{O}(N)$ a un esfuerzo logarítmico $\mathcal{O}(\log N)$.
@@ -273,8 +282,20 @@ Para la implementación de la función `ordenar_alfabeticamente` se desestimó e
 
 ### Dificultades durante la implementación
 
-La mayor dificultad que se halló durante la implementación se basa en la lectura y parseo de las lineas del archivo en la función `tp1_leer_archivo` y el proceso 
+La mayor dificultad que se halló durante la implementación se basa en la lectura y parseo de las lineas del archivo en la función `tp1_leer_archivo`. El proceso se hubiese simplificado si se pudiese establecer un máximo teórico en la cantidad de caracteres que pueda tener el nombre de un pokémon, para ser considerado válido.
 
+### Dificultades en el diseño de pruebas del TDA
+
+El desarrollo de las pruebas unitarias se llevó a cabo en una etapa tardía de la construcción del TDA. Esta decisión introdujo un sesgo de implementación involuntario que condicionó tanto la cobertura como la calidad de los casos de prueba en `pruebas_alumno.c`. 
+
+Asimismo, la interfaz reducida expuesta por el tipo `tp1_t` dificultó el diseño de pruebas de **caja negra** estrictas y el aislamiento efectivo de cada funcionalidad. Dado que la única vía disponible para cargar la estructura sin violar el encapsulamiento es a través de `tp1_leer_archivo` —la primitiva de mayor complejidad lógica—, el testeo del resto de las operaciones quedó fuertemente acoplado al correcto funcionamiento de esta.
+
+Esta dependencia estructural podría haberse mitigado ampliando la interfaz del TDA con una primitiva de inserción directa (por ejemplo, permitiendo cargar un `struct pokemon` instanciado en memoria). Esto hubiera facilitado la creación de escenarios de prueba controlados, desacoplando la validación de las operaciones de búsqueda y filtrado de la lógica entera de parseo de archivos.
+
+### Detalles del diseño
+
+Se optó por permitir la carga de pokémones con métricas negativas (velocidad, defensa, ataque). Dado que en struct pokemon (definido en tp1.h) estos campos son de tipo int y no size_t, no es posible alterar la estructura original y se asume que la admisión de valores negativos es un comportamiento intencional del diseño provisto por la cátedra.
+ 
 ## 5. Respuestas a las preguntas teóricas
 
 ### Consigna 1
